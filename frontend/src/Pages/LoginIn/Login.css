@@ -1,0 +1,70 @@
+
+
+@import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700&display=swap');
+
+body {
+  font-family: 'Nunito', sans-serif;
+}
+
+
+.input-style {
+    padding: 10px;
+    margin: 5px;
+    border: 1px solid #ccc;
+    border-radius: 11px;
+    outline: none;
+    font-size: 16px;
+}
+
+.btn-black {
+    background-color: black;
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+.btn-white {
+    background-color: rgb(255, 255, 255);
+    color: rgb(0, 0, 0);
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+.btn-black:hover {
+    background-color: white;
+    color: black;
+}
+
+.btn-white:hover {
+    background-color: rgb(0, 0, 0);
+    color: rgb(255, 255, 255); /* Set the text color to white on hover */
+}
+
+/* Add responsive styles here */
+@media screen and (max-width: 767px) {
+    .header {
+      text-align: center;
+      margin-bottom: 10px; /* Adjust the value as needed */
+    }
+  
+    .logo {
+      margin-right: 0;
+      margin-bottom: 10px; /* Adjust the value as needed */
+    }
+  
+    .main-container {
+      flex-direction: column;
+    }
+  
+    .login-form {
+      margin-right: 0;
+      margin-bottom: 10px; /* Adjust the value as needed */
+    }
+  }
+  

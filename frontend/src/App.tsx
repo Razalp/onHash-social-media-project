@@ -1,15 +1,22 @@
-import { useState } from 'react'
+
+import { Route, Routes } from 'react-router-dom'
 import './App.css'
+import SignUp from './Pages/Signup/SignUp'
+import Login from './Pages/LoginIn/Login'
+import Home from './Pages/Home/Home'
 
 function App() {
 
-
+  console.log("hello")
   return (
-    <>
-        <h1 className="">
-      Hello world!
-    </h1>
-    </>
+    
+   <>
+   <Routes>
+    <Route path='/home' element={<Home/>} /> 
+   <Route path='/sign-up' element={<SignUp />} />
+   <Route path='/log-in' element={<Login />} />
+   </Routes>
+   </>
   )
 }
 
