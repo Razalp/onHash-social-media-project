@@ -2,6 +2,7 @@
 import './SignUp.css'
 import HashOnImage from '../../assets/HashOn.png';
 import sideView from '../../assets/signupside.png';
+
 import axios from 'axios';
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
@@ -19,7 +20,6 @@ const SignUp = () => {
           email,
           password,
         });
-  
 
         console.log('User signed up successfully:', response.data);
         navigate('/log-in');
