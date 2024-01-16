@@ -1,0 +1,68 @@
+# Node.js
+node_modules/
+
+# Logs
+logs
+*.log
+
+# Dependency directories
+pids
+logs
+*.pid
+*.seed
+*.pid.lock
+
+# Optional npm cache directory
+.npm
+
+# Optional eslint cache
+.eslintcache
+
+# Optional REPL history
+.node_repl_history
+
+# macOS
+.DS_Store
+
+# Windows
+Thumbs.db
+Desktop.ini
+
+# JetBrains IDEs
+.idea/
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+
+# Visual Studio Code
+.vscode/
+.project
+.settings
+*.launch
+.vscode-test/
+.history
+
+# Sublime Text
+.sublime-workspace
+.sublime-project
+
+# Windows Installer files
+*.cab
+*.msi
+*.msm
+*.msp
+
+# Windows shortcuts
+*.lnk
+
+# Jest Snapshot directory
+__snapshots__/
+
+# Puppetteer screenshots
+screenshots/
+
+# Folders to store React App Build
+build/
+dist/
