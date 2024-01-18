@@ -1,13 +1,18 @@
-import { useNavigate } from 'react-router-dom';
+import {  Link, useNavigate } from 'react-router-dom';
 import HashOnImage from '../../assets/HashOn.png';
 import sideView from '../../assets/signupside.png';
 import './Login.css'; 
-import { useState } from 'react';
-import axios from 'axios';
+import {  useEffect, useState } from 'react';
+import axios from '../../axious/instance';
 import { useDispatch } from 'react-redux';
-import { loginSuccess } from '../../redux/userSlice';
+import { login } from '../../redux/userSlice';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+
+// import { AuthContext } from '../../store/Auth';
 
 const Login = () => {
+  // const { login } = useContext(AuthContext);  
     const navigate = useNavigate();
     const dispatch = useDispatch();
     const [email, setEmail] = useState('');
@@ -22,20 +27,37 @@ const Login = () => {
           if (response.status === 200) {
             const data = response.data;
             console.log(data);
-            dispatch(loginSuccess({
-                token: data.token,
-                userId: data.userId,
+            const user:any=data?.user
+            localStorage.setItem("accessToken",data.token)
+            dispatch(login({ 
+                id:user?._id,
+                username: user?.username,
+                email: user?.email,
+                isAdmin: user?.isAdmin,
               }));
-            navigate('/Home');
+
+              toast.success('Login success')
+            navigate('/');
           } else {
             console.error('Login failed');
+            toast.error('Login failed. Please check your credentials.');
           }
         } catch (error) {
           console.error(error);
+          toast.error('An unexpected error occurred.');
         }
       };
+      useEffect(()=>{
+        const token=localStorage.getItem("accessToken")
+        if(token){
+          navigate('/')
+        }
+  },[])
+
+
   return (
     <>
+    <ToastContainer position="top-center" autoClose={5000} hideProgressBar={false} newestOnTop={false} closeOnClick pauseOnFocusLoss draggable pauseOnHover />
       <div className='header flex items-center relative top-5 left-10'>
         <img src={HashOnImage} className='logo size-24 relative left-4' alt="" />
         <h1 className='text-4xl font-bold relative left-8'>HashOn</h1>
@@ -61,7 +83,7 @@ const Login = () => {
           <button className='btn-black' onClick={handleLogIn}>
                         Log-in
                     </button>
-            <button className='btn-white'>Sign-up</button>
+            <button className='btn-white'><Link to='/sign-up'>Sign-up</Link></button>
           </div>
         </div>
         <div>

@@ -1,0 +1,35 @@
+import React, { useState } from 'react';
+import HashOnImage from '../../assets/HashOn.png';
+import { Sidebar, Menu, MenuItem, SubMenu } from 'react-pro-sidebar';
+
+const SideBar = () => {
+
+
+
+  return (
+<>
+<Sidebar>
+  <Menu>
+   
+    <MenuItem> Documentation </MenuItem>
+    <MenuItem> Calendar </MenuItem>
+    <MenuItem> Documentation </MenuItem>
+    <MenuItem> Calendar </MenuItem>
+    <MenuItem> Documentation </MenuItem>
+    <MenuItem> Calendar </MenuItem>
+    <MenuItem> Documentation </MenuItem>
+    <MenuItem> Calendar </MenuItem> 
+    <MenuItem> Documentation </MenuItem>
+    <MenuItem> Calendar </MenuItem>
+    <MenuItem> Documentation </MenuItem>
+    <MenuItem> Calendar </MenuItem>
+    <MenuItem> Documentation </MenuItem>
+    <MenuItem> Calendar </MenuItem>
+  </Menu>
+</Sidebar>;
+
+</>
+  );
+}
+
+export default SideBar;
