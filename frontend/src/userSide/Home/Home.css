@@ -2,3 +2,8 @@ body {
     font-family: 'Nunito', sans-serif;
     overflow: hidden;
   }
+.fullbg{
+  background-color: black;
+  color: white;
+  height: 100vh;
+}

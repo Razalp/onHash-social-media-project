@@ -1,0 +1,19 @@
+body {
+    font-family: 'Nunito', sans-serif;
+    overflow: hidden;
+  }
+.fullbg{
+  background-color: black;
+  color: white;
+  height: 100vh;
+}
+.profile-container {
+    
+    top: 0;
+    left: 50%;
+    transform: translateX(-50%);
+  }
+  
+  .rounded-profile {
+    border-radius: px;
+  }

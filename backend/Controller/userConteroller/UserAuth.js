@@ -11,8 +11,8 @@ import UserOtp from "../../Model/UserOtpModel.js";
 const transporter = nodemailer.createTransport({
     service: 'gmail',
     auth: {
-        user:process.env.AUTH_EMAIL,
-        pass:process.env.AUTH_PASS,
+        user:'razalp0012300@gmail.com',
+        pass:'wlmdruvemoajrkbi',
     },
 });
 
@@ -46,7 +46,6 @@ const signIn = async (req, res) => {
         if (existingUser) {
             return res.status(400).json({ error: 'User already exists with this email' });
         }
-
         const otp = generateOTP();
         await sendOTPEmail(email, otp);
 
@@ -86,11 +85,34 @@ const otpVerify = async (req, res) => {
         if (!otpDocument || otpDocument.expireAt < new Date()) {
             return res.status(401).json({ error: 'Invalid OTP or expired' });
         }
-
-
-        // await otpDocument.remove();
-
         res.status(200).json({ message: 'OTP verification successful' });
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ error: 'Internal Server Error' });
+    }
+};
+
+const resendOTP = async (req, res) => {
+    try {
+        const { email } = req.body;
+        const existingUser = await User.findOne({ email });
+
+        if (!existingUser) {
+            return res.status(404).json({ error: 'User not found with this email' });
+        }
+
+        const newOtp = generateOTP();
+
+
+        const otpDocument = await UserOtp.findOneAndUpdate(
+            { email },
+            { otp: newOtp, createdAt: new Date(), expireAt: new Date(Date.now() + 60 * 1000) },
+            { new: true }
+        );
+
+        await sendOTPEmail(email, newOtp);
+
+        res.status(200).json({ message: 'OTP resent successfully' });
     } catch (error) {
         console.error(error);
         res.status(500).json({ error: 'Internal Server Error' });
@@ -101,7 +123,7 @@ const otpVerify = async (req, res) => {
 
 const login = async (req, res) => {
     try {
-        console.log("loginnnnnnnnnnnn")
+
         const { email, password } = req.body;
         const user = await User.findOne({ email });
 
@@ -140,5 +162,6 @@ export {
     signIn,
     login,
     otpVerify,
-    signOut
+    signOut,
+    resendOTP
 }

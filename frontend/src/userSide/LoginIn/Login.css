@@ -4,19 +4,9 @@
 
 body {
   font-family: 'Nunito', sans-serif;
+  overflow-y: scroll;
+  overflow-x: scroll;
 }
-.otp-modal {
-  position: fixed;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  z-index: 1000; 
-  background: white;
-  padding: 20px;
-  border: 1px solid #ccc;
-  overflow-y: auto; 
-}
-
 
 
 .input-style {
@@ -29,7 +19,7 @@ body {
 }
 
 .btn-black {
-    background-color: black;
+    background-color: rgb(0, 0, 0);
     color: white;
     padding: 10px 20px;
     border: none;
@@ -55,33 +45,28 @@ body {
 
 .btn-white:hover {
     background-color: rgb(0, 0, 0);
-    color: rgb(255, 255, 255); /* Set the text color to white on hover */
+    color: rgb(255, 255, 255); 
 }
 
-@media screen and (max-width: 767px) {
-  .header {
-    text-align: center;
-    margin-bottom: 10px;
-  }
 
-  .logo {
-    margin-right: 0;
-    margin-bottom: 10px;
-  }
-
-  .main-container {
-    flex-direction: column;
-    align-items: center; /* Center the items in the main container */
-  }
-
-  .login-form {
-    margin-right: 0;
-    margin-bottom: 10px; 
-  }
-
-  .otp-modal {
-    width: 80%; 
-    max-width: 300px; 
-    margin: auto; 
-  }
-}
+/* @media screen and (max-width: 767px) {
+    .header {
+      text-align: center;
+      margin-bottom: 10px; 
+    }
+  
+    .logo {
+      margin-right: 0;
+      margin-bottom: 10px; 
+    }
+  
+    .main-container {
+      flex-direction: column;
+    }
+  
+    .login-form {
+      margin-right: 0;
+      margin-bottom: 10px;
+    }
+  } */
+  
