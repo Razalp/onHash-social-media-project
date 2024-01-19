@@ -8,7 +8,7 @@ import {
     otpVerify,
     signOut,
     resendOTP,
-    updateProfilePicture
+    updateProfile
 } from '../Controller/userConteroller/UserAuth.js ';
 
 const verifyToken = (req, res, next) => {
@@ -57,7 +57,7 @@ router.post('/logIn',login)
 router.post('/verify-otp',otpVerify)
 router.post('/sign-out',signOut)
 router.post('/resendotp',resendOTP)
-router.post('/update-profile',verifyToken, upload.single('profilePicture'), updateProfilePicture);
+router.post('/update-profile',verifyToken, upload.single('profilePicture'), updateProfile);
 
 
 

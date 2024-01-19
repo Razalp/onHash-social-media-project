@@ -186,32 +186,46 @@ const editProfile= async (req, res) => {
     }
 };
 
-const updateProfilePicture = async (req, res) => {
+const updateProfile = async (req, res) => {
     try {
         console.log("sahkddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd")
         if (!req.userId) {
             return res.status(401).json({ error: 'User not authenticated' });
         }
 
-        console.log(req,"requiest");
-        
         const userId = req.userId;
 
- 
+
+        const { bio, username } = req.body;
+
+        const updateFields = {};
+
+        if (bio) {
+            updateFields.bio = bio;
+        }
+
+        if (username) {
+            updateFields.username = username;
+        }
+
         if (!req.file) {
             return res.status(400).json({ error: 'No file provided' });
         }
 
-
         const imagePath = path.join('uploads/', req.file.filename);
-        await User.findByIdAndUpdate(userId, { $set: { profilePicture: imagePath } });
 
-        res.status(200).json({ message: 'Profile picture updated successfully' });
+ 
+        updateFields.profilePicture = imagePath;
+
+        await User.findByIdAndUpdate(userId, { $set: updateFields });
+
+        res.status(200).json({ message: 'Profile updated successfully' });
     } catch (error) {
         console.error(error);
         res.status(500).json({ error: 'Internal Server Error' });
     }
 };
+
 
 export {
     signIn,
@@ -220,6 +234,6 @@ export {
     signOut,
     resendOTP,
     editProfile,
-    updateProfilePicture
+    updateProfile
     
 }
