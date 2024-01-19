@@ -20,7 +20,7 @@ const SideBar = () => {
       showCancelButton: true,
       confirmButtonColor: '#000',
       cancelButtonColor: '#000',
-      confirmButtonText: 'Yes, sign out!',
+      confirmButtonText: 'Yes, ign out!',
     }).then((result) => {
       if (result.isConfirmed) {
         localStorage.removeItem('accessToken');

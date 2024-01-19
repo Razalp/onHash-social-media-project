@@ -4,6 +4,9 @@ import jwt from 'jsonwebtoken';
 import nodemailer from 'nodemailer';
 import randomstring from 'randomstring';
 import UserOtp from "../../Model/UserOtpModel.js";
+import multer from 'multer';
+import path from 'path';
+
 
 // import repository from '../../repository/repository.js   
 
@@ -158,10 +161,65 @@ const signOut = async (req, res) => {
 
 }
 
+
+const editProfile= async (req, res) => {
+    try {
+        const { username, bio, profilePicture } = req.body;
+        const userId = req.user.id; 
+
+        const existingUser = await User.findById(userId);
+        if (!existingUser) {
+            return res.status(404).json({ error: 'User not found' });
+        }
+
+        existingUser.username = username || existingUser.username;
+        existingUser.bio = bio || existingUser.bio;
+        existingUser.profilePicture = profilePicture || existingUser.profilePicture;
+
+    
+        const updatedUser = await existingUser.save();
+
+        res.status(200).json(updatedUser);
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ error: 'Internal Server Error' });
+    }
+};
+
+const updateProfilePicture = async (req, res) => {
+    try {
+        console.log("sahkddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd")
+        if (!req.userId) {
+            return res.status(401).json({ error: 'User not authenticated' });
+        }
+
+        console.log(req,"requiest");
+        
+        const userId = req.userId;
+
+ 
+        if (!req.file) {
+            return res.status(400).json({ error: 'No file provided' });
+        }
+
+
+        const imagePath = path.join('uploads/', req.file.filename);
+        await User.findByIdAndUpdate(userId, { $set: { profilePicture: imagePath } });
+
+        res.status(200).json({ message: 'Profile picture updated successfully' });
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ error: 'Internal Server Error' });
+    }
+};
+
 export {
     signIn,
     login,
     otpVerify,
     signOut,
-    resendOTP
+    resendOTP,
+    editProfile,
+    updateProfilePicture
+    
 }

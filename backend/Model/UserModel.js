@@ -6,11 +6,8 @@ const followerSchema = new Schema({
     user: {
         type: Schema.Types.ObjectId,
         ref: 'User',
-        // required: true
     }
 });
-
-
 const followingSchema = new Schema({
     user: {
         type: Schema.Types.ObjectId,
@@ -18,41 +15,42 @@ const followingSchema = new Schema({
 
     }
 });
-
-
 const userSchema = new Schema({
     username: {
         type: String,
         required: true,
     },
-    email: { 
+    email: {
         type: String,
         required: true,
         unique: true,
     },
-    
-    
-    
     password: {
         type: String,
-        required: true
+        required: true,
     },
     createdAt: {
         type: Date,
-        default: Date.now
+        default: Date.now,
     },
     bio: String,
     followers: [followerSchema],
-    profilePicture: String,
+    profilePicture: {
+        type: String,
+        default: 'default-profile-image.jpg', 
+    },
     following: [followingSchema],
     isAdmin: {
         type: Boolean,
-        default: false
+        default: false,
     },
     isUpgrade: {
         type: Boolean,
-        default: false
+        default: false,
     },
 });
+
+const User = mongoose.model('User', userSchema);
+
 
 export default mongoose.models.User || mongoose.model('User', userSchema);
