@@ -1,0 +1,14 @@
+.fullbg{
+    background-color: black;
+    color: white;
+    height: 100vh;
+  }
+  .btn-black {
+    background-color: rgb(0, 0, 0);
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease, color 0.3s ease;
+}

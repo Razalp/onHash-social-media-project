@@ -3,6 +3,7 @@ import cors from 'cors';
 import mongoose from 'mongoose';
 import dotenv from 'dotenv';
 import UserRouter from './Router/UserRoute.js';
+import Adminrouter from './Router/adminRoute.js';
 import path from 'path';
 
 dotenv.config();
@@ -28,6 +29,7 @@ const __dirname = path.dirname(__filename);
 
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 app.use('/api/user', UserRouter);
+app.use('/api/admin', Adminrouter);
 
 app.listen(port, () => {
   console.log(`Server is running on http://localhost:${port}`);

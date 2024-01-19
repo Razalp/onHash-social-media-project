@@ -2,6 +2,8 @@ import express from 'express'
 import multer from 'multer';
 import User from '../Model/UserModel.js'
 import jwt from "jsonwebtoken"
+
+const router=express.Router();
 import {
     signIn,
     login,
@@ -28,11 +30,10 @@ const verifyToken = (req, res, next) => {
         next();
     } catch (error) {
         console.error(error);
-        // return res.status(401).json({ error: 'Unauthorized - Invalid token' });
+      
     }
 };
 
-const router=express.Router();
 
 const storage = multer.diskStorage({
     destination: (req, file, cb) => {

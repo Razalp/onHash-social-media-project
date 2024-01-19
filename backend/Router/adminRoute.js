@@ -1,4 +1,14 @@
-import jwt from "jsonwebtoken"
+import express from 'express'
+const router=express.Router();
+import User from '../Model/UserModel.js'
+import jwt from 'jsonwebtoken'
+import {
+    userGet,
+    deleteUser,
+    editUser,
+} from '../Controller/adminController/AdminController.js'
+
+
 
 const verifyToken = (req, res, next) => {
     const token = req.header('Authorization');
@@ -21,4 +31,21 @@ const verifyToken = (req, res, next) => {
     }
 };
 
-export default verifyTokenMiddleware;
+//get
+router.get('/userManagament' ,verifyToken,userGet)
+
+
+
+
+//put
+router.put('/edit/:id', verifyToken,editUser)
+
+
+
+//delete
+router.delete('/userManagement/:id',verifyToken,deleteUser)
+
+
+
+
+export default router

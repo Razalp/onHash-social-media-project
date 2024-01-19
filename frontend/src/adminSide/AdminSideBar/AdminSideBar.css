@@ -1,0 +1,39 @@
+body {
+    font-family: 'Nunito', sans-serif;
+    overflow: auto;
+
+    z-index: 2; 
+  }
+
+.sideBar{
+    background: linear-gradient(to right, rgb(3, 3, 3), rgb(17, 17, 17));
+}
+.btn-black {
+    background-color: black;
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+.btn-white {
+    background-color: rgb(255, 255, 255);
+    color: rgb(0, 0, 0);
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease, color 0.3s ease;
+}
+.sideBar {
+    z-index: 1;
+  }
+  
+  .sideBar.open {
+    width: 64px; 
+  }
+  
+  
+  

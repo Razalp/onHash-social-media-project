@@ -3,6 +3,8 @@
   import SideBar from "../SideBar/SideBar";
   import profile from './profile.jpg';
   import './UserProfile.css';
+  import { ToastContainer, toast } from 'react-toastify';
+  import 'react-toastify/dist/ReactToastify.css';
 
   const UserProfile = () => {
     const [newProfilePicture, setNewProfilePicture] = useState(null);
@@ -35,7 +37,7 @@
 
         await Axios.post('api/user/update-profile', formData);
 
-        console.log('Profile updated successfully');
+        toast.success('Profile updated successfully');
       } catch (error) {
         console.error('Error updating profile:', error);
       }
@@ -45,6 +47,7 @@
     return (
       <>
         <SideBar />
+        <ToastContainer position="top-center" autoClose={5000} hideProgressBar={false} newestOnTop={false} closeOnClick pauseOnFocusLoss draggable pauseOnHover />
         <div className="fullbg">
           <div>
             <div className="p-8 flex justify-center items-center flex-col">
@@ -54,25 +57,36 @@
                 alt="Profile"
               />
 
-              {/* <input
-                type="file"
-                accept="image/*"
-                onChange={handleFileChange}
-              /> */}
+              
+
+        
               <button
                 className="ml-28 hover:text-yellow-200"
                 onClick={handleEditClick}
               >
                 🖍 Edit
               </button>
+
+
+              <div className="flex flex-col">
+                 <h1 >name </h1>
+                  <h1>bio </h1>
+             </div>
             </div>
             <div>
-              <ul className="flex justify-evenly ">
-                <li className="text-2xl hover:text-yellow-200">Post</li>
-                <li className="text-2xl hover:text-yellow-200">Followers</li>
-                <li className="text-2xl hover:text-yellow-200">Following</li>
-              </ul>
-            </div>
+  <ul className="flex justify-evenly ">
+    <li className="text-xl flex flex-col items-center hover:text-yellow-200">
+      Post <span>1</span>
+    </li>
+    <li className="text-xl flex flex-col items-center hover:text-yellow-200">
+      Followers <span>1</span>
+    </li>
+    <li className="text-xl flex flex-col items-center hover:text-yellow-200">
+      Following <span>1</span>
+    </li>
+  </ul>
+</div>
+
           </div>
         </div>
         {showModal && (

@@ -1,13 +1,12 @@
-import React, { useState } from 'react';
+import  { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useNavigate } from 'react-router-dom';
 import Swal from 'sweetalert2';
 import HashOnImage from '../../assets/HashOn.png';
-import './SideBar.css';
+import './AdminSideBar.css'
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faHome, faSearch, faCompass, faVideo, faEnvelope, faBell, faPlusCircle, faUser, faEllipsisV, faSignOutAlt ,faArrowLeft ,faArrowRight  } from "@fortawesome/free-solid-svg-icons";
-
-const SideBar = () => {
+import { faTachometerAlt, faUsers, faChartLine, faRunning, faTag, faUser, faSignOutAlt ,faArrowLeft , faArrowRight } from '@fortawesome/free-solid-svg-icons';
+const AdminSideBar = () => {
   const [isOpen, setIsOpen] = useState(true);
   const navigate = useNavigate();
 
@@ -40,15 +39,12 @@ const SideBar = () => {
           </div>
 
           <ul className="flex flex-col relative left-20 space-y-8">
- <li className="hover:text-blue-200"><Link to="/"><FontAwesomeIcon icon={faHome} />  &nbsp; HOME</Link></li>
- <li className="hover:text-blue-200"><FontAwesomeIcon icon={faSearch} /> &nbsp; SEARCH</li>
- <li className="hover:text-blue-200"><FontAwesomeIcon icon={faCompass} /> &nbsp; EXPLORE</li>
- <li className="hover:text-blue-200"><FontAwesomeIcon icon={faVideo} /> &nbsp; REELS</li>
- <li className="hover:text-blue-200"><FontAwesomeIcon icon={faEnvelope} /> &nbsp; MESSAGE</li>
- <li className="hover:text-blue-200"><FontAwesomeIcon icon={faBell} /> &nbsp; NOTIFICATIONS</li>
- <li className="hover:text-blue-200"><FontAwesomeIcon icon={faPlusCircle} /> &nbsp; CREATE</li>
+ <li className="hover:text-blue-200"><Link to="/dashboard"><FontAwesomeIcon icon={faTachometerAlt} /> &nbsp; DASHBOARD</Link></li>
+ <li className="hover:text-blue-200"><Link to="/userManagement"><FontAwesomeIcon icon={faUsers} /> &nbsp; USERS </Link></li>
+ <li className="hover:text-blue-200"><FontAwesomeIcon icon={faChartLine} /> &nbsp; REPORT</li>
+ <li className="hover:text-blue-200"><FontAwesomeIcon icon={faRunning} /> &nbsp; ACTIVITIES</li>
+ <li className="hover:text-blue-200"><FontAwesomeIcon icon={faTag} /> &nbsp; ADD PROMO</li>
  <li className="hover:text-blue-200"><Link to='/profile'><FontAwesomeIcon icon={faUser} /> &nbsp; PROFILE</Link></li>
- <li className="hover:text-blue-200"><FontAwesomeIcon icon={faEllipsisV}/> &nbsp; &nbsp; MORE</li>
  <li className="hover:text-blue-200" onClick={handleSignOut}><FontAwesomeIcon icon={faSignOutAlt} /> &nbsp; SIGNOUT</li>
 </ul>
         </div>
@@ -64,4 +60,4 @@ const SideBar = () => {
   );
 };
 
-export default SideBar;
+export default AdminSideBar;
