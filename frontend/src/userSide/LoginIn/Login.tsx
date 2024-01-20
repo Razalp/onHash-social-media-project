@@ -28,6 +28,12 @@ const Login = () => {
             const data = response.data;
             console.log(data);
             const user:any=data?.user
+
+            if (user.isBlocked) {
+              toast.error('User is blocked. Please contact support.');
+              return;
+            }
+
             localStorage.setItem("accessToken",data.token)
             dispatch(login({ 
                 id:user?._id,

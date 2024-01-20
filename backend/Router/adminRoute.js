@@ -6,6 +6,7 @@ import {
     userGet,
     deleteUser,
     editUser,
+    BlockUser
 } from '../Controller/adminController/AdminController.js'
 
 
@@ -39,6 +40,7 @@ router.get('/userManagament' ,verifyToken,userGet)
 
 //put
 router.put('/edit/:id', verifyToken,editUser)
+router.put('/block/:id',verifyToken,BlockUser)
 
 
 

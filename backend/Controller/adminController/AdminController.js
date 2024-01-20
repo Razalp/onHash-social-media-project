@@ -4,6 +4,7 @@ import User from '../../Model/UserModel.js'
 const userGet =async(req,res)=>{
     try {
         const users = await User.find();
+        console.log(users)
         res.json(users);
     } catch (error) {
         
@@ -60,10 +61,30 @@ const deleteUser= async (req, res) => {
     }
 };
 
+const BlockUser = async (req, res) => {
+    try {
+      const userId = req.params.id; 
 
+      const user = await User.findById(userId);
+  
+      if (!user) {
+        return res.status(404).json({ message: 'User not found' });
+      }
+  
+      user.isBlocked = !user.isBlocked; 
+  
+      await user.save();
+  
+      res.json({ message: 'User blocked/unblocked successfully' });
+    } catch (error) {
+      console.error(error);
+      res.status(500).json({ message: 'Internal Server Error' });
+    }
+  };
 export {
     userGet,
     editUser,
-    deleteUser
+    deleteUser,
+    BlockUser
 }
 

@@ -37,7 +37,7 @@ const userSchema = new Schema({
     followers: [followerSchema],
     profilePicture: {
         type: String,
-        default: 'default-profile-image.jpg', 
+        default: 'default-profile-image.jpg',
     },
     following: [followingSchema],
     isAdmin: {
@@ -48,9 +48,13 @@ const userSchema = new Schema({
         type: Boolean,
         default: false,
     },
+    isBlocked: {
+        type: Boolean,
+        default: false,
+    },
 });
 
 const User = mongoose.model('User', userSchema);
 
-
 export default mongoose.models.User || mongoose.model('User', userSchema);
+

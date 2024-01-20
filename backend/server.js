@@ -27,7 +27,8 @@ app.get('/', (req, res) => {
 const __filename = new URL(import.meta.url).pathname;
 const __dirname = path.dirname(__filename);
 
-app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
+// app.use('/uploads', express.static(path.join(__dirname, '/uploads')));
+app.use("/upload", express.static(path.join(__dirname, "/public/upload")));
 app.use('/api/user', UserRouter);
 app.use('/api/admin', Adminrouter);
 

@@ -8,6 +8,7 @@ import multer from 'multer';
 import path from 'path';
 
 
+
 // import repository from '../../repository/repository.js   
 
 
@@ -124,32 +125,35 @@ const resendOTP = async (req, res) => {
 
 
 
-const login = async (req, res) => {
-    try {
+    const login = async (req, res) => {
+        try {
 
-        const { email, password } = req.body;
-        const user = await User.findOne({ email });
+            const { email, password } = req.body;
+            const user = await User.findOne({ email });
 
-        if (!user) {
-            return res.status(401).json({ error: 'Invalid credentials' });
+            if (!user) {
+                return res.status(401).json({ error: 'Invalid credentials' });
+            }
+            if (user.isBlocked) {
+                return res.status(401).json({ error: 'User is blocked' });
+            }
+
+            const passwordMatch = await bcryptjs.compare(password, user.password);
+
+            if (!passwordMatch) {
+                return res.status(401).json({ error: 'Invalid credentials' });
+            }
+
+            const token = jwt.sign({ userId: user._id }, 'mySecret', { expiresIn: '1h' });
+
+            // res.setHeader('Authorization', 'Bearer ' + token);
+            res.status(200).json({ token, userId: user._id ,user});
+
+        } catch (error) {
+            console.error(error);
+            res.status(500).json({ error: 'Internal Server Error' });
         }
-
-        const passwordMatch = await bcryptjs.compare(password, user.password);
-
-        if (!passwordMatch) {
-            return res.status(401).json({ error: 'Invalid credentials' });
-        }
-
-        const token = jwt.sign({ userId: user._id }, 'mySecret', { expiresIn: '1h' });
-
-        // res.setHeader('Authorization', 'Bearer ' + token);
-        res.status(200).json({ token, userId: user._id ,user});
-
-    } catch (error) {
-        console.error(error);
-        res.status(500).json({ error: 'Internal Server Error' });
-    }
-};
+    };
 
 const signOut = async (req, res) => {
     try {
@@ -186,45 +190,47 @@ const editProfile= async (req, res) => {
     }
 };
 
-const updateProfile = async (req, res) => {
-    try {
-        console.log("sahkddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd")
-        if (!req.userId) {
-            return res.status(401).json({ error: 'User not authenticated' });
+    const updateProfile = async (req, res) => {
+        try {
+            console.log("sahkddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd")
+            if (!req.userId) {
+                return res.status(401).json({ error: 'User not authenticated' });
+            }
+
+            const userId = req.userId;
+
+
+            const { bio, username } = req.body;
+
+            const updateFields = {};
+
+            if (bio) {
+                updateFields.bio = bio;
+            }
+
+            if (username) {
+                updateFields.username = username;
+            }
+
+            if (!req.file) {
+                return res.status(400).json({ error: 'No file provided' });
+            }
+
+            const imagePath = path.join(req.file.filename);
+
+    
+            updateFields.profilePicture = imagePath;
+
+            await User.findByIdAndUpdate(userId, { $set: updateFields });
+
+            res.status(200).json({ message: 'Profile updated successfully' });
+        } catch (error) {
+            console.error(error);
+            res.status(500).json({ error: 'Internal Server Error' });
         }
+    };
 
-        const userId = req.userId;
 
-
-        const { bio, username } = req.body;
-
-        const updateFields = {};
-
-        if (bio) {
-            updateFields.bio = bio;
-        }
-
-        if (username) {
-            updateFields.username = username;
-        }
-
-        if (!req.file) {
-            return res.status(400).json({ error: 'No file provided' });
-        }
-
-        const imagePath = path.join('uploads/', req.file.filename);
-
- 
-        updateFields.profilePicture = imagePath;
-
-        await User.findByIdAndUpdate(userId, { $set: updateFields });
-
-        res.status(200).json({ message: 'Profile updated successfully' });
-    } catch (error) {
-        console.error(error);
-        res.status(500).json({ error: 'Internal Server Error' });
-    }
-};
 
 
 export {

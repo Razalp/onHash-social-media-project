@@ -37,7 +37,7 @@ const verifyToken = (req, res, next) => {
 
 const storage = multer.diskStorage({
     destination: (req, file, cb) => {
-      cb(null, 'public/upload/'); 
+      cb(null, 'public/upload'); 
     },
     filename: (req, file, cb) => {
       const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
@@ -62,33 +62,5 @@ router.post('/update-profile',verifyToken, upload.single('profilePicture'), upda
 
 
 
-//put
-
-// router.post('/edit-profile', upload.single('profilePicture'), async (req, res) => {
-//     try {
-//         const { username, bio } = req.body;
-//         const userId = req.user.id;
-
-//         const updatedFields = {
-//             username: username || existingUser.username,
-//             bio: bio || existingUser.bio,
-//         };
-
-//         if (req.file) {
-//             updatedFields.profilePicture = req.file.path;
-//         }
-
-//         const updatedUser = await User.findByIdAndUpdate(userId, { $set: updatedFields }, { new: true });
-
-//         if (!updatedUser) {
-//             return res.status(404).json({ error: 'User not found' });
-//         }
-
-//         res.status(200).json(updatedUser);
-//     } catch (error) {
-//         console.error(error);
-//         res.status(500).json({ error: 'Internal Server Error' });
-//     }
-// });
 
 export default router
