@@ -6,7 +6,7 @@ import randomstring from 'randomstring';
 import UserOtp from "../../Model/UserOtpModel.js";
 import multer from 'multer';
 import path from 'path';
-
+import Post from '../../Model/PostSchema.js'
 
 
 // import repository from '../../repository/repository.js   
@@ -144,7 +144,7 @@ const resendOTP = async (req, res) => {
                 return res.status(401).json({ error: 'Invalid credentials' });
             }
 
-            const token = jwt.sign({ userId: user._id }, 'mySecret', { expiresIn: '1h' });
+            const token = jwt.sign({ userId: user._id,isAdmin:user.isAdmin }, 'mySecret');
 
             // res.setHeader('Authorization', 'Bearer ' + token);
             res.status(200).json({ token, userId: user._id ,user});
@@ -216,7 +216,9 @@ const editProfile= async (req, res) => {
                 return res.status(400).json({ error: 'No file provided' });
             }
 
-            const imagePath = path.join(req.file.filename);
+            const imagePath = path.join('public/upload', req.file.filename);
+            console.log(req.file.filename  +"dhhhhhhhhhhhhhhh")
+
 
     
             updateFields.profilePicture = imagePath;
@@ -224,6 +226,70 @@ const editProfile= async (req, res) => {
             await User.findByIdAndUpdate(userId, { $set: updateFields });
 
             res.status(200).json({ message: 'Profile updated successfully' });
+        } catch (error) {
+            console.error(error);
+            res.status(500).json({ error: 'Internal Server Error' });
+        }
+    };
+
+
+    const editUser = async (req, res) => {
+        const userId = req.params.userId;
+    
+        try {
+            const user = await User.findById(userId);
+    
+            if (!user) {
+                return res.status(404).json({ message: 'User not found' });
+            }
+    
+            if (req.body.username) user.username = req.body.username;
+            if (req.body.email) user.email = req.body.email;
+            if (req.body.password) user.password = req.body.password;
+            if (req.body.bio) user.bio = req.body.bio;
+            if (req.body.profilePicture) user.profilePicture = req.body.profilePicture;
+            if (req.body.isAdmin !== undefined) user.isAdmin = req.body.isAdmin;
+            if (req.body.isUpgrade !== undefined) user.isUpgrade = req.body.isUpgrade;
+            if (req.body.isBlocked !== undefined) user.isBlocked = req.body.isBlocked;
+    
+
+            const updatedUser = await user.save();
+    
+            res.status(200).json(updatedUser);
+        } catch (err) {
+            console.error(err);
+            res.status(500).json({ message: 'Internal Server Error' });
+        }
+    };
+    const uploadPost = async (req, res) => {
+        try {
+            console.log("hello")
+            if (!req.userId) {
+                return res.status(401).json({ error: 'User not authenticated' });
+            }
+    
+            const userId = req.userId;
+            const { caption } = req.body;
+    
+            if (!req.files || req.files.length === 0) {
+                return res.status(400).json({ error: 'No files provided' });
+            }
+    
+            const imagePaths = req.files.map(file => path.join('public/upload', file.filename));
+    
+
+            const newPost = new Post({
+                user: userId,
+                image: imagePaths,
+                caption,
+                likes: [],
+                comments: [],
+            });
+    
+          
+            await newPost.save();
+    
+            res.status(200).json({ message: 'Post uploaded successfully' });
         } catch (error) {
             console.error(error);
             res.status(500).json({ error: 'Internal Server Error' });
@@ -240,6 +306,9 @@ export {
     signOut,
     resendOTP,
     editProfile,
-    updateProfile
+    updateProfile,
+    editUser,
+    uploadPost
+
     
 }

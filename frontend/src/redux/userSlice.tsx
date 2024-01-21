@@ -14,11 +14,11 @@ const authSlice=createSlice({
     initialState,
     reducers:{
         login:(state,action)=>{
-            state.id=action.payload.id
+            state.id=action.payload.id;
             state.username=action.payload.username;
             state.email=action.payload.email;
             state.isAdmin=action.payload.role;
-            state.isAuthenticated=true
+            state.isAuthenticated=true;
         },
 
         logout:(state)=>{

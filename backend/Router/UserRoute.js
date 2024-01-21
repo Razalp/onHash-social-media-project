@@ -2,7 +2,7 @@ import express from 'express'
 import multer from 'multer';
 import User from '../Model/UserModel.js'
 import jwt from "jsonwebtoken"
-
+import Post from '../Model/PostSchema.js'
 const router=express.Router();
 import {
     signIn,
@@ -10,7 +10,10 @@ import {
     otpVerify,
     signOut,
     resendOTP,
-    updateProfile
+    updateProfile,
+    editUser,
+    uploadPost
+
 } from '../Controller/userConteroller/UserAuth.js ';
 
 const verifyToken = (req, res, next) => {
@@ -60,6 +63,11 @@ router.post('/sign-out',signOut)
 router.post('/resendotp',resendOTP)
 router.post('/update-profile',verifyToken, upload.single('profilePicture'), updateProfile);
 
+
+//put 
+router.put('/users/:userId',verifyToken,editUser)
+router.post('/upload-post', verifyToken, upload.array('images', 5), uploadPost);
+  
 
 
 

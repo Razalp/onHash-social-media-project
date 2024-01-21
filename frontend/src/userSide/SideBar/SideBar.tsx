@@ -46,7 +46,7 @@ const SideBar = () => {
  <li className="hover:text-blue-200"><FontAwesomeIcon icon={faVideo} /> &nbsp; REELS</li>
  <li className="hover:text-blue-200"><FontAwesomeIcon icon={faEnvelope} /> &nbsp; MESSAGE</li>
  <li className="hover:text-blue-200"><FontAwesomeIcon icon={faBell} /> &nbsp; NOTIFICATIONS</li>
- <li className="hover:text-blue-200"><FontAwesomeIcon icon={faPlusCircle} /> &nbsp; CREATE</li>
+ <li className="hover:text-blue-200"><Link to='/create'><FontAwesomeIcon icon={faPlusCircle} /> &nbsp; CREATE </Link></li>
  <li className="hover:text-blue-200"><Link to='/profile'><FontAwesomeIcon icon={faUser} /> &nbsp; PROFILE</Link></li>
  <li className="hover:text-blue-200"><FontAwesomeIcon icon={faEllipsisV}/> &nbsp; &nbsp; MORE</li>
  <li className="hover:text-blue-200" onClick={handleSignOut}><FontAwesomeIcon icon={faSignOutAlt} /> &nbsp; SIGNOUT</li>

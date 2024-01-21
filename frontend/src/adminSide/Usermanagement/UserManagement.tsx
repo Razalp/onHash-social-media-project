@@ -105,6 +105,9 @@
                     <td className="px-4 py-2">{item?.username?.toString()}</td>
                     <td className="px-4 py-2">{item?.email}</td>
                     <td className="px-4 py-2 text-center">
+                    <img src="/upload/profilePicture-1705739072071-381012622.png"  className='size-30'/>
+
+
                     </td>
                     <td className="px-4 py-2 text-center">{item?.isAdmin?.toString()}</td>
                     <td className="px-4 py-2 text-center">{item?.isUpgrade.toString()}</td>
