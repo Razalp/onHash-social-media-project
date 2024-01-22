@@ -216,7 +216,7 @@ const editProfile= async (req, res) => {
                 return res.status(400).json({ error: 'No file provided' });
             }
 
-            const imagePath = path.join('public/upload', req.file.filename);
+            const imagePath = path.join(req.file.filename);
             console.log(req.file.filename  +"dhhhhhhhhhhhhhhh")
 
 

@@ -15,8 +15,10 @@ import { jwtDecode } from "jwt-decode";
     const [userData, setUserData] = useState({
       username: '',
       email: '',
-
+      bio: '',
+      profilePicture: '', 
     });
+    
 
     const handleFileChange = (event:any) => {
       const file = event.target.files[0];
@@ -56,11 +58,11 @@ import { jwtDecode } from "jwt-decode";
   
 
     useEffect(() => {
-      const token = localStorage.getItem('accessToken');
+      const token :any = localStorage.getItem('accessToken');
   
       try {
         if (token) {
-          const decodedToken = jwtDecode(token);
+          const decodedToken :any = jwtDecode(token);
           const userId  = decodedToken.userId;
   
           const fetchUserData = async () => {
@@ -81,51 +83,79 @@ import { jwtDecode } from "jwt-decode";
         toast.error('Error decoding token');
       }
     }, []);
+
+    const getInitials = (name:any) => {
+      return name
+        .split(' ')
+        .map((word:any) => word.charAt(0))
+        .join('');
+    };
+    
     return (
-      <>
+      <div className="fullbg">
         <SideBar />
         <ToastContainer position="top-center" autoClose={5000} hideProgressBar={false} newestOnTop={false} closeOnClick pauseOnFocusLoss draggable pauseOnHover />
         <div className="fullbg">
-          <div>
-            <div className="p-8 flex justify-center items-center flex-col">
-              <img
-                className="rounded-full w-44 h-44 object-cover shadow-md"
-                src={newProfilePicture ? URL.createObjectURL(newProfilePicture) : profile}
-                alt="Profile"
-              />
+        <div className="flex items-center justify-center space-x-8 p-8">
+        <div className="flex flex-col items-center">
+        <img
+  className="rounded-full w-44 h-44 object-cover shadow-md"
+  src={
+    newProfilePicture
+      ? URL.createObjectURL(newProfilePicture)
+      : userData.profilePicture
+      ? `http://localhost:3000/upload/${userData.profilePicture}`
+      : `https://ui-avatars.com/api/?name=${getInitials(userData.username)}&background=random&size=200`
+  }
+  alt="User Profile"
+/>
+
+
 
               
 
         
               <button
-                className="ml-28 hover:text-yellow-200"
-                onClick={handleEditClick}
-              >
-                🖍 Edit
-              </button>
-
-
-               <div className="flex flex-col">
-              <h1>{userData.username}</h1>
-              <h1>{userData.bio}</h1>
-            </div>
-            </div>
-            <div>
-  <ul className="flex justify-evenly ">
+      className="mt-4 text-blue-500 hover:text-blue-700"
+      onClick={handleEditClick}
+    >
+      🖍 Edit
+    </button>
+<div className="flex flex-col mt-4 text-center"></div>
+    
+  </div>
+ 
+  <div className="">
+  <h1 className="text-3xl font-bold mb-4">{userData.username}</h1>
+  <ul className="flex justify-evenly space-x-6">
     <li className="text-xl flex flex-col items-center hover:text-yellow-200">
-      Post <span>1</span>
+      <span className="text-lg font-bold">Post</span>
+      <span className="text-gray-600">1</span>
     </li>
     <li className="text-xl flex flex-col items-center hover:text-yellow-200">
-      Followers <span>1</span>
+      <span className="text-lg font-bold">Followers</span>
+      <span className="text-gray-600">1</span>
     </li>
     <li className="text-xl flex flex-col items-center hover:text-yellow-200">
-      Following <span>1</span>
+      <span className="text-lg font-bold">Following</span>
+      <span className="text-gray-600">1</span>
     </li>
   </ul>
 </div>
 
+
+
           </div>
+         <div className="" style={{ marginLeft: '100px' }}>
+  <h1 className="text-xl font-bold">{userData?.username}</h1>
+  {/* <h1>{userData?.bio}</h1> */}
+</div>
+
         </div>
+<hr className="text-white" />
+
+       
+      
         {showModal && (
             <div className="fixed z-10 inset-0 overflow-y-auto">
               <div className="flex items-end justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
@@ -183,7 +213,7 @@ import { jwtDecode } from "jwt-decode";
               </div>
             </div>
           )}
-      </>
+    </div>
     );
   };
 

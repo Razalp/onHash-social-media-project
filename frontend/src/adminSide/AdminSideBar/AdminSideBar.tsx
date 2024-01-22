@@ -31,7 +31,7 @@ const AdminSideBar = () => {
   };
 
   return (
-<div className={`flex transition-all duration-500 ${isOpen ? 'w-64' : 'w-16'} text-white fixed h-screen sideBar main-content`}>
+<div className={`flex transition-all duration-500 ${isOpen ? 'w-64' : 'w-10'} text-white fixed h-screen sideBar main-content`}>
       {isOpen && (
         <div>
           <div className="p-4">

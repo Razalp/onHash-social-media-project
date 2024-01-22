@@ -6,7 +6,7 @@ import './Createpost.css';
 import Axios from '../../axious/instance';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-
+    
 const Createpost = () => {
     const [previewImage, setPreviewImage] = useState<string | null>(null);
     const [caption, setCaption] = useState<string>('');
