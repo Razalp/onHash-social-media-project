@@ -18,48 +18,46 @@ const Login = () => {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const handleLogIn = async () => {
-        try {
-          const response = await axios.post('http://localhost:3000/api/user/logIn', {
-            email,
-            password,
-          });
+      try {
+        const response = await axios.post('http://localhost:3000/api/user/logIn', {
+          email,
+          password,
+        });
     
-          if (response.status === 200) {
-            const data = response.data;
-            console.log(data);
-            const user:any=data?.user
-
-            if (user.isBlocked) {
-              toast.error('User is blocked. Please contact support.');
-              return;
-            }
-
-            localStorage.setItem("accessToken",data.token)
-            dispatch(login({ 
-                id:user?._id,
-                username: user?.username,
-                email: user?.email,
-                isAdmin: user?.isAdmin,
-              }));
-
-              toast.success('Login success')
-            navigate('/');
-          } else {
-            console.error('Login failed');
-            toast.error('Login failed. Please check your credentials.');
+        if (response.status === 200) {
+          const data = response.data;
+          const user = data?.user;
+    
+          if (user.isBlocked) {
+            toast.error('User is blocked. Please contact support.');
+            return;
           }
-        } catch (error) {
-          console.error(error);
-          toast.error('An unexpected error occurred.');
+    
+          localStorage.setItem("accessToken", data.token);
+          dispatch(login({ 
+            id: user?._id,
+            username: user?.username,
+            email: user?.email,
+            isAdmin: user?.isAdmin,
+          }));
+    
+          toast.success('Login success');
+    
+          // Check if the user is an admin and redirect accordingly
+          if (user?.isAdmin) {
+            navigate('/dashboard');
+          } else {
+            navigate('/');
+          }
+        } else {
+          console.error('Login failed');
+          toast.error('Login failed. Please check your credentials.');
         }
-      };
-      useEffect(()=>{
-        const token=localStorage.getItem("accessToken")
-        if(token){
-          navigate('/')
-        }
-  },[])
-
+      } catch (error) {
+        console.error(error);
+        toast.error('An unexpected error occurred.');
+      }
+    };
 
   return (
     <>
@@ -72,6 +70,7 @@ const Login = () => {
         <div className='login-form flex flex-col justify-between lg:mr-8'>
           <h1 className='text-3xl font-bold relative left-1 mb-4 lg:mb-8'>Log-in</h1>
           <input
+          required
                     type="email"
                     placeholder='Email'
                     className='input-style mb-4'
@@ -79,6 +78,7 @@ const Login = () => {
                     onChange={(e) => setEmail(e.target.value)}
                 />
                 <input
+                required
                     type="password"
                     placeholder='Password'
                     className='input-style mb-4'

@@ -1,16 +1,22 @@
-  import { useState } from "react";
+  import { useEffect, useState } from "react";
   import Axios from "../../axious/instance";
   import SideBar from "../SideBar/SideBar";
   import profile from './profile.jpg';
   import './UserProfile.css';
   import { ToastContainer, toast } from 'react-toastify';
   import 'react-toastify/dist/ReactToastify.css';
+import { jwtDecode } from "jwt-decode";
 
   const UserProfile = () => {
     const [newProfilePicture, setNewProfilePicture] = useState(null);
     const [newUsername, setNewUsername] = useState('');
     const [newBio, setNewBio] = useState('');
     const [showModal, setShowModal] = useState(false);
+    const [userData, setUserData] = useState({
+      username: '',
+      email: '',
+
+    });
 
     const handleFileChange = (event:any) => {
       const file = event.target.files[0];
@@ -43,7 +49,38 @@
       }
 
       setShowModal(false);
+
     };
+
+
+  
+
+    useEffect(() => {
+      const token = localStorage.getItem('accessToken');
+  
+      try {
+        if (token) {
+          const decodedToken = jwtDecode(token);
+          const userId  = decodedToken.userId;
+  
+          const fetchUserData = async () => {
+            try {
+              const response = await Axios.get(`/api/user/get-profile/${userId}`);
+              setUserData(response.data);
+            } catch (error) {
+              console.error('Error fetching user data:', error);
+
+              toast.error('Error fetching user data');
+            }
+          };
+  
+          fetchUserData();
+        }
+      } catch (error) {
+        console.error('Error decoding token:', error);
+        toast.error('Error decoding token');
+      }
+    }, []);
     return (
       <>
         <SideBar />
@@ -68,10 +105,10 @@
               </button>
 
 
-              <div className="flex flex-col">
-                 <h1 >name </h1>
-                  <h1>bio </h1>
-             </div>
+               <div className="flex flex-col">
+              <h1>{userData.username}</h1>
+              <h1>{userData.bio}</h1>
+            </div>
             </div>
             <div>
   <ul className="flex justify-evenly ">

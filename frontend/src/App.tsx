@@ -8,6 +8,7 @@ import DashBoard from './adminSide/dashBoard/DashBoard';
 import UserManagement from './adminSide/Usermanagement/UserManagement';
 import ProtectedRoute from './ProtectedRoute'; 
 import Createpost from './userSide/CreatePost/Createpost';
+import Pro from './userSide/profilefortry/Pro';
 
 function App() {
   return (
@@ -19,6 +20,7 @@ function App() {
         <Route path='/log-in' element={<Login />} />
         <Route path='/profile' element={<UserProfile />} />
         <Route path='/create' element={<Createpost />} />
+        <Route path='/pro' element={<Pro />} />
         
 
         {/* adminSide - Use ProtectedRoute for admin routes */}
