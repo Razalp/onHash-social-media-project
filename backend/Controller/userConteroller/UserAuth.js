@@ -190,47 +190,40 @@ const editProfile= async (req, res) => {
     }
 };
 
-    const updateProfile = async (req, res) => {
-        try {
-            console.log("sahkddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd")
-            if (!req.userId) {
-                return res.status(401).json({ error: 'User not authenticated' });
-            }
-
-            const userId = req.userId;
-
-
-            const { bio, username } = req.body;
-
-            const updateFields = {};
-
-            if (bio) {
-                updateFields.bio = bio;
-            }
-
-            if (username) {
-                updateFields.username = username;
-            }
-
-            if (!req.file) {
-                return res.status(400).json({ error: 'No file provided' });
-            }
-
-            const imagePath = path.join(req.file.filename);
-            console.log(req.file.filename  +"dhhhhhhhhhhhhhhh")
-
-
-    
-            updateFields.profilePicture = imagePath;
-
-            await User.findByIdAndUpdate(userId, { $set: updateFields });
-
-            res.status(200).json({ message: 'Profile updated successfully' });
-        } catch (error) {
-            console.error(error);
-            res.status(500).json({ error: 'Internal Server Error' });
+const updateProfile = async (req, res) => {
+    try {
+        if (!req.userId) {
+            return res.status(401).json({ error: 'User not authenticated' });
         }
-    };
+
+        const userId = req.userId;
+        const { bio, username } = req.body;
+
+        const updateFields = {};
+
+        if (bio) {
+            updateFields.bio = bio;
+        }
+
+        if (username) {
+            updateFields.username = username;
+        }
+
+        // Check if req.file is available (image selected)
+        if (req.file) {
+            const imagePath = path.join(req.file.filename);
+            updateFields.profilePicture = imagePath;
+        }
+
+        await User.findByIdAndUpdate(userId, { $set: updateFields });
+
+        res.status(200).json({ message: 'Profile updated successfully' });
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ error: 'Internal Server Error' });
+    }
+};
+
 
 
     const editUser = async (req, res) => {
