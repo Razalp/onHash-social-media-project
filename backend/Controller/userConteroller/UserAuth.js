@@ -268,7 +268,7 @@ const updateProfile = async (req, res) => {
                 return res.status(400).json({ error: 'No files provided' });
             }
     
-            const imagePaths = req.files.map(file => path.join('public/upload', file.filename));
+            const imagePaths = req.files.map(file =>file.filename);
     
 
             const newPost = new Post({

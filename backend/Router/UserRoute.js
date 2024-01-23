@@ -48,13 +48,14 @@ const storage = multer.diskStorage({
   
   const upload =  multer({
     storage: storage,
-    limits: { fileSize: 1024 * 1024 * 5 } // 5 MB limit, adjust as needed
+    limits: { fileSize: 1024 * 1024 * 5 }
 });
 
 //get
 router.get('/user-counts',verifyToken, userDashBoard)
 router.get('/get-profile/:userId',verifyToken,getProfile)
-router.get('/my-post',verifyToken,myPost)
+router.get('/my-post/:userId', verifyToken, myPost);
+
 
 //post
 router.post('/signIn',signIn)

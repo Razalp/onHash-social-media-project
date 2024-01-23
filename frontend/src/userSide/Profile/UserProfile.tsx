@@ -19,6 +19,7 @@ const UserProfile = () => {
     bio: '',
     profilePicture: '',
   });
+  const [userPosts, setUserPosts] = useState([]);
 
   const navigate=useNavigate()
   const handleFileChange = (event: any) => {
@@ -111,11 +112,40 @@ const UserProfile = () => {
     }
   }, []);
 
+  const handleGoToPost=()=>{
+    navigate('/create')
+  }
+
+  useEffect(() => {
+    const fetchUserPosts = async () => {
+      const token = localStorage.getItem('accessToken');
+
+      try {
+        if (token) {
+          const decodedToken: any = jwtDecode(token);
+          const userId = decodedToken.userId;
+  
+        const response = await Axios.get(`/api/user/my-post/${userId}`); 
+        setUserPosts(response.data);
+        console.log(userPosts)
+      }
+     } catch (error) {
+        console.error('Error fetching user posts:', error);
+      }
+    
+  }
+
+    fetchUserPosts();
+  }, []);
+
+
+
   return (
-    <div className="fullbg">
+    
+    <div className="bg-black h-full w-full text-white">
       <SideBar />
       <ToastContainer position="top-center" autoClose={5000} hideProgressBar={false} newestOnTop={false} closeOnClick pauseOnFocusLoss draggable pauseOnHover />
-      <div className="fullbg">
+      <div className="">
         <div className="flex items-center justify-center space-x-8 p-8">
           <div className="flex flex-col items-center">
             <img
@@ -161,9 +191,44 @@ const UserProfile = () => {
 
         </div>
         <div className="" style={{ marginLeft: '100px' }}>
-          <h1 className="text-xl font-bold">{userData?.username}</h1>
-          {/* <h1>{userData?.bio}</h1> */}
+          {/* <h1 className="text-xl font-bold">{userData?.username}</h1> */}
+          <h1>{userData?.bio}</h1>
+
         </div>
+        <div className="bg-black" >
+  <h1 className="text-2xl">POSTS</h1>
+  <br />
+ <div style={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'space-between' }} className="fullbg-profile">
+  {userPosts.length > 0 ? (
+    userPosts.reverse().map((post: string | any) => (
+      <div key={post._id} className="rounded-md p-4" style={{ flex: '0 0 calc(33.333% - 10px)', marginBottom: '10px' }}>
+        {post.image.length > 0 && (
+          <img
+            src={`http://localhost:3000/upload/${post.image}`}
+            alt="Post"
+            className="post-image rounded-md mb-4"
+            style={{ width: '350px', height: '400px', objectFit: 'cover' }}
+          />
+        )}
+        <p>{post.caption}</p>
+      </div>
+    ))
+  ) : (
+    <div className="text-center">
+      <p>No posts available</p>
+      <button onClick={() => handleGoToPost()} className="btn-go-to-post">
+        Go to create
+      </button>
+    </div>
+  )}
+</div>
+
+
+
+
+
+</div>
+
 
       </div>
       <hr className="text-white" />
@@ -181,24 +246,26 @@ const UserProfile = () => {
                       Edit Profile
                     </h3>
                     <div className="mt-2">
-                      <input
-                        type="text"
-                        placeholder="New Username"
-                        value={newUsername}
-                        onChange={handleNewUsernameChange}
-                        className="border rounded-md p-2 text-black"
-                      />
+  <input
+    type="text"
+    placeholder="New Username"
+    value={newUsername}
+    onChange={handleNewUsernameChange}
+    maxLength={20} // Set your desired maximum length
+    className="border rounded-md p-2 text-black"
+  />
+</div>
 
-                    </div>
-                    <div className="mt-2">
-                      <textarea
+<div className="mt-2">
+  <textarea
+    placeholder="New Bio"
+    value={newBio}
+    onChange={(e) => setNewBio(e.target.value)}
+    maxLength={150} // Set your desired maximum length
+    className="border rounded-md p-2 text-black"
+  />
+</div>
 
-                        placeholder="New Bio"
-                        value={newBio}
-                        onChange={(e) => setNewBio(e.target.value)}
-                        className="border rounded-md p-2 text-black"
-                      />
-                    </div>
                     <div className="mt-2">
                       <input
                         className="text-black"
