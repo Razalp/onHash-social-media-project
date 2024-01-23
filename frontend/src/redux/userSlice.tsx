@@ -19,6 +19,7 @@ const authSlice=createSlice({
             state.email=action.payload.email;
             state.isAdmin=action.payload.role;
             state.isAuthenticated=true;
+            localStorage.setItem('userDetails', JSON.stringify(state));
         },
 
         logout:(state)=>{

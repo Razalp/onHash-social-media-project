@@ -1,9 +1,12 @@
 body {
-    font-family: 'Nunito', sans-serif;
-    overflow: hidden;
-  }
-.fullbg{
+  font-family: 'Nunito', sans-serif;
   background-color: black;
   color: white;
-  height: 100vh;
 }
+.post-image{
+  height: 500px;
+  width: 600px;
+  border: white;
+}
+
+

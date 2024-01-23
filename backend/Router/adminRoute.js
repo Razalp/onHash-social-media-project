@@ -48,6 +48,23 @@ router.put('/block/:id',verifyToken,BlockUser)
 router.delete('/userManagement/:id',verifyToken,deleteUser)
 
 
+// router.get('/user-counts', async (req, res) => {
+//   try {
+//       const userCounts = {
+//           totalUsers: await User.countDocuments({}),
+//           upgradeCount: await User.countDocuments({ isUpgrade: true }),
+//           adminCount: await User.countDocuments({ isAdmin: true }),
+//           blockedCount: await User.countDocuments({ isBlocked: true }),
+//       };
+
+//       res.json(userCounts);
+//   } catch (error) {
+//       console.error(error);
+//       res.status(500).json({ error: 'Internal Server Error' });
+//   }
+// });
+
+
 
 
 export default router

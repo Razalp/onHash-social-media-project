@@ -291,6 +291,53 @@ const updateProfile = async (req, res) => {
 
 
 
+    const userDashBoard=async (req, res) => {
+        try {
+            const userCounts = {
+                totalUsers: await User.countDocuments({}),
+                upgradeCount: await User.countDocuments({ isUpgrade: true }),
+                adminCount: await User.countDocuments({ isAdmin: true }),
+                blockedCount: await User.countDocuments({ isBlocked: true }),
+            };
+      
+            res.json(userCounts);
+        } catch (error) {
+            console.error(error);
+            res.status(500).json({ error: 'Internal Server Error' });
+        }
+      };
+
+      const getProfile= async (req, res) => {
+        try {
+          const { userId } = req.params;
+      
+          const user = await User.findById(userId);
+      
+          if (!user) {
+            return res.status(404).json({ message: 'User not found' });
+          }
+      
+          // Return the user's profile
+          res.json({
+            username: user.username,
+            email: user.email,
+            createdAt: user.createdAt,
+            bio: user.bio,
+            followers: user.followers,
+            profilePicture: user.profilePicture,
+            following: user.following,
+            isAdmin: user.isAdmin,
+            isUpgrade: user.isUpgrade,
+            isBlocked: user.isBlocked,
+          });
+        } catch (error) {
+          console.error(error);
+          res.status(500).json({ message: 'Internal Server Error' });
+        }
+      };
+      
+
+
 
 export {
     signIn,
@@ -301,7 +348,9 @@ export {
     editProfile,
     updateProfile,
     editUser,
-    uploadPost
+    uploadPost,
+    userDashBoard,
+    getProfile
 
     
 }
