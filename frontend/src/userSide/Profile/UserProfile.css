@@ -1,6 +1,6 @@
 body {
     font-family: 'Nunito', sans-serif;
-   background-color: black;
+   /* background-color: rgb(22, 22, 22); */
       margin: 0;
       padding: 0;
   height: 100%;
@@ -8,7 +8,7 @@ body {
     
   }
 .fullbg-profile{
-  background-color: black;
+  /* background-color: rgb(43, 40, 40); */
   color: white;
   height: auto;
 }

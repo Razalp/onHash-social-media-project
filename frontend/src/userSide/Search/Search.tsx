@@ -3,7 +3,8 @@ import Axios from '@/axious/instance';
 import SideBar from '../SideBar/SideBar';
 import { faSearch } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-
+import { Link } from 'react-router-dom';
+import { Button } from '@/components/ui/button';
 const Search = () => {
   const [searchQuery, setSearchQuery] = useState('');
   const [searchResults, setSearchResults] = useState([]);
@@ -12,6 +13,7 @@ const Search = () => {
     try {
       const response = await Axios.get(`/api/user/searchUser?query=${searchQuery}`);
       setSearchResults(response.data);
+      console.log(searchResults)
     } catch (error) {
       console.error('Error fetching search results:', error);
     }
@@ -50,31 +52,37 @@ const Search = () => {
 
         {/* Display live search results */}
         {searchResults.length > 0 && (
-  <div className="mt-4">
+  <div className="mt-4 ">
     <h2 className="text-lg font-semibold mb-2">Search Results:</h2>
-    <ul>
-      {searchResults.map((user: any) => (
-        <li key={user._id} className="flex items-center space-x-4">
-          <img
-            src={`http://localhost:3000/upload/${user.profilePicture}`}
-            alt={`${user.username}'s profile`}
-            className="w-10 h-10 rounded-full"
-            onError={(e: any) => {
-              e.target.onerror = null;
-              e.target.style.display = 'none'; 
-            }}
-          />
+    <ul className='justify-start w-full'>
+    {searchResults.map((user: any) => (
+  <li key={user._id} className="flex items-center space-x-4 mb-4">
+    <div className="flex-shrink-0">
+      <img
+        src={`http://localhost:3000/upload/${user.profilePicture}`}
+        alt={`${user.username}'s profile`}
+        className="w-16 h-16 rounded-full"
+        onError={(e: any) => {
+          e.target.onerror = null;
+          e.target.style.display = 'none';
+        }}
+      />
 
-          {!user.profilePicture && (
-            <div className="w-10 h-10 rounded-full items-center justify-center text-black text-white">
-              {user.username.charAt(0).toUpperCase()}
-            </div>
-          )}
+      {!user.profilePicture && (
+        <div className="w-16 h-16 rounded-full  bg-gray-300 text-black text-white">
+          {user.username.charAt(0).toUpperCase()}
+        </div>
+      )}
+    </div>
 
-          <div>
-            <p className="font-semibold">{user.username}</p>
-          </div>
-        </li>
+    <div>
+      <p className="font-semibold">{user.username}</p>
+    </div>
+
+    <div className="flex-grow"></div>
+
+   {/* <Button className="w-20 h-10">Go to User</Button> */}
+  </li>
       ))}
     </ul>
   </div>

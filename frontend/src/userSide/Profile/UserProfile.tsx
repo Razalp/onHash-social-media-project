@@ -23,7 +23,7 @@ const UserProfile = () => {
   });
   const [userPosts, setUserPosts] = useState([]);
 
-  const navigate=useNavigate()
+  const navigate = useNavigate()
   const handleFileChange = (event: any) => {
     const file = event.target.files[0];
     setNewProfilePicture(file);
@@ -114,7 +114,7 @@ const UserProfile = () => {
     }
   }, []);
 
-  const handleGoToPost=()=>{
+  const handleGoToPost = () => {
     navigate('/create')
   }
 
@@ -126,16 +126,16 @@ const UserProfile = () => {
         if (token) {
           const decodedToken: any = jwtDecode(token);
           const userId = decodedToken.userId;
-  
-        const response = await Axios.get(`/api/user/my-post/${userId}`); 
-        setUserPosts(response.data);
-        console.log(userPosts)
-      }
-     } catch (error) {
+
+          const response = await Axios.get(`/api/user/my-post/${userId}`);
+          setUserPosts(response.data);
+          console.log(userPosts)
+        }
+      } catch (error) {
         console.error('Error fetching user posts:', error);
       }
-    
-  }
+
+    }
 
     fetchUserPosts();
   }, []);
@@ -143,15 +143,15 @@ const UserProfile = () => {
 
 
   return (
-    
+
     <div className="bg-black h-full w-full text-white fullbg-profile">
       <SideBar />
       <ToastContainer position="top-center" autoClose={5000} hideProgressBar={false} newestOnTop={false} closeOnClick pauseOnFocusLoss draggable pauseOnHover />
-      <div className="">
+      <div className="" style={{ height: '100vh', paddingBottom: '10px', marginBottom: '10px' }}>
         <div className="flex items-center justify-center space-x-8 p-8">
           <div className="flex flex-col items-center">
             <img
-              className="rounded-full w-44 h-44 object-cover shadow-md"
+              className="rounded-full w-32 h-32 object-cover shadow-md"
               src={
                 newProfilePicture
                   ? URL.createObjectURL(newProfilePicture)
@@ -171,20 +171,20 @@ const UserProfile = () => {
 
           </div>
 
-          <div className="">
-            <h1 className="text-3xl font-bold mb-4">{userData?.username}</h1>
+          <div className=" relative top-[-20px]">
+            <h1 className="text-2xl font-bold mb-4">{userData?.username}</h1>
             <ul className="flex justify-evenly space-x-6">
-              <li className="text-xl flex flex-col items-center hover:text-yellow-200">
-                <span className="text-lg font-bold">Post</span>
-                <span className="text-gray-600">{userPosts?.length}</span>
+              <li className="text-xl flex flex-col items-center ">
+                <span className="text-sm font-bold">Post</span>
+                <span className="text-gray-600 text-base">{userPosts?.length}</span>
               </li>
               <li className="text-xl flex flex-col items-center hover:text-yellow-200">
-                <span className="text-lg font-bold">Followers</span>
-                <span className="text-gray-600">1</span>
+                <span className="text-sm font-bold">Followers</span>
+                <span className="text-gray-600 text-base">1</span>
               </li>
               <li className="text-xl flex flex-col items-center hover:text-yellow-200">
-                <span className="text-lg font-bold">Following</span>
-                <span className="text-gray-600">1</span>
+                <span className="text-sm font-bold">Following</span>
+                <span className="text-gray-600 text-base">1</span>
               </li>
             </ul>
           </div>
@@ -192,51 +192,54 @@ const UserProfile = () => {
 
 
         </div>
-        <div className="" style={{ marginLeft: '100px' }}>
+        <div className="flex items-center justify-items-start flex-col" >
           {/* <h1 className="text-xl font-bold">{userData?.username}</h1> */}
+          <div className="flex justify-start w-6/12 flex-col"> 
           <h1>{userData?.bio}</h1>
           <br />
           <h1 className="text-3xl">Post</h1>
+          </div>
+          
         </div>
 
         <div className="bg-black" >
-<br />
-<br />
+          <br />
+          <br />
 
-<div className="grid  fullbg-profile justify-center hight-auto">
-  {userPosts?.length > 0 ? (
-    <div className="grid grid-cols-3 gap-4">
-      {userPosts.map((post: string | any) => (
-        <div key={post._id} className=" shadow-md">
-          {post.image.length > 0 && (
-            <img
-              src={`http://localhost:3000/upload/${post?.image}`}
-              alt="Post"
-              className="post-image "
-              style={{ width: '300px', height: '350px', objectFit: 'cover' }}
-            />
-          )}
+          <div className="grid  fullbg-profile justify-center hight-auto">
+            {userPosts?.length > 0 ? (
+              <div className="grid grid-cols-3 gap-4">
+                {userPosts.map((post: string | any) => (
+                  <div key={post._id} className=" shadow-m border border-b-slate-900 rounded-s-sm">
+                    {post.image.length > 0 && (
+                      <img
+                        src={`http://localhost:3000/upload/${post?.image}`}
+                        alt="Post"
+                        className="post-image shadow-md"
+                        style={{ width: '200px', height: '200px', objectFit: 'cover' }}
+                      />
+                    )}
+                  </div>
+                ))}
+              </div>
+            ) : (
+              <div className="text-center bg-black flex flex-col">
+                <p className="text-lg font-bold mb-4">No posts available</p>
+                <Button variant="outline" onClick={() => handleGoToPost()} className="text-black">
+                  Go to create
+                </Button>
+
+              </div>
+            )}
+          </div>
+
+
+
+
+
+
+
         </div>
-      ))}
-    </div>
-  ) : (
-    <div className="text-center bg-black flex flex-col">
-      <p className="text-lg font-bold mb-4">No posts available</p>
-      <Button variant="outline" onClick={() => handleGoToPost()} className="text-black">
-        Go to create
-      </Button>
-     
-    </div>
-  )}
-</div>
-
-
-
-
-
-
-
-</div>
 
 
       </div>
@@ -255,25 +258,25 @@ const UserProfile = () => {
                       Edit Profile
                     </h3>
                     <div className="mt-2">
-  <input
-    type="text"
-    placeholder="New Username"
-    value={newUsername}
-    onChange={handleNewUsernameChange}
-    maxLength={20} // Set your desired maximum length
-    className="border rounded-md p-2 text-black"
-  />
-</div>
+                      <input
+                        type="text"
+                        placeholder="New Username"
+                        value={newUsername}
+                        onChange={handleNewUsernameChange}
+                        maxLength={20} // Set your desired maximum length
+                        className="border rounded-md p-2 text-black"
+                      />
+                    </div>
 
-<div className="mt-2">
-  <textarea
-    placeholder="New Bio"
-    value={newBio}
-    onChange={(e) => setNewBio(e.target.value)}
-    maxLength={150} // Set your desired maximum length
-    className="border rounded-md p-2 text-black"
-  />
-</div>
+                    <div className="mt-2">
+                      <textarea
+                        placeholder="New Bio"
+                        value={newBio}
+                        onChange={(e) => setNewBio(e.target.value)}
+                        maxLength={150} // Set your desired maximum length
+                        className="border rounded-md p-2 text-black"
+                      />
+                    </div>
 
                     <div className="mt-2">
                       <input
