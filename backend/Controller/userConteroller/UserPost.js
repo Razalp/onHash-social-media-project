@@ -14,7 +14,27 @@ const myPost= async (req, res) => {
     }
   };
 
+  const searchUser= async (req, res) => {
+    try {
+      const { query } = req.query;
+      
+      const users = await User.find({
+        $or: [
+          { username: { $regex: query, $options: 'i' } },
+          { email: { $regex: query, $options: 'i' } },
+        ],
+      });
+  
+      res.json(users);
+    } catch (error) {
+      console.error(error);
+      res.status(500).json({ error: 'Internal Server Error' });
+    }
+  };
+  
+
 
   export {
-    myPost
+    myPost,
+    searchUser
   }

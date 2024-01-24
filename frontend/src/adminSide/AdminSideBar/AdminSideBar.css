@@ -18,6 +18,12 @@ body {
     transition: background-color 0.3s ease, color 0.3s ease;
 }
 
+.fullbg-profile{
+  background-color: black;
+  color: white;
+  height: auto;
+}
+
 .btn-white {
     background-color: rgb(255, 255, 255);
     color: rgb(0, 0, 0);

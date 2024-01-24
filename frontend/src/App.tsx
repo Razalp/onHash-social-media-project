@@ -10,6 +10,7 @@ import ProtectedRoute from './ProtectedRoute';
 import Createpost from './userSide/CreatePost/Createpost';
 import Pro from './userSide/profilefortry/Pro';
 import { Button } from './components/ui/button';
+import Search from './userSide/Search/Search';
 // import { Button } from './'
 function App() {
   return (
@@ -23,6 +24,7 @@ function App() {
         <Route path='/profile' element={<UserProfile />} />
         <Route path='/create' element={<Createpost />} />
         <Route path='/pro' element={<Pro />} />
+        <Route path='/search' element={<Search />} />
         
 
         {/* adminSide - Use ProtectedRoute for admin routes */}

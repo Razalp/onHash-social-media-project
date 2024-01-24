@@ -11,7 +11,7 @@ import {
 } from '../Controller/userConteroller/UserAuth.js ';
 
 import {
-  myPost
+  myPost ,searchUser
 } from '../Controller/userConteroller/UserPost.js'
 
 const verifyToken = (req, res, next) => {
@@ -55,7 +55,7 @@ const storage = multer.diskStorage({
 router.get('/user-counts',verifyToken, userDashBoard)
 router.get('/get-profile/:userId',verifyToken,getProfile)
 router.get('/my-post/:userId', verifyToken, myPost);
-
+router.get('/searchUser',verifyToken,searchUser)
 
 //post
 router.post('/signIn',signIn)

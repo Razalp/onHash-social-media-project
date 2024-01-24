@@ -41,8 +41,7 @@ const SideBar = () => {
 
           <ul className="flex flex-col relative left-20 space-y-8">
  <li className="hover:text-blue-200"><Link to="/"><FontAwesomeIcon icon={faHome} />  &nbsp; HOME</Link></li>
- <li className="hover:text-blue-200"><FontAwesomeIcon icon={faSearch} /> &nbsp; SEARCH</li>
- <li className="hover:text-blue-200"><FontAwesomeIcon icon={faCompass} /> &nbsp; EXPLORE</li>
+ <li className="hover:text-blue-200"><Link to="/search"><FontAwesomeIcon icon={faSearch} /> &nbsp; SEARCH </Link></li>
  <li className="hover:text-blue-200"><FontAwesomeIcon icon={faVideo} /> &nbsp; REELS</li>
  <li className="hover:text-blue-200"><FontAwesomeIcon icon={faEnvelope} /> &nbsp; MESSAGE</li>
  <li className="hover:text-blue-200"><FontAwesomeIcon icon={faBell} /> &nbsp; NOTIFICATIONS</li>

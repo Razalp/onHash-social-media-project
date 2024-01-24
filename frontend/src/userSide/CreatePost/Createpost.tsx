@@ -6,6 +6,7 @@ import './Createpost.css';
 import Axios from '../../axious/instance';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import { Button } from '@/components/ui/button';
     
 const Createpost = () => {
     const [previewImage, setPreviewImage] = useState<string | null>(null);
@@ -110,9 +111,9 @@ const Createpost = () => {
                         />
                         <br />
 
-                        <button className="btn-white" onClick={handleCreatePost}>
+                        <Button variant="outline" onClick={handleCreatePost}>
                             Create
-                        </button>
+                        </Button>
                     </>
                 )}
             </div>

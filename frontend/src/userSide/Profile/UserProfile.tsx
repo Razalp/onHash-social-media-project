@@ -7,6 +7,8 @@ import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { jwtDecode } from "jwt-decode";
 import { useNavigate } from "react-router-dom";
+import { Button } from "@/components/ui/button"
+
 
 const UserProfile = () => {
   const [newProfilePicture, setNewProfilePicture] = useState(null);
@@ -142,7 +144,7 @@ const UserProfile = () => {
 
   return (
     
-    <div className="bg-black h-full w-full text-white">
+    <div className="bg-black h-full w-full text-white fullbg-profile">
       <SideBar />
       <ToastContainer position="top-center" autoClose={5000} hideProgressBar={false} newestOnTop={false} closeOnClick pauseOnFocusLoss draggable pauseOnHover />
       <div className="">
@@ -170,11 +172,11 @@ const UserProfile = () => {
           </div>
 
           <div className="">
-            <h1 className="text-3xl font-bold mb-4">{userData.username}</h1>
+            <h1 className="text-3xl font-bold mb-4">{userData?.username}</h1>
             <ul className="flex justify-evenly space-x-6">
               <li className="text-xl flex flex-col items-center hover:text-yellow-200">
                 <span className="text-lg font-bold">Post</span>
-                <span className="text-gray-600">1</span>
+                <span className="text-gray-600">{userPosts?.length}</span>
               </li>
               <li className="text-xl flex flex-col items-center hover:text-yellow-200">
                 <span className="text-lg font-bold">Followers</span>
@@ -193,35 +195,42 @@ const UserProfile = () => {
         <div className="" style={{ marginLeft: '100px' }}>
           {/* <h1 className="text-xl font-bold">{userData?.username}</h1> */}
           <h1>{userData?.bio}</h1>
-
+          <br />
+          <h1 className="text-3xl">Post</h1>
         </div>
+
         <div className="bg-black" >
-  <h1 className="text-2xl">POSTS</h1>
-  <br />
- <div style={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'space-between' }} className="fullbg-profile">
-  {userPosts.length > 0 ? (
-    userPosts.reverse().map((post: string | any) => (
-      <div key={post._id} className="rounded-md p-4" style={{ flex: '0 0 calc(33.333% - 10px)', marginBottom: '10px' }}>
-        {post.image.length > 0 && (
-          <img
-            src={`http://localhost:3000/upload/${post.image}`}
-            alt="Post"
-            className="post-image rounded-md mb-4"
-            style={{ width: '350px', height: '400px', objectFit: 'cover' }}
-          />
-        )}
-        <p>{post.caption}</p>
-      </div>
-    ))
+<br />
+<br />
+
+<div className="grid  fullbg-profile justify-center hight-auto">
+  {userPosts?.length > 0 ? (
+    <div className="grid grid-cols-3 gap-4">
+      {userPosts.map((post: string | any) => (
+        <div key={post._id} className=" shadow-md">
+          {post.image.length > 0 && (
+            <img
+              src={`http://localhost:3000/upload/${post?.image}`}
+              alt="Post"
+              className="post-image "
+              style={{ width: '300px', height: '350px', objectFit: 'cover' }}
+            />
+          )}
+        </div>
+      ))}
+    </div>
   ) : (
-    <div className="text-center">
-      <p>No posts available</p>
-      <button onClick={() => handleGoToPost()} className="btn-go-to-post">
+    <div className="text-center bg-black flex flex-col">
+      <p className="text-lg font-bold mb-4">No posts available</p>
+      <Button variant="outline" onClick={() => handleGoToPost()} className="text-black">
         Go to create
-      </button>
+      </Button>
+     
     </div>
   )}
 </div>
+
+
 
 
 
