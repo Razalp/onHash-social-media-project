@@ -4,15 +4,17 @@ import User from '../../Model/UserModel.js'
 
 const myPost= async (req, res) => {
     try {
-      const userId = req.userId;
-      const userPosts = await Post.find({ user: userId }).populate('user').exec();
+      const { userId } = req.params;
 
+      const userPosts = await Post.find({user:userId}).populate('user').exec();
+      console.log(userPosts);
 
       res.json(userPosts);
     } catch (error) {
       res.status(500).json({ error: 'Internal Server Error' });
     }
   };
+
 
   const searchUser= async (req, res) => {
     try {
@@ -30,9 +32,8 @@ const myPost= async (req, res) => {
       res.status(500).json({ error: 'Internal Server Error' });
     }
   };
+
   
-
-
   export {
     myPost,
     searchUser

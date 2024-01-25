@@ -150,17 +150,18 @@ const UserProfile = () => {
       <div className="" style={{ height: '100vh', paddingBottom: '10px', marginBottom: '10px' }}>
         <div className="flex items-center justify-center space-x-8 p-8">
           <div className="flex flex-col items-center">
-            <img
-              className="rounded-full w-32 h-32 object-cover shadow-md"
-              src={
-                newProfilePicture
-                  ? URL.createObjectURL(newProfilePicture)
-                  : userData.profilePicture
-                    ? `http://localhost:3000/upload/${userData.profilePicture}`
-                    : `https://ui-avatars.com/api/?name=${getInitials(userData.username)}&background=random&size=200`
-              }
-              alt="User Profile"
-            />
+          <img
+  className="rounded-full w-32 h-32 object-cover shadow-md"
+  src={
+    newProfilePicture
+      ? URL.createObjectURL(newProfilePicture)
+      : userData.profilePicture
+      ? `http://localhost:3000/upload/${userData.profilePicture}`
+      : `https://ui-avatars.com/api/?name=${getInitials(userData.username)}&background=random&size=200`
+  }
+  alt="Profile Picture"
+/>
+
             <button
               className="mt-4 text-blue-500 hover:text-blue-700"
               onClick={handleEditClick}

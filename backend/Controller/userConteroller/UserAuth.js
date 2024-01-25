@@ -310,7 +310,6 @@ const updateProfile = async (req, res) => {
       const getProfile= async (req, res) => {
         try {
           const { userId } = req.params;
-      
           const user = await User.findById(userId);
       
           if (!user) {

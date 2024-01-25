@@ -5,6 +5,7 @@ import { faSearch } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
+// import defalt from ''
 const Search = () => {
   const [searchQuery, setSearchQuery] = useState('');
   const [searchResults, setSearchResults] = useState([]);
@@ -57,26 +58,22 @@ const Search = () => {
     <ul className='justify-start w-full'>
       {searchResults.map((user: any) => (
         <li key={user._id} className="flex items-center space-x-4 mb-4">
-         <Link to={`/SerachUserProfile/${user._id}`} className="flex-shrink-0">
-
+          <Link to={`/SerachUserProfile/${user._id}`} className="flex-shrink-0">
             <img
-              src={`http://localhost:3000/upload/${user.profilePicture}`}
+              src={`http://localhost:3000/upload/${user?.profilePicture}`}
               alt={`${user.username}'s profile`}
               className="w-10 h-10 rounded-full"
               onError={(e: any) => {
                 e.target.onerror = null;
-                e.target.style.display = 'none';
+                e.target.src = ''
               }}
             />
-            {!user.profilePicture && (
-              <div className="w-16 h-16 rounded-full bg-gray-300 text-black">
-                {user.username.charAt(0).toUpperCase()}
-              </div>
-            )}
           </Link>
 
           <div>
-            <p className="font-semibold">{user.username}</p>
+          <Link to={`/SerachUserProfile/${user._id}`} className="">
+              <p className="font-semibold w-4/6">{user.username}</p>
+            </Link>
           </div>
 
           <div className="flex-grow"></div>
