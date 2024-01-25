@@ -17,11 +17,10 @@ const myPost= async (req, res) => {
   const searchUser= async (req, res) => {
     try {
       const { query } = req.query;
-      
+
       const users = await User.find({
         $or: [
           { username: { $regex: query, $options: 'i' } },
-          { email: { $regex: query, $options: 'i' } },
         ],
       });
   

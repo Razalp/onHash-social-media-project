@@ -33,60 +33,59 @@ const Search = () => {
     <div className="bg-black text-white h-screen">
       <SideBar />
       <div className="flex flex-col items-center p-8 bg-custom-color rounded-lg shadow-md">
-        <h1 className="text-3xl font-bold mb-4 text-white uppercase">Search User</h1>
-        <div className="relative">
-          <input
-            type="text"
-            className="w-56 h-10 px-4 rounded-full border-2 border-gray-300 focus:outline-none focus:border-blue-500 transition duration-300 text-black" 
-            placeholder="Enter username"
-            value={searchQuery}
-            onChange={handleInputChange}
-          />
-          <button
-            className="absolute right-2 top-2 text-gray-600 hover:text-blue-500 focus:outline-none"
-            onClick={handleSearch}
-          >
-            <FontAwesomeIcon icon={faSearch} className="w-6 h-6" />
-          </button>
-        </div>
+
+      <div className=" w-3/6 ">
+  <input
+    type="text"
+    className="w-60 h-10 px-4 rounded-full border-2 border-gray-300 focus:outline-none focus:border-blue-500 transition duration-300 text-black"
+    placeholder="Enter username"
+    value={searchQuery}
+    onChange={handleInputChange}
+  />
+  <button
+    className=" text-gray-600 hover:text-blue-500 focus:outline-none relative right-9 top-1"
+    onClick={handleSearch}
+  >
+    <FontAwesomeIcon icon={faSearch} className="w-6 h-6" />
+  </button>
+</div>
+
 
         {/* Display live search results */}
         {searchResults.length > 0 && (
-  <div className="mt-4 ">
-    <h2 className="text-lg font-semibold mb-2">Search Results:</h2>
+  <div className="mt-4 relative w-3/6">
     <ul className='justify-start w-full'>
-    {searchResults.map((user: any) => (
-  <li key={user._id} className="flex items-center space-x-4 mb-4">
-    <div className="flex-shrink-0">
-      <img
-        src={`http://localhost:3000/upload/${user.profilePicture}`}
-        alt={`${user.username}'s profile`}
-        className="w-16 h-16 rounded-full"
-        onError={(e: any) => {
-          e.target.onerror = null;
-          e.target.style.display = 'none';
-        }}
-      />
+      {searchResults.map((user: any) => (
+        <li key={user._id} className="flex items-center space-x-4 mb-4">
+         <Link to={`/SerachUserProfile/${user._id}`} className="flex-shrink-0">
 
-      {!user.profilePicture && (
-        <div className="w-16 h-16 rounded-full  bg-gray-300 text-black text-white">
-          {user.username.charAt(0).toUpperCase()}
-        </div>
-      )}
-    </div>
+            <img
+              src={`http://localhost:3000/upload/${user.profilePicture}`}
+              alt={`${user.username}'s profile`}
+              className="w-10 h-10 rounded-full"
+              onError={(e: any) => {
+                e.target.onerror = null;
+                e.target.style.display = 'none';
+              }}
+            />
+            {!user.profilePicture && (
+              <div className="w-16 h-16 rounded-full bg-gray-300 text-black">
+                {user.username.charAt(0).toUpperCase()}
+              </div>
+            )}
+          </Link>
 
-    <div>
-      <p className="font-semibold">{user.username}</p>
-    </div>
+          <div>
+            <p className="font-semibold">{user.username}</p>
+          </div>
 
-    <div className="flex-grow"></div>
-
-   {/* <Button className="w-20 h-10">Go to User</Button> */}
-  </li>
+          <div className="flex-grow"></div>
+        </li>
       ))}
     </ul>
   </div>
 )}
+
 
       </div>
     </div>

@@ -11,6 +11,7 @@ import Createpost from './userSide/CreatePost/Createpost';
 import Pro from './userSide/profilefortry/Pro';
 import { Button } from './components/ui/button';
 import Search from './userSide/Search/Search';
+import SerachUserProfile from './userSide/SerachUserProfile/SerachUserProfile';
 // import { Button } from './'
 function App() {
   return (
@@ -25,7 +26,7 @@ function App() {
         <Route path='/create' element={<Createpost />} />
         <Route path='/pro' element={<Pro />} />
         <Route path='/search' element={<Search />} />
-        
+        <Route path='/SerachUserProfile/:userId' element={<SerachUserProfile />} />
 
         {/* adminSide - Use ProtectedRoute for admin routes */}
         <Route path='/dashboard' element={<ProtectedRoute allowedRole={true}><DashBoard /></ProtectedRoute>} />

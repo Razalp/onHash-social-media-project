@@ -317,7 +317,7 @@ const updateProfile = async (req, res) => {
             return res.status(404).json({ message: 'User not found' });
           }
       
-          // Return the user's profile
+
           res.json({
             username: user.username,
             email: user.email,

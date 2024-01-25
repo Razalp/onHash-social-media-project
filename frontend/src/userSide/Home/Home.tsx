@@ -5,7 +5,7 @@ import SideBar from "../SideBar/SideBar";
 import { useNavigate } from "react-router-dom";
 import Footer from "../Footer/Footer";
 import photo from './photoreal-model.webp'
-import Story from './story'
+// import Story from './story'
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faHeart, faComment, faFlag, faUserCircle } from '@fortawesome/free-solid-svg-icons'
@@ -24,10 +24,10 @@ const Home = () => {
     <div style={{ backgroundColor: 'black', height: '140vh' }} >
       <SideBar />
       <div className="flex flex-row mx-auto w-6/12 h-6/12">
+        {/* <Story />
         <Story />
         <Story />
-        <Story />
-        <Story />
+        <Story /> */}
 
       </div>
 
