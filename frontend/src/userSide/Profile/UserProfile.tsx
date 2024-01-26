@@ -162,27 +162,30 @@ const UserProfile = () => {
     fetchUserPosts();
   }, []);
 
-  const getFollowers = async () => {
-    const token = localStorage.getItem('accessToken');
+  useEffect(() => {
+    const getFollowers = async () => {
+      const token = localStorage.getItem('accessToken');
 
-    try {
-      if (token) {
-        const decodedToken: any = jwtDecode(token);
-        const userId = decodedToken.userId;
-        const response: any = await Axios.get(`/api/user/followers/${userId}`);
-        // console.log(response.data,"dataaaa");
+      try {
+        if (token) {
+          const decodedToken: any = jwtDecode(token);
+          const userId = decodedToken.userId;
+          console.log(userId);
+          const response: any = await Axios.get(`/api/user/getUserFollows/${userId}`);
 
-        setFollowers(response.data.userData.followers.length);
-        setFollowing(response.data.userData.following.length);
-        setFollowersData(response.data.followersData)
-        setFollowingData(response.data.followingData)
-        console.log(response.data.followingData,"helo")
-
-    } 
-  }catch (error) {
+          setFollowers(response.data.userData.followers.length);
+          setFollowing(response.data.userData.following.length);
+          setFollowersData(response.data.followersData);
+          setFollowingData(response.data.followingData);
+        }
+      } catch (error) {
         console.error('Error getting followers:', error);
-    }
-};
+      }
+    };
+
+    
+    getFollowers();
+  }, []);
 
 
 
@@ -225,11 +228,11 @@ const UserProfile = () => {
               </li>
               <li className="text-xl flex flex-col items-center hover:text-yellow-200">
                 <span className="text-sm font-bold" onClick={openModal}>Followers</span>
-                <span className="text-gray-600 text-base">1</span>
+                <span className="text-gray-600 text-base">{followers}</span>
               </li>
               <li className="text-xl flex flex-col items-center hover:text-yellow-200">
-                <span className="text-sm font-bold" onClick={opens}>Following</span>
-                <span className="text-gray-600 text-base">1</span>
+                <span className="text-sm font-bold" onClick={opens}>following</span>
+                <span className="text-gray-600 text-base">{following}</span>
               </li>
             </ul>
           </div>

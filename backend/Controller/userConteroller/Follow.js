@@ -70,9 +70,29 @@ const getFollowers= async (req, res) => {
         const following = userData.following; 
         const followersData = await User.find({ _id: { $in: followers } });
         const followingData = await User.find({ _id: { $in: following } });
+        res.json({ userData ,followersData,followingData });
+    } catch (error) {
+        console.error('Error getting followers:', error);
+        res.status(500).json({ error: 'Internal Server Error' });
+    }
+};
 
 
- 
+const UsergetFollowers= async (req, res) => {
+    try {
+        const { userId } = req.params;
+        
+
+        const userData = await Follow.findOne({user:userId}).populate('user')
+
+        if (!userData) {
+            return res.status(404).json({ error: 'User not found' });
+        }
+
+        const followers = userData.followers;
+        const following = userData.following; 
+        const followersData = await User.find({ _id: { $in: followers } });
+        const followingData = await User.find({ _id: { $in: following } });
         res.json({ userData ,followersData,followingData });
     } catch (error) {
         console.error('Error getting followers:', error);
@@ -84,4 +104,4 @@ const getFollowers= async (req, res) => {
 
 
 
-export { follow, unFollow ,getFollowers };
+export { follow, unFollow ,getFollowers ,UsergetFollowers };

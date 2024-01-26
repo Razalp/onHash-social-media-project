@@ -16,7 +16,7 @@ import {
   myPost ,searchUser,
 } from '../Controller/userConteroller/UserPost.js'
 
-import { follow ,unFollow ,getFollowers } from '../Controller/userConteroller/Follow.js'
+import { follow ,unFollow ,getFollowers ,UsergetFollowers } from '../Controller/userConteroller/Follow.js'
 
 //get
 router.get('/user-counts',verifyToken, userDashBoard)
@@ -54,6 +54,7 @@ router.post('/upload-post', verifyToken, upload.array('images', 5), uploadPost);
 router.post('/follow/:userId',verifyToken,follow)
 router.post('/unfollow/:userId',verifyToken,unFollow)
 router.get('/followers/:userId',verifyToken,getFollowers)
+router.get('/getUserFollows/:userId',verifyToken,UsergetFollowers)
 
 
 
