@@ -127,7 +127,6 @@ const resendOTP = async (req, res) => {
 
     const login = async (req, res) => {
         try {
-
             const { email, password } = req.body;
             const user = await User.findOne({ email });
 
@@ -256,7 +255,6 @@ const updateProfile = async (req, res) => {
     };
     const uploadPost = async (req, res) => {
         try {
-            console.log("hello")
             if (!req.userId) {
                 return res.status(401).json({ error: 'User not authenticated' });
             }

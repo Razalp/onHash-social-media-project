@@ -1,6 +1,7 @@
+// UserModel.js
+
 import mongoose from 'mongoose';
 const { Schema } = mongoose;
-
 
 const userSchema = new Schema({
     username: {
@@ -24,7 +25,6 @@ const userSchema = new Schema({
     profilePicture: {
         type: String,
     },
-
     isAdmin: {
         type: Boolean,
         default: false,
@@ -37,9 +37,20 @@ const userSchema = new Schema({
         type: Boolean,
         default: false,
     },
+    following: [
+        {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: 'User',
+        },
+    ],
+    followers: [
+        {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: 'User',
+        },
+    ],
 });
 
 const User = mongoose.model('User', userSchema);
 
 export default mongoose.models.User || mongoose.model('User', userSchema);
-

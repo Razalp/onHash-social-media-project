@@ -22,6 +22,28 @@ const UserProfile = () => {
     profilePicture: '',
   });
   const [userPosts, setUserPosts] = useState([]);
+  const [followers, setFollowers] = useState();
+  const [following, setFollowing] = useState();
+  const [followingData,setFollowingData] = useState<any[]>();
+  const [followersData,setFollowersData] = useState<any[]>([])
+  const [isOpen, setIsOpen] = useState(false);
+    const [open,setOpen] =useState(false)
+    console.log(followersData)
+
+    const openModal = () => {
+      setIsOpen(true);
+    };
+  
+    const closeModal = () => {
+      setIsOpen(false);
+    };
+
+    const opens =()=>{
+        setOpen(true)
+    }
+    const close=()=>{
+        setOpen(false)
+    }
 
   const navigate = useNavigate()
   const handleFileChange = (event: any) => {
@@ -140,6 +162,28 @@ const UserProfile = () => {
     fetchUserPosts();
   }, []);
 
+  const getFollowers = async () => {
+    const token = localStorage.getItem('accessToken');
+
+    try {
+      if (token) {
+        const decodedToken: any = jwtDecode(token);
+        const userId = decodedToken.userId;
+        const response: any = await Axios.get(`/api/user/followers/${userId}`);
+        // console.log(response.data,"dataaaa");
+
+        setFollowers(response.data.userData.followers.length);
+        setFollowing(response.data.userData.following.length);
+        setFollowersData(response.data.followersData)
+        setFollowingData(response.data.followingData)
+        console.log(response.data.followingData,"helo")
+
+    } 
+  }catch (error) {
+        console.error('Error getting followers:', error);
+    }
+};
+
 
 
   return (
@@ -180,11 +224,11 @@ const UserProfile = () => {
                 <span className="text-gray-600 text-base">{userPosts?.length}</span>
               </li>
               <li className="text-xl flex flex-col items-center hover:text-yellow-200">
-                <span className="text-sm font-bold">Followers</span>
+                <span className="text-sm font-bold" onClick={openModal}>Followers</span>
                 <span className="text-gray-600 text-base">1</span>
               </li>
               <li className="text-xl flex flex-col items-center hover:text-yellow-200">
-                <span className="text-sm font-bold">Following</span>
+                <span className="text-sm font-bold" onClick={opens}>Following</span>
                 <span className="text-gray-600 text-base">1</span>
               </li>
             </ul>
@@ -310,6 +354,86 @@ const UserProfile = () => {
           </div>
         </div>
       )}
+
+
+{isOpen && (
+  <>
+    <div
+      onClick={closeModal}
+      className="fixed inset-0 bg-black opacity-50 w-full h-full z-10"
+    />
+
+    <div className="fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-slate-950 p-4 sm:p-8 rounded shadow-lg z-20 max-w-screen-md w-full sm:w-96">
+      <div className="flex justify-end">
+        <Button variant="ghost" onClick={closeModal} >
+          X
+        </Button>
+      </div>
+      <div className="text-center">
+        <h1 className="text-xl text-white mb-4">Followers</h1>
+        <div className="text-gray-300 flex flex-col">
+          {followersData?.map((follower: any) => (
+            <div key={follower._id} className="p-2 sm:p-4 flex w-full sm:w-auto">
+              <div className="flex items-center">
+                <img
+                  src={ `http://localhost:3000/upload/${follower.profilePicture}`}
+                  alt={`${follower.username}'s Profile`}
+                  className="w-10 h-10 sm:w-12 sm:h-12 rounded-full mr-2"
+                />
+                <span className="block">{follower.username}</span>
+              </div>
+              <Button variant='outline' className="relative left-32">
+                Follow
+              </Button>
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+  </>
+)}
+
+
+{open && (
+  <>
+    <div
+      onClick={close}
+      className="fixed inset-0 bg-black opacity-50 w-full h-full z-10"
+    />
+
+    <div className="fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-slate-950 p-4 sm:p-8 rounded shadow-lg z-20 max-w-screen-md w-full sm:w-96">
+      <div className="flex justify-end">
+        <Button variant="ghost" onClick={close} >
+          X
+        </Button>
+      </div>
+      <div className="text-center">
+        <h1 className="text-xl text-white mb-4">Following</h1>
+        <div className="text-gray-300 flex flex-col">
+          {followingData?.map((following: any) => (
+            <div key={following._id} className="p-2 sm:p-4 flex w-full sm:w-auto">
+              <div className="flex items-center">
+                <img
+                  src={ `http://localhost:3000/upload/${following.profilePicture}`}
+                  alt={`${following.username}'s Profile`}
+                  className="w-10 h-10 sm:w-12 sm:h-12 rounded-full mr-2"
+                />
+                <span className="block">{following.username}</span>
+              </div>
+              <Button variant='outline' className="relative left-32">
+                Follow
+              </Button>
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+  </>
+)}
+
+
+
+
     </div>
 
   );

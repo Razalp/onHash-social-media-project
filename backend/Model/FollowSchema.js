@@ -1,7 +1,7 @@
+// FollowSchema.js
 import mongoose from 'mongoose';
-const { Schema } = mongoose;
 
-const followSchema = new Schema({
+const followSchema = new mongoose.Schema({
     user: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'User',
@@ -19,8 +19,16 @@ const followSchema = new Schema({
             ref: 'User',
         },
     ],
+    createdAt: {
+        type: Date,
+        default: Date.now,
+    },
+    updatedAt: {
+        type: Date,
+        default: Date.now,
+    },
 });
 
 const Follow = mongoose.model('Follow', followSchema);
 
-export default mongoose.models.Follow || mongoose.model('Follow', followSchema);
+export default Follow;

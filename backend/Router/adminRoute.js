@@ -9,6 +9,7 @@ import {
     BlockUser
 } from '../Controller/adminController/AdminController.js'
 import { verifyToken } from '../MiddelWare/verifyToken.js';
+
 //get
 router.get('/userManagament' ,verifyToken,userGet)
 
