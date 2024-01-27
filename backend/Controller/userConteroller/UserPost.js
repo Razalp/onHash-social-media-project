@@ -31,7 +31,67 @@ const myPost= async (req, res) => {
   };
 
 
+  const LikePost = async function LikePost(req, res) {
+    const { postId } = req.params;
+    const { currentUserId } = req.body;
+    console.log("heloooooooo")
+    try {
+        const post = await Post.findById(postId);
+
+        if (!post) {
+            return res.status(404).json({ message: 'Post not found' });
+        }
+
+        if (post.likes.includes(currentUserId)) {
+            return res.status(400).json({ message: 'Post already liked by the user' });
+        }
+
+        post.likes.push(currentUserId);
+        await post.save();
+
+        res.json(post);
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ message: 'Internal Server Error' });
+    }
+}
+
+const commaets =async (req, res) => {
+  const { postId } = req.params;
+  const { currentUserId, text } = req.body;
+
+  try {
+      const post = await Post.findById(postId);
+
+      if (!post) {
+          return res.status(404).json({ message: 'Post not found' });
+      }
+
+      const newComment = {
+          user: currentUserId,
+          text,
+          createdAt: new Date(),
+      };
+
+      post.comments.push(newComment);
+      await post.save();
+
+      res.json(post);
+  } catch (error) {
+      console.error(error);
+      res.status(500).json({ message: 'Internal Server Error' });
+  }
+};
+
+
+
+
+
+
   export {
     myPost,
-    searchUser
+    searchUser,
+    LikePost,
+    commaets
+  
   }

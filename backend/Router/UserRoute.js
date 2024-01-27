@@ -13,7 +13,7 @@ import {
 } from '../Controller/userConteroller/UserAuth.js ';
 
 import {
-  myPost ,searchUser,
+  myPost ,searchUser ,LikePost
 } from '../Controller/userConteroller/UserPost.js'
 
 import { follow ,unFollow ,getFollowers ,UsergetFollowers } from '../Controller/userConteroller/Follow.js'
@@ -27,19 +27,10 @@ router.get('/serachUser-post/:userId', verifyToken, myPost);
 router.get('/searchUser',verifyToken,searchUser)
 
 
+
+
+
 //post
-router.post('/refresh-token', verifyRefreshToken, (req, res) => {
-  try {
-      const newTokens = generateTokens({ _id: req.userId, isAdmin: req.isAdmin });
-      res.status(200).json(newTokens);
-  } catch (error) {
-      console.error(error);
-      res.status(500).json({ error: 'Internal Server Error' });
-  }
-});
-
-
-
 router.post('/signIn',signIn)
 router.post('/logIn',login)
 router.post('/verify-otp',otpVerify)
@@ -55,6 +46,13 @@ router.post('/follow/:userId',verifyToken,follow)
 router.post('/unfollow/:userId',verifyToken,unFollow)
 router.get('/followers/:userId',verifyToken,getFollowers)
 router.get('/getUserFollows/:userId',verifyToken,UsergetFollowers)
+
+//likeAndcommant
+router.post('/likes/:postId',verifyToken,LikePost)
+router.post('/comments/:postId/',verifyToken,)
+// router.post('/comment/:postId', verifyToken, commantPost);
+// router.post('/reportPost/:postId', verifyToken, reportPost);
+
 
 
 

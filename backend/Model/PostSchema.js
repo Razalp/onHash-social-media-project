@@ -30,6 +30,10 @@ const postSchema = new mongoose.Schema({
             default: Date.now,
         },
     }],
+    reportedBy: [{
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'User',
+    }],
 });
 
 const Post = mongoose.model('Post', postSchema);

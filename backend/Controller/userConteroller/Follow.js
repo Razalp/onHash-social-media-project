@@ -8,14 +8,14 @@ const follow = async (req, res) => {
         const { userId } = req.params;
         const { user: currentUserId } = req.body;
 
-        // Find the current user and update the 'following' array
+
         const currentUser = await Follow.findOneAndUpdate(
             { user: currentUserId },
             { $addToSet: { following: userId } },
             { new: true, upsert: true }
         );
 
-        // Find the user being followed and update their 'followers' array
+
         const followedUser = await Follow.findOneAndUpdate(
             { user: userId },
             { $addToSet: { followers: currentUserId } },
@@ -29,20 +29,20 @@ const follow = async (req, res) => {
     }
 };
 
-// Unfollow user
+
 const unFollow = async (req, res) => {
     try {
         const { userId } = req.params;
         const { user: currentUserId } = req.body;
 
-        // Find the current user and update the 'following' array
+
         const currentUser = await Follow.findOneAndUpdate(
             { user: currentUserId },
             { $pull: { following: userId } },
             { new: true }
         );
 
-        // Find the user being unfollowed and update their 'followers' array
+
         const unfollowedUser = await Follow.findOneAndUpdate(
             { user: userId },
             { $pull: { followers: currentUserId } },
