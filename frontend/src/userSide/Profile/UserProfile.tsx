@@ -8,6 +8,10 @@ import 'react-toastify/dist/ReactToastify.css';
 import { jwtDecode } from "jwt-decode";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button"
+import { Modal } from 'react-bootstrap';
+import 'bootstrap/dist/css/bootstrap.min.css';
+
+
 
 
 const UserProfile = () => {
@@ -27,8 +31,24 @@ const UserProfile = () => {
   const [followingData,setFollowingData] = useState<any[]>();
   const [followersData,setFollowersData] = useState<any[]>([])
   const [isOpen, setIsOpen] = useState(false);
-    const [open,setOpen] =useState(false)
-    console.log(followersData)
+  const [open,setOpen] =useState(false)
+  const [selectedPost, setSelectedPost] = useState({
+    post: null,
+    user: {
+      username: '',
+      profilePicture: '',
+    },
+  });
+  
+  const openModals = (post:any, user:any) => {
+    setSelectedPost({ post, user });
+  };
+  
+  const closeModals = () => {
+    setSelectedPost({ post: null, user: { username: '', profilePicture: '' } });
+  };
+  
+
 
     const openModal = () => {
       setIsOpen(true);
@@ -255,31 +275,63 @@ const UserProfile = () => {
           <br />
 
           <div className="grid  fullbg-profile justify-center hight-auto">
-            {userPosts?.length > 0 ? (
-              <div className="grid grid-cols-3 gap-4">
-                {userPosts.map((post: string | any) => (
-                  <div key={post._id} className=" shadow-m border border-b-slate-900 rounded-s-sm">
-                    {post.image.length > 0 && (
-                      <img
-                        src={`http://localhost:3000/upload/${post?.image}`}
-                        alt="Post"
-                        className="post-image shadow-md"
-                        style={{ width: '200px', height: '200px', objectFit: 'cover' }}
-                      />
-                    )}
-                  </div>
-                ))}
-              </div>
-            ) : (
-              <div className="text-center bg-black flex flex-col">
-                <p className="text-lg font-bold mb-4">No posts available</p>
-                <Button variant="outline" onClick={() => handleGoToPost()} className="text-black">
-                  Go to create
-                </Button>
+      {userPosts?.length > 0 ? (
+        <div className="grid grid-cols-3 gap-4">
+   {userPosts.map((post:any) => (
+  <div key={post._id} className="shadow-m border border-b-slate-900 rounded-s-sm">
+    {post.image.length > 0 && (
+      <div onClick={() => openModals(post, userData)}>
+        <img
+          src={`http://localhost:3000/upload/${post?.image}`}
+          alt="Post"
+          className="post-image shadow-md"
+          style={{ width: '200px', height: '200px', objectFit: 'cover' }}
+        />
+      </div>
+    )}
+  </div>
+))}
 
-              </div>
-            )}
-          </div>
+        </div>
+      ) : (
+        <div className="text-center bg-black flex flex-col">
+          <p className="text-lg font-bold mb-4">No posts available</p>
+          <Button variant="outline" onClick={() => handleGoToPost()} className="text-black">
+            Go to create
+          </Button>
+        </div>
+      )}
+
+{selectedPost.post && (
+  <Modal show={true} onHide={closeModals} centered style={{ opacity: '20' }}>
+    <Modal.Header closeButton>
+      <Modal.Title>
+      <div className="flex items-center space-x-7">
+  <img
+    src={`http://localhost:3000/upload/${selectedPost.user.profilePicture}`}
+    alt="Profile Picture"
+    className="w-12 h-12 rounded-full mr-2"
+  />
+       
+  <h1 className="">{selectedPost.user.username}</h1>
+</div>
+
+      </Modal.Title>
+    </Modal.Header>
+    <Modal.Body>
+      <img
+        src={`http://localhost:3000/upload/${selectedPost.post.image}`}
+        alt="Post"
+        className="post-image"
+        style={{ width: '100%', height: 'auto', objectFit: 'cover' }}
+      />
+    </Modal.Body>
+  </Modal>
+)}
+
+
+
+    </div>
 
 
 
@@ -291,7 +343,7 @@ const UserProfile = () => {
 
 
       </div>
-      <hr className="text-white" />
+
 
 
 

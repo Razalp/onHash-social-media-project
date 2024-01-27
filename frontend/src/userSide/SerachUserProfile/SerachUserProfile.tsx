@@ -6,7 +6,7 @@ import 'react-toastify/dist/ReactToastify.css';
 import { useParams } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { jwtDecode } from "jwt-decode";
-import { Modal } from "react-bootstrap";
+import Modal from 'react-modal';
 
 
 
@@ -22,6 +22,9 @@ const SearchUserProfile = () => {
     const [followersData,setFollowersData] = useState<any[]>([])
     const [isOpen, setIsOpen] = useState(false);
     const [open,setOpen] =useState(false)
+
+    
+
 
     const openModal = () => {
       setIsOpen(true);
