@@ -15,6 +15,9 @@ const Createpost = () => {
   const [userId, setUserId] = useState<string>('');
   const [mediaStream, setMediaStream] = useState<MediaStream | null>(null);
   const [videoRef, setVideoRef] = useState<HTMLVideoElement | null>(null);
+  const [brightness, setBrightness] = useState<number>(100);
+  const [contrast, setContrast] = useState<number>(100);
+  const [saturate, setSaturate] = useState<number>(100);
   const token = localStorage.getItem('accessToken');
   const navigate = useNavigate();
 
@@ -73,15 +76,31 @@ const Createpost = () => {
       const canvas = document.createElement('canvas');
       canvas.width = videoRef.videoWidth;
       canvas.height = videoRef.videoHeight;
-
+  
       const context = canvas.getContext('2d');
-
+  
       if (context) {
         context.drawImage(videoRef, 0, 0, canvas.width, canvas.height);
-
-        const dataUrl = canvas.toDataURL('image/png');
-        setPreviewImage(dataUrl);
-
+  
+        // Get the image data
+        const imageData = context.getImageData(0, 0, canvas.width, canvas.height);
+        const data = imageData.data;
+  
+        // Apply filters to the pixel data
+        for (let i = 0; i < data.length; i += 4) {
+          // Adjust brightness, contrast, and saturation here
+          data[i] = data[i] * (brightness / 100);
+          data[i + 1] = data[i + 1] * (contrast / 100);
+          data[i + 2] = data[i + 2] * (saturate / 100);
+        }
+  
+        // Put the modified pixel data back to the canvas
+        context.putImageData(imageData, 0, 0);
+  
+        // Convert canvas to data URL
+        const filteredDataUrl = canvas.toDataURL('image/png');
+        setPreviewImage(filteredDataUrl);
+  
         if (mediaStream) {
           mediaStream.getTracks().forEach((track) => track.stop());
         }
@@ -90,6 +109,9 @@ const Createpost = () => {
       }
     }
   };
+  
+  
+  
 
   const handleCreatePost = async () => {
     if (!previewImage || !caption) {
@@ -101,7 +123,9 @@ const Createpost = () => {
     formData.append('images', dataURItoBlob(previewImage));
     formData.append('caption', caption);
     formData.append('userId', userId);
-
+    formData.append('brightness', brightness.toString());
+    formData.append('contrast', contrast.toString());
+    formData.append('saturate', saturate.toString());
     try {
       const response = await Axios.post('api/user/upload-post', formData);
 
@@ -134,11 +158,14 @@ const Createpost = () => {
 
   return (
     <>
-      <ToastContainer position="top-center" autoClose={5000} hideProgressBar={false} newestOnTop={false} closeOnClick pauseOnFocusLoss draggable pauseOnHover />
-      <div>
-        <SideBar />
+    <div>
+      <SideBar />
       </div>
-      <div className="p-8 flex justify-center items-center flex-col fullbg">
+      <div>
+      <ToastContainer position="top-center" autoClose={5000} hideProgressBar={false} newestOnTop={false} closeOnClick pauseOnFocusLoss draggable pauseOnHover />
+      </div>
+      <div className="main-content p-8 flex justify-center items-center flex-col fullbg">
+   
         <label htmlFor="imageInput" className="btn-white">
           Select Image
         </label>
@@ -149,35 +176,79 @@ const Createpost = () => {
           style={{ display: 'none' }}
           onChange={handleImageChange}
         />
+
         <h1>or</h1>
+
         <button className="btn-white" onClick={handleCaptureFromCamera}>
           Capture from Camera
         </button>
-        <div id="videoContainer" style={{ display: 'none' }} />
+
         {videoRef && (
-          <button className="btn-white" onClick={handleCaptureImage}>
-            Capture Image
-          </button>
+          <>
+            <button className="btn-white" onClick={handleCaptureImage}>
+              Capture Image
+            </button>
+            <div id="videoContainer" style={{ display: 'none' }} />
+          </>
         )}
-        {previewImage && (
-          <div className="w-56 h-64">
-            <img
-              src={previewImage}
-              alt="Preview"
-              className="w-full h-full border text-black border-gray-300 p-2 rounded-md focus:outline-none focus:ring focus:border-blue-500"
-            />
-          </div>
-        )}
+
         {previewImage && (
           <>
-            <input
-              className="w-48 border text-black border-gray-300 p-2 rounded-md focus:outline-none focus:ring focus:border-blue-500"
-              type="text"
-              placeholder="Enter caption"
-              value={caption}
-              onChange={(e) => setCaption(e.target.value)}
-            />
-            <br />
+            <div className="image-preview">
+              <img
+                src={previewImage}
+                alt="Preview"
+                className="preview-image"
+                style={{
+                  filter: `brightness(${brightness}%) contrast(${contrast}%) saturate(${saturate}%)`,
+                }}
+              />
+            </div>
+
+            <div className="range-controls">
+              <div>
+                <input
+                  type="range"
+                  min={0}
+                  max={200}
+                  value={brightness}
+                  onChange={(e) => setBrightness(Number(e.target.value))}
+                />
+                <label>Brightness: {brightness}%</label>
+              </div>
+
+              <div>
+                <input
+                  type="range"
+                  min={0}
+                  max={200}
+                  value={contrast}
+                  onChange={(e) => setContrast(Number(e.target.value))}
+                />
+                <label>Contrast: {contrast}%</label>
+              </div>
+
+              <div>
+                <input
+                  type="range"
+                  min={0}
+                  max={200}
+                  value={saturate}
+                  onChange={(e) => setSaturate(Number(e.target.value))}
+                />
+                <label>Saturation: {saturate}%</label>
+              </div>
+            </div>
+
+            <div className="caption-input">
+              <input
+                type="text"
+                placeholder="Enter caption"
+                value={caption}
+                onChange={(e) => setCaption(e.target.value)}
+              />
+            </div>
+
             <Button variant="outline" onClick={handleCreatePost}>
               Create
             </Button>
@@ -185,6 +256,7 @@ const Createpost = () => {
         )}
       </div>
     </>
+
   );
 };
 

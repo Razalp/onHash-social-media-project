@@ -34,7 +34,7 @@ const myPost= async (req, res) => {
   const LikePost = async function LikePost(req, res) {
     const { postId } = req.params;
     const { currentUserId } = req.body;
-    console.log("heloooooooo")
+
     try {
         const post = await Post.findById(postId);
 
@@ -56,7 +56,8 @@ const myPost= async (req, res) => {
     }
 }
 
-const commaets =async (req, res) => {
+const comments =async (req, res) => {
+  console.log("hello")
   const { postId } = req.params;
   const { currentUserId, text } = req.body;
 
@@ -92,6 +93,6 @@ const commaets =async (req, res) => {
     myPost,
     searchUser,
     LikePost,
-    commaets
+    comments
   
   }

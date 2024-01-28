@@ -11,7 +11,7 @@ import { Button } from "@/components/ui/button"
 import { Modal } from 'react-bootstrap';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faHeart, faComment, faFlag, faUserCircle } from '@fortawesome/free-solid-svg-icons'
+import { faHeart, faComment, faFlag, faUserCircle ,faKeyboard } from '@fortawesome/free-solid-svg-icons'
 
 
 
@@ -43,6 +43,12 @@ const UserProfile = () => {
   });
   const [isLiked, setIsLiked] = useState(false);
   const [commentText, setCommentText] = useState('');
+  const [showCommentBox, setShowCommentBox] = useState(false);
+  const handleComments = () => {
+
+    setShowCommentBox(!showCommentBox);
+  };
+  
 
   const handleLike = async () => {
     try {
@@ -65,8 +71,9 @@ const UserProfile = () => {
       console.error('Error liking post:', error);
     }
   };
-  const handleComment = async () => {
+  const handleComment = async (e) => {
     try {
+      e.preventDefault();
         const postId = selectedPost.post._id;
 
         const token = localStorage.getItem('accessToken');
@@ -74,7 +81,7 @@ const UserProfile = () => {
         if (token) {
             const decodedToken: any = jwtDecode(token);
             const userId = decodedToken.userId;
-            // if (commentText.trim() !== '') {
+            if (commentText.trim() !== '') {
                 const commentResponse = await Axios.post(`/api/user/comments/${postId}`, {
                     currentUserId: userId,
                     text: commentText,
@@ -83,7 +90,7 @@ const UserProfile = () => {
                 setCommentText('');
 
 
-            // }
+            }
         } else {
           
         }
@@ -355,46 +362,69 @@ const UserProfile = () => {
         </div>
       )}
       {selectedPost.post && (
-        <Modal show={true} onHide={closeModals} centered style={{ opacity: '20' }}>
-          <div className="bg-black">
-            <Modal.Header closeButton>
-              <Modal.Title>
-                <div className="flex items-center space-x-4">
-                  <img
-                    src={`http://localhost:3000/upload/${selectedPost.user.profilePicture}`}
-                    alt="Profile Picture"
-                    className="w-12 h-12 rounded-full mr-2"
-                  />
-                  <h1 className="text-white">{selectedPost.user.username}</h1>
-                </div>
-              </Modal.Title>
-            </Modal.Header>
-            <Modal.Body>
+      <Modal show={true} onHide={closeModals} centered style={{ opacity: '20' }}>
+      <div className="bg-black">
+        <Modal.Header closeButton>
+          <Modal.Title>
+            <div className="flex items-center space-x-4">
               <img
-                src={`http://localhost:3000/upload/${selectedPost.post.image}`}
-                alt="Post"
-                className="post-image w-full "
-                style={{ objectFit: 'cover', height: '500px' }}
+                src={`http://localhost:3000/upload/${selectedPost.user.profilePicture}`}
+                alt="Profile Picture"
+                className="w-12 h-12 rounded-full mr-2"
               />
-            </Modal.Body>
-            <h1 className="text-white relative left-6">Likes</h1>
-            <div className="post-icons flex justify-between">
-              <div className="flex items-center space-x-3 relative left-6">
-              <button
-      onClick={handleLike}
-      
-    >
-      <FontAwesomeIcon icon={faHeart} className={`icon-button ${isLiked ? 'text-red-600' : 'text-white'}`} style={{ fontSize: '26px' }} />
-    </button>
-                <FontAwesomeIcon onClick={handleComment} icon={faComment} className="icon text-white" style={{ fontSize: '26px' }} />
-              </div>
-              <div className="flex items-center space-x-3 relative right-6">
-                <FontAwesomeIcon icon={faFlag} className="icon text-white" style={{ fontSize: '26px' }} />
-              </div>
+              <h1 className="text-white">{selectedPost.user.username}</h1>
             </div>
-            <br />
+          </Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          <img
+            src={`http://localhost:3000/upload/${selectedPost.post.image}`}
+            alt="Post"
+            className="post-image w-full "
+            style={{ objectFit: 'cover', height: '500px' }}
+          />
+          {/* Comment text box */}
+          
+        </Modal.Body>
+        <h1 className="text-white relative left-6">Likes</h1>
+        <div className="post-icons flex justify-between">
+          <div className="flex items-center space-x-3 relative left-6">
+            <button onClick={handleLike}>
+              <FontAwesomeIcon
+                icon={faHeart}
+                className={`icon-button ${isLiked ? 'text-red-600' : 'text-white'}`}
+                style={{ fontSize: '26px' }}
+              />
+            </button>
+            <FontAwesomeIcon
+              onClick={handleComments}
+              icon={faComment}
+              className="icon text-white"
+              style={{ fontSize: '26px' }}
+            />
+            
           </div>
-        </Modal>
+          <div className="flex items-center space-x-3 relative right-6">
+            <FontAwesomeIcon icon={faFlag} className="icon text-white" style={{ fontSize: '26px' }} />
+          </div>
+          
+        </div>
+        {showCommentBox && (
+        <form onClick={handleComment}>
+      <input
+        placeholder="Add a comment..."
+        value={commentText}
+        onChange={(e) => setCommentText(e.target.value)}
+        className="w-1/2 p-2 mt-2 rounded-md border border-gray-300"
+      />
+      <Button variant='outline' type="submit"  className="ml-1 w-1">
+      ↩️
+      </Button>
+    </form>
+    )}
+        <br />
+      </div>
+    </Modal>
       )}
     </div>
 
