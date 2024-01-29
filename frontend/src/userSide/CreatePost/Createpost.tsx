@@ -8,7 +8,7 @@ import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { Button } from '@/components/ui/button';
 import { useNavigate } from 'react-router-dom';
-
+import upload from './Image post.gif'
 const Createpost = () => {
   const [previewImage, setPreviewImage] = useState<string | null>(null);
   const [caption, setCaption] = useState<string>('');
@@ -20,6 +20,31 @@ const Createpost = () => {
   const [saturate, setSaturate] = useState<number>(100);
   const token = localStorage.getItem('accessToken');
   const navigate = useNavigate();
+  const [isDragOver, setIsDragOver] = useState(false);
+
+  const handleDragOver = (e) => {
+    e.preventDefault();
+    setIsDragOver(true);
+  };
+
+  const handleDragLeave = () => {
+    setIsDragOver(false);
+  };
+
+  const handleDrop = (e) => {
+    e.preventDefault();
+    setIsDragOver(false);
+
+    const files = e.dataTransfer.files;
+    if (files.length > 0) {
+      onFileChange(files);
+    }
+  };
+
+  const handleFileInputChange = (e) => {
+    const files = e.target.files;
+    onFileChange(files);
+  };
 
   useEffect(() => {
     try {
@@ -158,16 +183,22 @@ const Createpost = () => {
 
   return (
     <>
+    <SideBar></SideBar>
     <div>
-      <SideBar />
+
+  <ToastContainer position="top-center" autoClose={5000} hideProgressBar={false} newestOnTop={false} closeOnClick pauseOnFocusLoss draggable pauseOnHover />
+    </div>
+   
+    <div>
+
       </div>
       <div>
-      <ToastContainer position="top-center" autoClose={5000} hideProgressBar={false} newestOnTop={false} closeOnClick pauseOnFocusLoss draggable pauseOnHover />
+     
       </div>
       <div className="main-content p-8 flex justify-center items-center flex-col fullbg">
    
         <label htmlFor="imageInput" className="btn-white">
-          Select Image
+       select image
         </label>
         <input
           type="file"
@@ -194,7 +225,7 @@ const Createpost = () => {
 
         {previewImage && (
           <>
-            <div className="image-preview">
+            <div className="image-preview" style={{width:"300px" ,height:"auto"}}>
               <img
                 src={previewImage}
                 alt="Preview"

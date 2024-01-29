@@ -13,7 +13,7 @@ import {
 } from '../Controller/userConteroller/UserAuth.js ';
 
 import {
-  myPost ,searchUser ,LikePost,comments
+  myPost ,searchUser ,LikePost,comments ,report,getPostDetails
 } from '../Controller/userConteroller/UserPost.js'
 
 import { follow ,unFollow ,getFollowers ,UsergetFollowers } from '../Controller/userConteroller/Follow.js'
@@ -49,7 +49,10 @@ router.get('/getUserFollows/:userId',verifyToken,UsergetFollowers)
 
 //likeAndcommant
 router.post('/likes/:postId',verifyToken,LikePost)
-router.post('/comments/:postId/',verifyToken,comments)
+router.post('/comments/:postId',verifyToken,comments)
+router.post('/report/:postId',verifyToken,report)
+router.get('/getPostDetailes/:postId', verifyToken, getPostDetails);
+
 // router.post('/comment/:postId', verifyToken, commantPost);
 // router.post('/reportPost/:postId', verifyToken, reportPost);
 

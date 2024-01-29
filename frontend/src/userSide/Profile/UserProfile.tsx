@@ -12,7 +12,7 @@ import { Modal } from 'react-bootstrap';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faHeart, faComment, faFlag, faUserCircle ,faKeyboard } from '@fortawesome/free-solid-svg-icons'
-
+import Swal from 'sweetalert2'
 
 
 
@@ -41,15 +41,109 @@ const UserProfile = () => {
       profilePicture: '',
     },
   });
+  console.log(selectedPost)
   const [isLiked, setIsLiked] = useState(false);
   const [commentText, setCommentText] = useState('');
   const [showCommentBox, setShowCommentBox] = useState(false);
-  const handleComments = () => {
+  const [selectedReason, setSelectedReason] = useState("");
+  const [post, setPost] = useState<any[]>();
 
+
+
+ 
+  useEffect(() => {
+    const getPostDetails = async () => {
+      try {
+        const token = localStorage.getItem('accessToken');
+        if (!token) {
+          return;
+        }
+
+        const decodedToken:any = jwtDecode(token);
+        const userId = decodedToken.userId;
+
+        const postId = selectedPost.post._id;
+
+        const response = await Axios.get(`/api/user/getPostDetails/${postId}`);
+
+        console.log(response.data.post);
+        setPost(response.data.post);
+      } catch (error) {
+        console.error('Error fetching post details:', error);
+      }
+    };
+
+    getPostDetails();
+  }, [selectedPost]);
+
+
+  const handleComments = () => {
     setShowCommentBox(!showCommentBox);
   };
   
 
+
+  const handleReportWithConfirmation = async () => {
+    try {
+
+      const postId = selectedPost.post._id;
+  
+      const token = localStorage.getItem('accessToken');
+  
+      if (!token) {
+        return;
+      }
+  
+      const decodedToken :any = jwtDecode(token);
+      const userId = decodedToken.userId;
+  
+      const result = await Swal.fire({
+        title: 'Report Post',
+        html: `
+          <select id="swal-select1" class="swal2-select">
+            <option value="sexual-content">Sexual Content</option>
+            <option value="unnecessary">Unnecessary</option>
+            <option value="not-for-child">Not Suitable for Children</option>
+            <option value="vulgar">Vulgar Language</option>
+            <option value="terror">Terror-related</option>
+          </select>
+        `,
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonText: 'Yes, report it!',
+        cancelButtonText: 'No, cancel!',
+        reverseButtons: true,
+        preConfirm: () => {
+          const select = document.getElementById('swal-select1') as HTMLSelectElement;
+          const selectedReason = select?.value;
+          if (!selectedReason) {
+            Swal.showValidationMessage('Please select a reason');
+            return false;
+          }
+          return selectedReason;
+        }
+    });
+  
+      if (result.isConfirmed) {
+        const response = await Axios.post(`/api/user/report/${postId}`, { userId: userId, reason: selectedReason });
+  
+        if (response.status === 200) {
+          Swal.fire('Reported!', 'The post has been reported successfully.', 'success');
+        } else {
+          Swal.fire('Error', 'Failed to report the post. Please try again later.', 'error');
+        }
+      } else if (result.isDismissed) {
+        Swal.fire('Cancelled', 'You did not report the post.', 'info');
+      }
+    } catch (error) {
+      console.error(error);
+      Swal.fire('Error', 'An internal error occurred. Please try again later.', 'error');
+    }
+  };
+  
+  
+  
+  
   const handleLike = async () => {
     try {
       const postId = selectedPost.post._id;
@@ -71,7 +165,7 @@ const UserProfile = () => {
       console.error('Error liking post:', error);
     }
   };
-  const handleComment = async (e) => {
+  const handleComment = async (e:any) => {
     try {
       e.preventDefault();
         const postId = selectedPost.post._id;
@@ -339,7 +433,7 @@ const UserProfile = () => {
       {userPosts?.length > 0 ? (
         <div className="grid grid-cols-3 gap-4">
           {userPosts.map((post:any) => (
-            <div key={post._id} className="shadow-m border border-b-slate-900 rounded-s-sm">
+            <div key={post._id} className="boxer">
               {post.image.length > 0 && (
                 <div onClick={() => openModals(post, userData)}>
                   <img
@@ -385,7 +479,7 @@ const UserProfile = () => {
           />
           {/* Comment text box */}
           
-        </Modal.Body>
+          </Modal.Body>
         <h1 className="text-white relative left-6">Likes</h1>
         <div className="post-icons flex justify-between">
           <div className="flex items-center space-x-3 relative left-6">
@@ -405,7 +499,7 @@ const UserProfile = () => {
             
           </div>
           <div className="flex items-center space-x-3 relative right-6">
-            <FontAwesomeIcon icon={faFlag} className="icon text-white" style={{ fontSize: '26px' }} />
+            <FontAwesomeIcon onClick={handleReportWithConfirmation} icon={faFlag} className="icon text-white" style={{ fontSize: '26px' }} />
           </div>
           
         </div>

@@ -3,11 +3,14 @@ import Axios from "../../axious/instance";
 import SideBar from "../SideBar/SideBar";
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { jwtDecode } from "jwt-decode";
-import Modal from 'react-modal';
-
+import { Modal } from 'react-bootstrap';
+import 'bootstrap/dist/css/bootstrap.min.css';
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faHeart, faComment, faFlag, faUserCircle ,faKeyboard } from '@fortawesome/free-solid-svg-icons'
+import Swal from "sweetalert2";
 
 
 const SearchUserProfile = () => {
@@ -22,10 +25,141 @@ const SearchUserProfile = () => {
     const [followersData,setFollowersData] = useState<any[]>([])
     const [isOpen, setIsOpen] = useState(false);
     const [open,setOpen] =useState(false)
+    const [selectedPost, setSelectedPost] = useState<any>({
+        post: null,
+        user: {
+          username: '',
+          profilePicture: '',
+        },
+      });
+     
+      const [isLiked, setIsLiked] = useState(false);
+      const [commentText, setCommentText] = useState('');
+      const [showCommentBox, setShowCommentBox] = useState(false);
+      const [selectedReason, setSelectedReason] = useState("");
+      const [post, setPost] = useState<any[]>()
+      const [Serachuser,setSearchUser] =useState<any[]>([])
 
+
+
+      const handleReportWithConfirmation = async () => {
+        try {
     
+          const postId = selectedPost.post._id;
+          const result = await Swal.fire({
+            title: 'Report Post',
+            html: `
+              <select id="swal-select1" class="swal2-select">
+                <option value="sexual-content">Sexual Content</option>
+                <option value="unnecessary">Unnecessary</option>
+                <option value="not-for-child">Not Suitable for Children</option>
+                <option value="vulgar">Vulgar Language</option>
+                <option value="terror">Terror-related</option>
+              </select>
+            `,
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonText: 'Yes, report it!',
+            cancelButtonText: 'No, cancel!',
+            reverseButtons: true,
+            preConfirm: () => {
+              const select = document.getElementById('swal-select1') as HTMLSelectElement;
+              const selectedReason = select?.value;
+              if (!selectedReason) {
+                Swal.showValidationMessage('Please select a reason');
+                return false;
+              }
+              return selectedReason;
+            }
+        });
+  
+      
+          if (result.isConfirmed) {
+            const response = await Axios.post(`/api/user/report/${postId}`, { userId: userId, reason: selectedReason });
+      
+            if (response.status === 200) {
+              Swal.fire('Reported!', 'The post has been reported successfully.', 'success');
+            } else {
+              Swal.fire('Error', 'Failed to report the post. Please try again later.', 'error');
+            }
+          } else if (result.isDismissed) {
+            Swal.fire('Cancelled', 'You did not report the post.', 'info');
+          }
+        } catch (error) {
+          console.error(error);
+          Swal.fire('Error', 'An internal error occurred. Please try again later.', 'error');
+        }
+      };
+      const handleComments = () => {
+        setShowCommentBox(!showCommentBox);
+      };
+
+        const handleComment = async (e:any) => {
+    try {
+      e.preventDefault();
+        const postId = selectedPost.post._id;
+
+      
+            if (commentText.trim() !== '') {
+                const commentResponse = await Axios.post(`/api/user/comments/${postId}`, {
+                    currentUserId: userId,
+                    text: commentText,
+                });
+                const updatedPostWithComment = commentResponse.data;
+                setCommentText('');
 
 
+            
+            }
+    } catch (error) {
+        console.error('Error adding comment:', error);
+    }
+};
+
+      const handleLike = async () => {
+        try {
+          const postId = selectedPost.post._id;
+      
+      
+            const response = await Axios.post(`/api/user/likes/${postId}`, { userId });
+            const updatedPost = response.data;
+            setIsLiked(true);
+        
+        } catch (error) {
+          console.error('Error liking post:', error);
+        }
+      };
+
+      useEffect(() => {
+        const fetchUserProfile = async () => {
+          try {
+            const response = await Axios.get(`/api/user/get-profile/${userId}`);
+            setSearchUser(response.data);
+    
+          } catch (error) {
+            console.error('Error fetching user profile:', error);
+          }
+        };
+    
+        if (userId) {
+          fetchUserProfile();
+        }
+      }, [userId]);
+
+
+
+      const navigate=useNavigate()
+      const openModals = (post: any, user: any) => {
+        setSelectedPost({ post, user });
+      };
+    
+      const closeModals = () => {
+        setSelectedPost({ post: null, user: { username: '', profilePicture: '' } });
+      };
+
+      const handleGoToPost = () => {
+        navigate('/create')
+      }
     const openModal = () => {
       setIsOpen(true);
     };
@@ -151,7 +285,7 @@ const SearchUserProfile = () => {
             setFollowing(response.data.userData.following.length);
             setFollowersData(response.data.followersData)
             setFollowingData(response.data.followingData)
-            console.log(response.data.followingData,"helo")
+            // console.log(response.data.followingData,"helo")
 
         } catch (error) {
             console.error('Error getting followers:', error);
@@ -162,6 +296,7 @@ const SearchUserProfile = () => {
         getFollowers();
 
     }, [userId]);
+    
 
 
 
@@ -174,7 +309,7 @@ const SearchUserProfile = () => {
                     <div className="flex flex-col items-center">
                         <img
                             className="rounded-full w-32 h-32 object-cover shadow-md"
-                            src={`http://localhost:3000/upload/${userData?.profilePicture}`}
+                            src={`http://localhost:3000/upload/${Serachuser?.profilePicture}`}
                             alt="User Profile"
                         />
 
@@ -183,7 +318,7 @@ const SearchUserProfile = () => {
                         </div>
                     </div>
                     <div className="relative top-[-20px]">
-                        <h1 className="text-2xl font-bold mb-4">{userData?.username}</h1>
+                        <h1 className="text-2xl font-bold mb-4">{Serachuser?.username}</h1>
                         <ul className="flex justify-evenly space-x-6">
                             <li className="text-xl flex flex-col items-center">
                                 <span className="text-sm">Post</span>
@@ -225,29 +360,98 @@ const SearchUserProfile = () => {
                 <div className="bg-black">
                     <br />
                     <br />
-                    <div className="grid  fullbg-profile justify-center hight-auto">
-                        {userPosts?.length > 0 ? (
-                            <div className="grid grid-cols-3 gap-4">
-                                {userPosts.map((posts: string | any) => (
-                                    <div key={posts._id} className=" shadow-m border border-b-slate-900 rounded-s-sm">
-                                        {posts.image.length > 0 && (
-                                            <img
-                                                src={`http://localhost:3000/upload/${posts?.image}`}
-                                                alt="Post"
-                                                className="post-image shadow-md"
-                                                style={{ width: '200px', height: '200px', objectFit: 'cover' }}
-                                            />
-                                        )}
-                                    </div>
-                                ))}
-                            </div>
-                        ) : (
-                            <div className="text-center bg-black flex flex-col">
-                                <p className="text-lg font-bold mb-4">No posts available</p>
-
-                            </div>
-                        )}
-                    </div>
+                    <div className="grid fullbg-profile justify-center hight-auto">
+      {userPosts?.length > 0 ? (
+        <div className="grid grid-cols-3 gap-4">
+          {userPosts.map((post:any) => (
+            <div key={post._id} className="boxer">
+              {post.image.length > 0 && (
+                <div onClick={() => openModals(post, Serachuser)}>
+                  <img
+                    src={`http://localhost:3000/upload/${post?.image}`}
+                    alt="Post"
+                    className="post-image shadow-md"
+                    style={{ width: '200px', height: '200px', objectFit: 'cover' }}
+                  />
+                </div>
+              )}
+            </div>
+          ))}
+        </div>
+      ) : (
+        <div className="text-center bg-black flex flex-col">
+          <p className="text-lg font-bold mb-4">No posts available</p>
+          <Button variant="outline" onClick={() => handleGoToPost()} className="text-black">
+            Go to create
+          </Button>
+        </div>
+      )}
+      {selectedPost.post && (
+       <Modal show={true} onHide={closeModals} centered style={{ opacity: '20' }}>
+       <div className="bg-black">
+         <Modal.Header closeButton>
+           <Modal.Title>
+             <div className="flex items-center space-x-4">
+               <img
+                 src={`http://localhost:3000/upload/${selectedPost.user.profilePicture}`}
+                 alt="Profile Picture"
+                 className="w-12 h-12 rounded-full mr-2"
+               />
+               <h1 className="text-white">{selectedPost.user.username}</h1>
+             </div>
+           </Modal.Title>
+         </Modal.Header>
+        <Modal.Body>
+          <img
+            src={`http://localhost:3000/upload/${selectedPost.post.image}`}
+            alt="Post"
+            className="post-image w-full "
+            style={{ objectFit: 'cover', height: '500px' }}
+          />
+          {/* Comment text box */}
+          
+        </Modal.Body>
+        <h1 className="text-white relative left-6">Likes</h1>
+        <div className="post-icons flex justify-between">
+          <div className="flex items-center space-x-3 relative left-6">
+            <button onClick={handleLike}>
+              <FontAwesomeIcon
+                icon={faHeart}
+                className={`icon-button ${isLiked ? 'text-red-600' : 'text-white'}`}
+                style={{ fontSize: '26px' }}
+              />
+            </button>
+            <FontAwesomeIcon
+              onClick={handleComments}
+              icon={faComment}
+              className="icon text-white"
+              style={{ fontSize: '26px' }}
+            />
+            
+          </div>
+          <div className="flex items-center space-x-3 relative right-6">
+            <FontAwesomeIcon onClick={handleReportWithConfirmation} icon={faFlag} className="icon text-white" style={{ fontSize: '26px' }} />
+          </div>
+          
+        </div>
+        {showCommentBox && (
+        <form onClick={handleComment}>
+      <input
+        placeholder="Add a comment..."
+        value={commentText}
+        onChange={(e) => setCommentText(e.target.value)}
+        className="w-1/2 p-2 mt-2 rounded-md border border-gray-300"
+      />
+      <Button variant='outline' type="submit"  className="ml-1 w-1">
+      ↩️
+      </Button>
+    </form>
+    )}
+        <br />
+      </div>
+    </Modal>
+      )}
+    </div>
 
                 </div>
             </div>
@@ -316,7 +520,7 @@ const SearchUserProfile = () => {
                 />
                 <span className="block">{following.username}</span>
               </div>
-              <Button variant='outline' className="relative left-32">
+              <Button variant='outline' className="w-">
                 Follow
               </Button>
             </div>
