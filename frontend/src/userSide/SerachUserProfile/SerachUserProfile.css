@@ -31,4 +31,9 @@ body {
     cursor: pointer;
 
 }
+.emoji-button:hover {
+  transform: scale(1.2); /* Example: Scale the emoji on hover */
+  transition: transform 0.3s ease; /* Example: Add a smooth transition effect */
+}
+
 

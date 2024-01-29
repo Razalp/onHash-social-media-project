@@ -146,25 +146,26 @@ const UserProfile = () => {
   
   const handleLike = async () => {
     try {
-      const postId = selectedPost.post._id;
-  
-      const token  = localStorage.getItem('accessToken');
-  
-      if (token) {
-        const decodedToken :any = jwtDecode(token);
-        const userId  = decodedToken.userId;
-  
-        const response = await Axios.post(`/api/user/likes/${postId}`, { currentUserId: userId });
-        const updatedPost = response.data;
-        setIsLiked(true);
-    
-      } else {
-    
-      }
+        const postId = selectedPost.post._id;
+
+        const token = localStorage.getItem('accessToken');
+
+        if (token) {
+            const decodedToken: any = jwtDecode(token);
+            const userId = decodedToken.userId;
+
+            const response = await Axios.post(`/api/user/likes/${postId}`, { currentUserId: userId });
+            const updatedPost = response.data;
+            setIsLiked(!isLiked);
+
+        } else {
+
+        }
     } catch (error) {
-      console.error('Error liking post:', error);
+        console.error('Error liking post:', error);
     }
-  };
+};
+
   const handleComment = async (e:any) => {
     try {
       e.preventDefault();
@@ -477,19 +478,20 @@ const UserProfile = () => {
             className="post-image w-full "
             style={{ objectFit: 'cover', height: '500px' }}
           />
-          {/* Comment text box */}
+
           
           </Modal.Body>
         <h1 className="text-white relative left-6">Likes</h1>
         <div className="post-icons flex justify-between">
           <div className="flex items-center space-x-3 relative left-6">
-            <button onClick={handleLike}>
-              <FontAwesomeIcon
-                icon={faHeart}
-                className={`icon-button ${isLiked ? 'text-red-600' : 'text-white'}`}
-                style={{ fontSize: '26px' }}
-              />
-            </button>
+          <button onClick={handleLike}>
+    <FontAwesomeIcon
+        icon={faHeart}
+        className={`icon-button ${isLiked ? 'text-red-600' : 'text-white'}`}
+        style={{ fontSize: '26px' }}
+    />
+</button>
+
             <FontAwesomeIcon
               onClick={handleComments}
               icon={faComment}

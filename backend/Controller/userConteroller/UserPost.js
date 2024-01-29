@@ -42,11 +42,16 @@ const myPost= async (req, res) => {
             return res.status(404).json({ message: 'Post not found' });
         }
 
-        if (post.likes.includes(currentUserId)) {
-            return res.status(400).json({ message: 'Post already liked by the user' });
+        const likedIndex = post.likes.indexOf(currentUserId);
+
+        if (likedIndex !== -1) {
+
+            post.likes.splice(likedIndex, 1);
+        } else {
+
+            post.likes.push(currentUserId);
         }
 
-        post.likes.push(currentUserId);
         await post.save();
 
         res.json(post);
@@ -54,7 +59,8 @@ const myPost= async (req, res) => {
         console.error(error);
         res.status(500).json({ message: 'Internal Server Error' });
     }
-}
+};
+
 
 const comments =async (req, res) => {
 

@@ -21,8 +21,19 @@ const Createpost = () => {
   const token = localStorage.getItem('accessToken');
   const navigate = useNavigate();
   const [isDragOver, setIsDragOver] = useState(false);
+  const presetFilters = {
+    original: { brightness: 100, contrast: 100, saturate: 100 },
+    sepia: { brightness: 90, contrast: 80, saturate: 20 },
+    vintage: { brightness: 120, contrast: 90, saturate: 80 },
+  };
+  const applyPresetFilter = (preset: any) => {
+    const filterValues = presetFilters[preset];
+    setBrightness(filterValues.brightness);
+    setContrast(filterValues.contrast);
+    setSaturate(filterValues.saturate);
+  };
 
-  const handleDragOver = (e) => {
+  const handleDragOver = (e:any) => {
     e.preventDefault();
     setIsDragOver(true);
   };
@@ -31,7 +42,7 @@ const Createpost = () => {
     setIsDragOver(false);
   };
 
-  const handleDrop = (e) => {
+  const handleDrop = (e:any) => {
     e.preventDefault();
     setIsDragOver(false);
 
@@ -41,7 +52,7 @@ const Createpost = () => {
     }
   };
 
-  const handleFileInputChange = (e) => {
+  const handleFileInputChange = (e:any) => {
     const files = e.target.files;
     onFileChange(files);
   };
@@ -86,7 +97,7 @@ const Createpost = () => {
 
       const videoContainer = document.getElementById('videoContainer');
       if (videoContainer) {
-        videoContainer.style.display = 'block'; // Make sure the container is visible
+        videoContainer.style.display = 'block'; 
         videoContainer.appendChild(video);
       }
 
@@ -111,18 +122,17 @@ const Createpost = () => {
         const imageData = context.getImageData(0, 0, canvas.width, canvas.height);
         const data = imageData.data;
   
-        // Apply filters to the pixel data
+
         for (let i = 0; i < data.length; i += 4) {
-          // Adjust brightness, contrast, and saturation here
           data[i] = data[i] * (brightness / 100);
           data[i + 1] = data[i + 1] * (contrast / 100);
           data[i + 2] = data[i + 2] * (saturate / 100);
         }
   
-        // Put the modified pixel data back to the canvas
+
         context.putImageData(imageData, 0, 0);
   
-        // Convert canvas to data URL
+
         const filteredDataUrl = canvas.toDataURL('image/png');
         setPreviewImage(filteredDataUrl);
   
@@ -144,15 +154,23 @@ const Createpost = () => {
       return;
     }
 
+
+    const filteredImage = await applyFiltersToImage(previewImage);
+
     const formData = new FormData();
-    formData.append('images', dataURItoBlob(previewImage));
+    formData.append('images', dataURItoBlob(filteredImage));
     formData.append('caption', caption);
     formData.append('userId', userId);
     formData.append('brightness', brightness.toString());
     formData.append('contrast', contrast.toString());
     formData.append('saturate', saturate.toString());
+
+    console.log('formData:', formData);
+
     try {
       const response = await Axios.post('api/user/upload-post', formData);
+
+      console.log('Upload response:', response);
 
       if (response.status === 200) {
         toast.success('Post uploaded successfully');
@@ -166,8 +184,39 @@ const Createpost = () => {
     }
   };
 
-  // Helper function to convert data URI to Blob
-  const dataURItoBlob = (dataURI: string) => {
+  const applyFiltersToImage = async (imageDataURI) => {
+    return new Promise((resolve) => {
+      const image = new Image();
+      image.onload = () => {
+        const canvas = document.createElement('canvas');
+        canvas.width = image.width;
+        canvas.height = image.height;
+        const ctx:any = canvas.getContext('2d');
+
+        // Set canvas quality
+        ctx.quality = 1.0;
+
+        // Apply filters using ctx.filter property
+        ctx.filter = `brightness(${brightness}%) contrast(${contrast}%) saturate(${saturate}%)`;
+
+        // Draw the image with filters on the canvas
+        ctx.drawImage(image, 0, 0, canvas.width, canvas.height);
+
+        // Convert canvas to data URI
+        canvas.toBlob((blob:any) => {
+          const reader = new FileReader();
+          reader.onloadend = () => {
+            resolve(reader.result);
+          };
+          reader.readAsDataURL(blob);
+        });
+      };
+
+      image.src = imageDataURI;
+    });
+  };
+
+  const dataURItoBlob = (dataURI:any) => {
     const byteString = atob(dataURI.split(',')[1]);
     const mimeString = dataURI.split(',')[0].split(':')[1].split(';')[0];
 
@@ -222,6 +271,11 @@ const Createpost = () => {
             <div id="videoContainer" style={{ display: 'none' }} />
           </>
         )}
+        <div className="preset-buttons">
+  <button onClick={() => applyPresetFilter('original')}>Original</button>
+  <button onClick={() => applyPresetFilter('sepia')}>Sepia</button>
+  <button onClick={() => applyPresetFilter('vintage')}>Vintage</button>
+</div>
 
         {previewImage && (
           <>
@@ -284,6 +338,7 @@ const Createpost = () => {
               Create
             </Button>
           </>
+          
         )}
       </div>
     </>

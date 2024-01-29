@@ -13,6 +13,7 @@ import { faHeart, faComment, faFlag, faUserCircle ,faKeyboard } from '@fortaweso
 import Swal from "sweetalert2";
 
 
+
 const SearchUserProfile = () => {
     const { userId } = useParams();
 
@@ -39,6 +40,15 @@ const SearchUserProfile = () => {
       const [selectedReason, setSelectedReason] = useState("");
       const [post, setPost] = useState<any[]>()
       const [Serachuser,setSearchUser] =useState<any[]>([])
+      const [showEmojiPopup, setShowEmojiPopup] = useState(false);
+      const emojiList = ['❤️', '😊', '👍', '🎉', '🔥', '😂', '🌟', '👏'];
+
+
+      const handleEmojiReaction = (emoji) => {
+        setCommentText((prevText) => prevText + emoji);
+        setShowEmojiPopup(false); 
+      };
+    
 
 
 
@@ -436,17 +446,21 @@ const SearchUserProfile = () => {
         </div>
         {showCommentBox && (
         <form onClick={handleComment}>
-      <input
-        placeholder="Add a comment..."
-        value={commentText}
-        onChange={(e) => setCommentText(e.target.value)}
-        className="w-1/2 p-2 mt-2 rounded-md border border-gray-300"
-      />
-      <Button variant='outline' type="submit"  className="ml-1 w-1">
-      ↩️
-      </Button>
-    </form>
-    )}
+          <input
+            placeholder="Add a comment..."
+            value={commentText}
+            onChange={(e) => setCommentText(e.target.value)}
+            className="w-1/2 p-2 mt-2 rounded-md border border-gray-300"
+          />
+          <Button variant="outline" type="submit" className="ml-1 w-1">
+            ↩️
+          </Button>
+          <Button onClick={() => handleEmojiReaction('❤️')} className="ml-1 w-1">
+            
+          </Button>
+          {/* Add more emoji buttons as needed */}
+        </form>
+        )}
         <br />
       </div>
     </Modal>
