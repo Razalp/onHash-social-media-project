@@ -44,7 +44,7 @@ const SearchUserProfile = () => {
       const emojiList = ['❤️', '😊', '👍', '🎉', '🔥', '😂', '🌟', '👏'];
 
 
-      const handleEmojiReaction = (emoji) => {
+      const handleEmojiReaction = (emoji:any) => {
         setCommentText((prevText) => prevText + emoji);
         setShowEmojiPopup(false);
       };

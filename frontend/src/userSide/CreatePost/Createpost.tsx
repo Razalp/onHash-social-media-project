@@ -184,7 +184,7 @@ const Createpost = () => {
     }
   };
 
-  const applyFiltersToImage = async (imageDataURI) => {
+  const applyFiltersToImage = async (imageDataURI:any) => {
     return new Promise((resolve) => {
       const image = new Image();
       image.onload = () => {

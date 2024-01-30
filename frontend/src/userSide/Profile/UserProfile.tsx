@@ -41,39 +41,56 @@ const UserProfile = () => {
       profilePicture: '',
     },
   });
-  console.log(selectedPost)
+
   const [isLiked, setIsLiked] = useState(false);
   const [commentText, setCommentText] = useState('');
   const [showCommentBox, setShowCommentBox] = useState(false);
   const [selectedReason, setSelectedReason] = useState("");
-  const [post, setPost] = useState<any[]>();
+  const [error,setError] =useState('')
+
+  
+  const [likeData,SetLikeData] =useState<any>('')
+  const [commentData,SetCommentData] =useState<any>([])
+  const [likeCount,SetLikeCount] =useState<any>('')
+  const [commentCount,SetCommentCount] =useState<any>('')
+  const [openLikes, setOpenLikes] = useState(false);
+  const [postLikes, setPostLikes] = useState<any>({});
+  console.log(commentData)
 
 
-
- 
+  const opensLikes = () => {
+    setOpenLikes(true);
+  };
+  
+  const closeLikes = () => {
+    setOpenLikes(false);
+  };
   useEffect(() => {
-    const getPostDetails = async () => {
+   
+    const fetchPostDetails = async () => {
       try {
-        const token = localStorage.getItem('accessToken');
-        if (!token) {
-          return;
-        }
-
-        const decodedToken:any = jwtDecode(token);
-        const userId = decodedToken.userId;
 
         const postId = selectedPost.post._id;
+        if(postId){
 
-        const response = await Axios.get(`/api/user/getPostDetails/${postId}`);
+        
+        const response = await Axios.get(`/api/user/getPostDetailes/${postId}`);
 
-        console.log(response.data.post);
-        setPost(response.data.post);
+        SetLikeData(response.data.likes);
+        SetCommentData(response.data.comments);
+        // SetLikeCount(response.data.like.length)
+        // SetCommentCount(response.data.comment.length)
+        console.log(response.data.likes)
+        }else{
+          return null
+        }
       } catch (error) {
-        console.error('Error fetching post details:', error);
+        console.error(error);
+        setError('');
       }
     };
 
-    getPostDetails();
+    fetchPostDetails();
   }, [selectedPost]);
 
 
@@ -144,55 +161,61 @@ const UserProfile = () => {
   
   
   
-  const handleLike = async () => {
+  const handleLike = async (postId:any) => {
     try {
-        const postId = selectedPost.post._id;
+      const token = localStorage.getItem('accessToken');
+  
+      if (token) {
+        const decodedToken:any = jwtDecode(token);
+        const userId = decodedToken.userId;
+  
+        const response = await Axios.post(`/api/user/likes/${postId}`, { currentUserId: userId });
+        const updatedPost = response.data;
+  
+        setPostLikes((prevPostLikes:any) => ({
+          ...prevPostLikes,
+          [postId]: !prevPostLikes[postId],
+        }));
+      } else {
 
-        const token = localStorage.getItem('accessToken');
-
-        if (token) {
-            const decodedToken: any = jwtDecode(token);
-            const userId = decodedToken.userId;
-
-            const response = await Axios.post(`/api/user/likes/${postId}`, { currentUserId: userId });
-            const updatedPost = response.data;
-            setIsLiked(!isLiked);
-
-        } else {
-
-        }
+      }
     } catch (error) {
-        console.error('Error liking post:', error);
+      console.error('Error liking post:', error);
     }
-};
+  };
+  
 
-  const handleComment = async (e:any) => {
+  const handleComment = async (e: any) => {
     try {
       e.preventDefault();
-        const postId = selectedPost.post._id;
-
-        const token = localStorage.getItem('accessToken');
-
-        if (token) {
-            const decodedToken: any = jwtDecode(token);
-            const userId = decodedToken.userId;
-            if (commentText.trim() !== '') {
-                const commentResponse = await Axios.post(`/api/user/comments/${postId}`, {
-                    currentUserId: userId,
-                    text: commentText,
-                });
-                const updatedPostWithComment = commentResponse.data;
-                setCommentText('');
-
-
-            }
-        } else {
-          
+      const postId = selectedPost.post._id;
+      const token = localStorage.getItem('accessToken');
+  
+      if (token) {
+        const decodedToken: any = jwtDecode(token);
+        const userId = decodedToken.userId;
+  
+        if (commentText.trim() !== '') {
+          const commentResponse = await Axios.post(`/api/user/comments/${postId}`, {
+            currentUserId: userId,
+            text: commentText,
+          });
+  
+          const updatedPostWithComment = commentResponse.data;
+  
+ 
+          SetCommentData((prevComments:any) => [ updatedPostWithComment.comment,...prevComments]);
+  
+          setCommentText('');
         }
+      } else {
+        // Handle the case when there is no token
+      }
     } catch (error) {
-        console.error('Error adding comment:', error);
+      console.error('Error adding comment:', error);
     }
-};
+  };
+  
   const openModals = (post: any, user: any) => {
     setSelectedPost({ post, user });
   };
@@ -312,6 +335,7 @@ const UserProfile = () => {
   const handleGoToPost = () => {
     navigate('/create')
   }
+  
 
   useEffect(() => {
     const fetchUserPosts = async () => {
@@ -397,7 +421,7 @@ const UserProfile = () => {
 
           <div className=" relative top-[-20px]">
             <h1 className="text-2xl font-bold mb-4">{userData?.username}</h1>
-            <ul className="flex justify-evenly space-x-6">
+            <ul className="flex justify-evenly space-x-6">followers
               <li className="text-xl flex flex-col items-center ">
                 <span className="text-sm font-bold">Post</span>
                 <span className="text-gray-600 text-base">{userPosts?.length}</span>
@@ -429,11 +453,12 @@ const UserProfile = () => {
         <div className="bg-black" >
           <br />
           <br />
+          
 
           <div className="grid fullbg-profile justify-center hight-auto">
-      {userPosts?.length > 0 ? (
+          {userPosts?.length > 0 ? (
         <div className="grid grid-cols-3 gap-4">
-          {userPosts.map((post:any) => (
+          {userPosts.map((post) => (
             <div key={post._id} className="boxer">
               {post.image.length > 0 && (
                 <div onClick={() => openModals(post, userData)}>
@@ -451,77 +476,108 @@ const UserProfile = () => {
       ) : (
         <div className="text-center bg-black flex flex-col">
           <p className="text-lg font-bold mb-4">No posts available</p>
-          <Button variant="outline" onClick={() => handleGoToPost()} className="text-black">
+          {/* Button component and handleGoToPost function not provided, please implement accordingly */}
+          <button onClick={handleGoToPost} className="text-black">
             Go to create
-          </Button>
+          </button>
         </div>
       )}
+
       {selectedPost.post && (
-      <Modal show={true} onHide={closeModals} centered style={{ opacity: '20' }}>
-      <div className="bg-black">
-        <Modal.Header closeButton>
-          <Modal.Title>
-            <div className="flex items-center space-x-4">
+        <Modal show={true} onHide={closeModals} centered style={{ opacity: '20', maxHeight: '100vh' }}>
+          <div className="bg-black">
+            <Modal.Header closeButton>
+              <Modal.Title>
+                <div className="flex items-center space-x-4">
+                  <img
+                    src={`http://localhost:3000/upload/${selectedPost.user.profilePicture}`}
+                    alt="Profile Picture"
+                    className="w-12 h-12 rounded-full mr-2"
+                  />
+                  <h1 className="text-white">{selectedPost.user.username}</h1>
+                </div>
+              </Modal.Title>
+            </Modal.Header>
+            <Modal.Body>
               <img
-                src={`http://localhost:3000/upload/${selectedPost.user.profilePicture}`}
-                alt="Profile Picture"
-                className="w-12 h-12 rounded-full mr-2"
+                src={`http://localhost:3000/upload/${selectedPost.post.image}`}
+                alt="Post"
+                className="post-image w-full "
+                style={{ objectFit: 'cover', width: '650px', height: '500px' }}
               />
-              <h1 className="text-white">{selectedPost.user.username}</h1>
+            </Modal.Body>
+            <button onClick={opensLikes} className="text-white">
+              Likes
+            </button>
+
+            <div className="post-icons flex justify-between">
+              <div className="flex items-center space-x-3 relative left-6">
+                <button onClick={() => handleLike(selectedPost.post._id)}>
+                  <FontAwesomeIcon
+                    icon={faHeart}
+                    className={`icon-button ${postLikes[selectedPost.post._id] ? 'text-red-600' : 'text-white'}`}
+                    style={{ fontSize: '26px' }}
+                  />
+                </button>
+
+                <FontAwesomeIcon
+                  onClick={handleComments}
+                  icon={faComment}
+                  className="icon text-white"
+                  style={{ fontSize: '26px' }}
+                />
+              </div>
+              <div className="flex items-center space-x-3 relative right-6">
+                <FontAwesomeIcon
+                  onClick={handleReportWithConfirmation}
+                  icon={faFlag}
+                  className="icon text-white"
+                  style={{ fontSize: '26px' }}
+                />
+              </div>
             </div>
-          </Modal.Title>
-        </Modal.Header>
-        <Modal.Body>
-          <img
-            src={`http://localhost:3000/upload/${selectedPost.post.image}`}
-            alt="Post"
-            className="post-image w-full "
-            style={{ objectFit: 'cover', height: '500px' }}
-          />
 
-          
-          </Modal.Body>
-        <h1 className="text-white relative left-6">Likes</h1>
-        <div className="post-icons flex justify-between">
-          <div className="flex items-center space-x-3 relative left-6">
-          <button onClick={handleLike}>
-    <FontAwesomeIcon
-        icon={faHeart}
-        className={`icon-button ${isLiked ? 'text-red-600' : 'text-white'}`}
-        style={{ fontSize: '26px' }}
-    />
-</button>
+            {showCommentBox && (
+           <div>
+              <form onClick={handleComment}>
+                <input
+                  placeholder="Add a comment..."
+                  value={commentText}
+                  onChange={(e) => setCommentText(e.target.value)}
+                  className="w-1/2 p-2 mt-2 rounded-md border border-gray-300"
+                />
 
-            <FontAwesomeIcon
-              onClick={handleComments}
-              icon={faComment}
-              className="icon text-white"
-              style={{ fontSize: '26px' }}
-            />
-            
-          </div>
-          <div className="flex items-center space-x-3 relative right-6">
-            <FontAwesomeIcon onClick={handleReportWithConfirmation} icon={faFlag} className="icon text-white" style={{ fontSize: '26px' }} />
-          </div>
-          
-        </div>
-        {showCommentBox && (
-        <form onClick={handleComment}>
-      <input
-        placeholder="Add a comment..."
-        value={commentText}
-        onChange={(e) => setCommentText(e.target.value)}
-        className="w-1/2 p-2 mt-2 rounded-md border border-gray-300"
+                <button type="submit" className="ml-1 w-1">
+                  ↩️
+                </button>
+              </form>
+              <div className="comments-container">
+        <h3 className="text-white mt-4">Comments:</h3>
+        <ul className="list-none p-0">
+        {commentData.map((comment, index) => (
+  <li key={index} className="text-white">
+    <div>
+      <img
+        src={`http://localhost:3000/upload/${comment?.user?.profilePicture}`}
+        alt="User Profile"
+        className="w-8 h-8 rounded-full mr-2"
       />
-      <Button variant='outline' type="submit"  className="ml-1 w-1">
-      ↩️
-      </Button>
-    </form>
-    )}
-        <br />
+      <span>{comment?.user?.username}</span>
+    </div>
+    <p>{comment?.text}</p>
+    <p className="text-gray-500">{comment?.createdAt}</p>
+  </li>
+))}
+
+        </ul>
       </div>
-    </Modal>
+              </div>
+            )}
+            <br />
+          </div>
+        </Modal>
       )}
+
     </div>
 
 
@@ -665,6 +721,47 @@ const UserProfile = () => {
                         className="w-10 h-10 sm:w-12 sm:h-12 rounded-full mr-2"
                       />
                       <span className="block">{following.username}</span>
+                    </div>
+                    <Button variant='outline' className="relative left-32">
+                      Follow
+                    </Button>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+        </>
+      )}
+
+
+
+{openLikes && (
+        <>
+          <div
+            onClick={closeLikes}
+            className="fixed inset-0 bg-black opacity-50 w-full h-full z-10"
+          />
+
+<div className="fixed top-1/2 right-0 transform -translate-y-1/2 bg-slate-950 p-4 sm:p-8 rounded shadow-lg z-20 max-w-screen-md w-full sm:w-80">
+
+
+            <div className="flex justify-end">
+              <Button variant="ghost" onClick={closeLikes} >
+                X
+              </Button>
+            </div>
+            <div className="text-center">
+              <h1 className="text-xl text-white mb-4">likes</h1>
+              <div className="text-gray-300 flex flex-col">
+                {likeData?.map((likes: any) => (
+                  <div key={likes._id} className="p-2 sm:p-4 flex w-full sm:w-auto">
+                    <div className="flex items-center">
+                      <img
+                        src={`http://localhost:3000/upload/${likes.user.profilePicture}`}
+                        alt={`${likes.user.username}'s Profile`}
+                        className="w-10 h-10 sm:w-12 sm:h-12 rounded-full mr-2"
+                      />
+                      <span className="block">{likes.user.username}</span>
                     </div>
                     <Button variant='outline' className="relative left-32">
                       Follow

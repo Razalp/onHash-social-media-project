@@ -122,23 +122,37 @@ const report =async (req, res) => {
 };
 
 
-const getPostDetails = async (req, res) => {
+const getPostDetails =  async (req, res) => {
+  const postId = req.params.postId;
+
   try {
-    const postId=req.body
-    const post = await Post.findById(postId);
+      const post = await Post.findById(postId)
+          .populate('likes')
+          .populate({
+              path: 'comments.user',
+              select: '-password', 
+          });
+          console.log(post)
 
-    if (!post) {
-      return res.status(404).json({ message: 'Post not found' });
-    }
+      if (!post) {
+          return res.status(404).json({ error: 'Post not found' });
+      }
 
+      const likes = post.likes.map(user => ({ user }));
+      const comments = post.comments.map(comment => ({
+          user: comment.user,
+          text: comment.text,
+          createdAt: comment.createdAt,
+      }));
+      console.log(comments)
 
-
-    return res.json(post);
+      res.json({ likes, comments });
   } catch (error) {
-    console.error(error);
-    res.status(500).json({ message: 'Internal Server Error' });
+      console.error(error);
+      res.status(500).json({ error: 'Internal Server Error' });
   }
 };
+
 
 
 

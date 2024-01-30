@@ -39,9 +39,9 @@ const Home = () => {
           </div>
 
           <img
-            src="https://placekitten.com/400/400"
+            src="https://placekitten.com/440/470"
             alt="Post"
-            className="post-image rounded-md mb-4"
+            className="post-image rounded-md mb-4 " style={{width:"440px" ,height:'470px'}}
           />
 
           <div className="post-icons flex justify-between">
