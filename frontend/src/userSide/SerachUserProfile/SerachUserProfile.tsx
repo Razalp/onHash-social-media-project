@@ -46,7 +46,7 @@ const SearchUserProfile = () => {
 
       const handleEmojiReaction = (emoji) => {
         setCommentText((prevText) => prevText + emoji);
-        setShowEmojiPopup(false); 
+        setShowEmojiPopup(false);
       };
     
 
@@ -456,7 +456,7 @@ const SearchUserProfile = () => {
             ↩️
           </Button>
           <Button onClick={() => handleEmojiReaction('❤️')} className="ml-1 w-1">
-            
+            ❤️
           </Button>
           {/* Add more emoji buttons as needed */}
         </form>
