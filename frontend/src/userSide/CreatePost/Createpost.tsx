@@ -8,7 +8,11 @@ import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { Button } from '@/components/ui/button';
 import { useNavigate } from 'react-router-dom';
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faCamera } from '@fortawesome/free-solid-svg-icons';
 import upload from './Image post.gif'
+import Cropper from 'react-cropper';
+import 'cropperjs/dist/cropper.css';
 const Createpost = () => {
   const [previewImage, setPreviewImage] = useState<string | null>(null);
   const [caption, setCaption] = useState<string>('');
@@ -18,6 +22,9 @@ const Createpost = () => {
   const [brightness, setBrightness] = useState<number>(100);
   const [contrast, setContrast] = useState<number>(100);
   const [saturate, setSaturate] = useState<number>(100);
+  const [cropper, setCropper] = useState<any>(null);
+
+
   const token = localStorage.getItem('accessToken');
   const navigate = useNavigate();
   const [isDragOver, setIsDragOver] = useState(false);
@@ -25,15 +32,29 @@ const Createpost = () => {
     original: { brightness: 100, contrast: 100, saturate: 100 },
     sepia: { brightness: 90, contrast: 80, saturate: 20 },
     vintage: { brightness: 120, contrast: 90, saturate: 80 },
+    grayscale: { grayscale: 100 }, 
+    highContrast: { brightness: 150, contrast: 150, saturate: 100 },
+    invertColors: { invert: 100 },
+    warmColors: { sepia: 50, saturate: 150 },
+    coolColors: { saturate: 50, brightness: 150 },
+    blur: { blur: 5 }, 
+    sharpness: { contrast: 150, brightness: 150 },
+    neon: { brightness: 150, saturate: 150 },
+    desaturate: { saturate: 0 }, 
+    brightnessOnly: { brightness: 150, contrast: 100, saturate: 100 },
   };
+  
   const applyPresetFilter = (preset: any) => {
     const filterValues = presetFilters[preset];
     setBrightness(filterValues.brightness);
     setContrast(filterValues.contrast);
     setSaturate(filterValues.saturate);
+    
   };
 
-  const handleDragOver = (e:any) => {
+  
+
+  const handleDragOver = (e) => {
     e.preventDefault();
     setIsDragOver(true);
   };
@@ -42,15 +63,24 @@ const Createpost = () => {
     setIsDragOver(false);
   };
 
-  const handleDrop = (e:any) => {
+  const handleDrop = (e) => {
     e.preventDefault();
     setIsDragOver(false);
 
     const files = e.dataTransfer.files;
+
     if (files.length > 0) {
-      onFileChange(files);
+      const droppedImage = files[0];
+
+      if (droppedImage.type.startsWith('image/')) {
+        onFileChange([droppedImage]);
+      } else {
+        toast.error('Please drop a valid image file.');
+      }
     }
   };
+  
+  
 
   const handleFileInputChange = (e:any) => {
     const files = e.target.files;
@@ -83,6 +113,7 @@ const Createpost = () => {
       setPreviewImage(null);
     }
   };
+  
 
   const handleCaptureFromCamera = async () => {
     try {
@@ -230,118 +261,115 @@ const Createpost = () => {
     return new Blob([ab], { type: mimeString });
   };
 
+  // const allFilterButtons = Object.keys(presetFilters).map((filter, index) => (
+  //   <button key={index} onClick={() => applyPresetFilter(filter)}>
+  //     {filter}
+  //   </button>
+  // ));
+
+  
   return (
-    <>
-    <SideBar></SideBar>
-    <div>
+<div className="fullbg text-white" style={{height:"100vh"}} >
+    <SideBar/>
+    <ToastContainer position="top-center" autoClose={5000} hideProgressBar={false} newestOnTop={false} closeOnClick pauseOnFocusLoss draggable pauseOnHover />
+    <div className={`main-content p-8 flex justify-center items-center flex-col fullbg ${isDragOver ? 'drag-over' : ''}`}
+    onDragOver={handleDragOver}
+    onDragLeave={handleDragLeave}
+    onDrop={handleDrop}>
 
-  <ToastContainer position="top-center" autoClose={5000} hideProgressBar={false} newestOnTop={false} closeOnClick pauseOnFocusLoss draggable pauseOnHover />
-    </div>
-   
-    <div>
+    <label htmlFor="imageInput" className="btn-white mb-4">
+        select image
+    </label>
 
-      </div>
-      <div>
-     
-      </div>
-      <div className="main-content p-8 flex justify-center items-center flex-col fullbg">
-   
-        <label htmlFor="imageInput" className="btn-white">
-       select image
-        </label>
-        <input
-          type="file"
-          id="imageInput"
-          accept="image/*"
-          style={{ display: 'none' }}
-          onChange={handleImageChange}
-        />
+    <input type="file" id="imageInput" accept="image/*" style={{ display: 'none' }}
+        onChange={handleImageChange} onDragOver={handleDragOver} onDragLeave={handleDragLeave} onDrop={handleDrop} />
 
-        <h1>or</h1>
+    <h1 className="mb-4">or</h1>
 
-        <button className="btn-white" onClick={handleCaptureFromCamera}>
-          Capture from Camera
-        </button>
+    <button className="btn-white mb-4" onClick={handleCaptureFromCamera}>
+    <FontAwesomeIcon icon={faCamera} />   Capture from Camera
+    </button>
 
-        {videoRef && (
-          <>
-            <button className="btn-white" onClick={handleCaptureImage}>
-              Capture Image
+    {videoRef && (
+        <>
+            <button className="btn-white mb-4" onClick={handleCaptureImage}>
+                Capture Image
             </button>
             <div id="videoContainer" style={{ display: 'none' }} />
-          </>
-        )}
-        <div className="preset-buttons">
-  <button onClick={() => applyPresetFilter('original')}>Original</button>
-  <button onClick={() => applyPresetFilter('sepia')}>Sepia</button>
-  <button onClick={() => applyPresetFilter('vintage')}>Vintage</button>
+        </>
+    )}
+
+    <br />
+
+    {previewImage && (
+        <>
+            <div className="image-preview images" style={{ width: "300px", height: "auto" }}>
+    <img
+        src={previewImage}
+        alt="Preview"
+        className="preview-image"
+        style={{
+            filter: `brightness(${brightness}%) contrast(${contrast}%) saturate(${saturate}%)`,
+            width: "100%", // Set a fixed width for the image to ensure consistent size
+        }}
+    />
 </div>
 
-        {previewImage && (
-          <>
-            <div className="image-preview" style={{width:"300px" ,height:"auto"}}>
-              <img
-                src={previewImage}
-                alt="Preview"
-                className="preview-image"
-                style={{
-                  filter: `brightness(${brightness}%) contrast(${contrast}%) saturate(${saturate}%)`,
-                }}
-              />
+
+            <br />
+            <div className="preset-buttons w-80 flex space-x-12 mb-4">
+                <button onClick={() => applyPresetFilter('original')}>
+                    <img src={previewImage} alt="Original" className="max-w-full" />
+                    orginal
+                </button>
+                <button onClick={() => applyPresetFilter('sepia')}>
+                    <img src={previewImage} alt="Sepia" className="max-w-full" />
+                    sepia
+                </button>
+                <button onClick={() => applyPresetFilter('vintage')}>
+                    <img src={previewImage} alt="Vintage" className="max-w-full" />
+                    vintage
+                </button>
             </div>
 
-            <div className="range-controls">
-              <div>
-                <input
-                  type="range"
-                  min={0}
-                  max={200}
-                  value={brightness}
-                  onChange={(e) => setBrightness(Number(e.target.value))}
-                />
-                <label>Brightness: {brightness}%</label>
-              </div>
+            <br />
+            <br />
 
-              <div>
-                <input
-                  type="range"
-                  min={0}
-                  max={200}
-                  value={contrast}
-                  onChange={(e) => setContrast(Number(e.target.value))}
-                />
-                <label>Contrast: {contrast}%</label>
-              </div>
+            <div className="range-control mb-4">
+                <div>
+                    <input type="range" min={0} max={200} value={brightness}
+                        onChange={(e) => setBrightness(Number(e.target.value))} />
+                    <label className="mt-2">Brightness: {brightness}%</label>
+                </div>
 
-              <div>
-                <input
-                  type="range"
-                  min={0}
-                  max={200}
-                  value={saturate}
-                  onChange={(e) => setSaturate(Number(e.target.value))}
-                />
-                <label>Saturation: {saturate}%</label>
-              </div>
+                <div>
+                    <input type="range" min={0} max={200} value={contrast}
+                        onChange={(e) => setContrast(Number(e.target.value))} />
+                    <label className="mt-2">Contrast: {contrast}%</label>
+                </div>
+
+                <div>
+                    <input type="range" min={0} max={200} value={saturate}
+                        onChange={(e) => setSaturate(Number(e.target.value))} />
+                    <label className="mt-2">Saturation: {saturate}%</label>
+                </div>
             </div>
 
-            <div className="caption-input">
-              <input
-                type="text"
-                placeholder="Enter caption"
-                value={caption}
-                onChange={(e) => setCaption(e.target.value)}
-              />
+            <div className="caption-input mb-4">
+                <input type="text" placeholder="Enter caption" value={caption}
+                    onChange={(e) => setCaption(e.target.value)} />
             </div>
 
             <Button variant="outline" onClick={handleCreatePost}>
-              Create
+                Create
             </Button>
-          </>
-          
-        )}
-      </div>
-    </>
+        </>
+    )}
+</div>
+
+   
+     
+    </div>
 
   );
 };

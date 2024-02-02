@@ -13,6 +13,7 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faHeart, faComment, faFlag, faUserCircle ,faKeyboard } from '@fortawesome/free-solid-svg-icons'
 import Swal from 'sweetalert2'
+import Takefree from "./Takefree";
 
 
 
@@ -55,6 +56,7 @@ const UserProfile = () => {
   const [commentCount,SetCommentCount] =useState<any>('')
   const [openLikes, setOpenLikes] = useState(false);
   const [postLikes, setPostLikes] = useState<any>({});
+  const [alreadyLike,setAlreadyLike] =useState(false)
   console.log(commentData)
 
 
@@ -78,8 +80,24 @@ const UserProfile = () => {
 
         SetLikeData(response.data.likes);
         SetCommentData(response.data.comments);
-        // SetLikeCount(response.data.like.length)
-        // SetCommentCount(response.data.comment.length)
+        const token = localStorage.getItem('accessToken');
+  
+        if (!token) {
+          return;
+        }
+    
+        const decodedToken :any = jwtDecode(token);
+        const currentUserId = decodedToken.userId;
+
+        const userAlreadyLiked = response.data.likes.some((like:any) => like.user === currentUserId);
+
+        if(userAlreadyLiked){
+          setAlreadyLike(true)
+        }else{
+          setAlreadyLike(false)
+        }
+        console.log(userAlreadyLiked)
+                
         console.log(response.data.likes)
         }else{
           return null
@@ -161,28 +179,39 @@ const UserProfile = () => {
   
   
   
-  const handleLike = async (postId:any) => {
+  const handleLike = async (postId: any) => {
     try {
       const token = localStorage.getItem('accessToken');
   
       if (token) {
-        const decodedToken:any = jwtDecode(token);
+        const decodedToken: any = jwtDecode(token);
         const userId = decodedToken.userId;
   
+        // Perform the like action
         const response = await Axios.post(`/api/user/likes/${postId}`, { currentUserId: userId });
         const updatedPost = response.data;
   
-        setPostLikes((prevPostLikes:any) => ({
+        // Update local storage with the like status
+        const likedPosts = JSON.parse(localStorage.getItem('likedPosts') || '{}');
+        likedPosts[postId] = !likedPosts[postId];
+        localStorage.setItem('likedPosts', JSON.stringify(likedPosts));
+  
+        setPostLikes((prevPostLikes: any) => ({
           ...prevPostLikes,
           [postId]: !prevPostLikes[postId],
         }));
-      } else {
-
       }
     } catch (error) {
       console.error('Error liking post:', error);
     }
   };
+
+  useEffect(() => {
+    // Read liked posts from local storage on mount
+    const likedPosts = JSON.parse(localStorage.getItem('likedPosts') || '{}');
+    setPostLikes(likedPosts);
+  }, []);
+  
   
 
   const handleComment = async (e: any) => {
@@ -396,8 +425,8 @@ const UserProfile = () => {
       <ToastContainer position="top-center" autoClose={5000} hideProgressBar={false} newestOnTop={false} closeOnClick pauseOnFocusLoss draggable pauseOnHover />
       <div className="" style={{ height: '100vh', paddingBottom: '10px', marginBottom: '10px' }}>
         <div className="flex items-center justify-center space-x-8 p-8">
-          <div className="flex flex-col items-center">
-            <img
+          {/* <div className="flex flex-col items-center"> */}
+            {/* <img
               className="rounded-full w-32 h-32 object-cover shadow-md"
               src={
                 newProfilePicture
@@ -409,17 +438,17 @@ const UserProfile = () => {
               alt="Profile Picture"
             />
 
-            <button
-              className="mt-4 text-blue-500 hover:text-blue-700"
-              onClick={handleEditClick}
-            >
-              🖍 Edit
+           
             </button>
-            <div className="flex flex-col mt-4 text-center"></div>
+            <div className="flex flex-col mt-4 text-center"></div> */}
+            <Takefree user={userData} handleedit={handleEditClick} userpostlength={userPosts.length} followers={followers} following={following}
+            openModal={openModal} opens={opens}
+              ></Takefree>
+           
 
-          </div>
+          {/* </div> */}
 
-          <div className=" relative top-[-20px]">
+          {/* <div className=" relative top-[-20px]">
             <h1 className="text-2xl font-bold mb-4">{userData?.username}</h1>
             <ul className="flex justify-evenly space-x-6">followers
               <li className="text-xl flex flex-col items-center ">
@@ -435,7 +464,7 @@ const UserProfile = () => {
                 <span className="text-gray-600 text-base">{following}</span>
               </li>
             </ul>
-          </div>
+          </div> */}
 
 
 
@@ -443,9 +472,9 @@ const UserProfile = () => {
         <div className="flex items-center justify-items-start flex-col" >
           {/* <h1 className="text-xl font-bold">{userData?.username}</h1> */}
           <div className="flex justify-start w-6/12 flex-col">
-            <h1>{userData?.bio}</h1>
-            <br />
-            <h1 className="text-3xl">Post</h1>
+        
+
+            <h1 className="text-lg ml-4">Post</h1>
           </div>
 
         </div>
@@ -457,16 +486,16 @@ const UserProfile = () => {
 
           <div className="grid fullbg-profile justify-center hight-auto">
           {userPosts?.length > 0 ? (
-        <div className="grid grid-cols-3 gap-4">
-          {userPosts.map((post) => (
+        <div className="grid grid-cols-3 gap-4 ">
+          {userPosts.map((post:any) => (
             <div key={post._id} className="boxer">
               {post.image.length > 0 && (
                 <div onClick={() => openModals(post, userData)}>
                   <img
                     src={`http://localhost:3000/upload/${post?.image}`}
                     alt="Post"
-                    className="post-image shadow-md"
-                    style={{ width: '200px', height: '200px', objectFit: 'cover' }}
+                    className="post-image shadow-md "
+                    style={{ width: '250px', height: '300px', objectFit: 'cover' }}
                   />
                 </div>
               )}
@@ -503,15 +532,16 @@ const UserProfile = () => {
                 src={`http://localhost:3000/upload/${selectedPost.post.image}`}
                 alt="Post"
                 className="post-image w-full "
-                style={{ objectFit: 'cover', width: '650px', height: '500px' }}
+                style={{ objectFit: 'cover', width: '656px', height: '500px' }}
               />
             </Modal.Body>
-            <button onClick={opensLikes} className="text-white">
+            <button onClick={opensLikes} className="text-white ml-6 text-xs">
               Likes
             </button>
 
             <div className="post-icons flex justify-between">
               <div className="flex items-center space-x-3 relative left-6">
+              
                 <button onClick={() => handleLike(selectedPost.post._id)}>
                   <FontAwesomeIcon
                     icon={faHeart}
@@ -528,6 +558,7 @@ const UserProfile = () => {
                 />
               </div>
               <div className="flex items-center space-x-3 relative right-6">
+                
                 <FontAwesomeIcon
                   onClick={handleReportWithConfirmation}
                   icon={faFlag}
@@ -535,7 +566,15 @@ const UserProfile = () => {
                   style={{ fontSize: '26px' }}
                 />
               </div>
+              
             </div>
+            <br />
+            <div className="flex justify-between">
+  <h1 className="text-white ml-6">{selectedPost.post.caption}</h1>
+  <h1 className="text-white mr-6">
+    {new Date(selectedPost.post.createdAt).toLocaleTimeString()}
+  </h1>
+</div>
 
             {showCommentBox && (
            <div>
@@ -595,67 +634,70 @@ const UserProfile = () => {
 
 
       {showModal && (
-        <div className="fixed z-10 inset-0 overflow-y-auto">
-          <div className="flex items-end justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
-            <div className="inline-block align-bottom bg-white rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full">
-              <div className="bg-white px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
-                <div className="sm:flex sm:items-start">
-                  <div className="mt-3 text-center sm:mt-0 sm:ml-4 sm:text-left">
-                    <h3 className="text-lg leading-6 font-medium text-gray-900" id="modal-title">
-                      Edit Profile
-                    </h3>
-                    <div className="mt-2">
-                      <input
-                        type="text"
-                        placeholder="New Username"
-                        value={newUsername}
-                        onChange={handleNewUsernameChange}
-                        maxLength={20} // Set your desired maximum length
-                        className="border rounded-md p-2 text-black"
-                      />
-                    </div>
-
-                    <div className="mt-2">
-                      <textarea
-                        placeholder="New Bio"
-                        value={newBio}
-                        onChange={(e) => setNewBio(e.target.value)}
-                        maxLength={150} // Set your desired maximum length
-                        className="border rounded-md p-2 text-black"
-                      />
-                    </div>
-
-                    <div className="mt-2">
-                      <input
-                        className="text-black"
-                        type="file"
-                        accept="image/*"
-                        onChange={handleFileChange}
-                      />
-                    </div>
-                  </div>
-                </div>
+  <div className="fixed z-10 inset-0 overflow-y-auto">
+    <div className="flex items-end justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
+      <div className="inline-block align-bottom bg-white rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-md sm:w-full">
+        <div className="bg-white px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
+          <div className="sm:flex sm:items-start">
+            <div className="mt-3 text-center sm:mt-0 sm:ml-4 sm:text-left">
+              <h3 className="text-lg leading-6 font-medium text-gray-900" id="modal-title">
+                Edit Profile
+              </h3>
+              <div className="mt-2">
+                <input
+                  type="text"
+                  placeholder="New Username"
+                  value={newUsername}
+                  onChange={handleNewUsernameChange}
+                  maxLength={20} // Set your desired maximum length
+                  className="border rounded-md p-2 text-black w-full"
+                />
               </div>
-              <div className="bg-gray-50 px-4 py-3 sm:px-6 sm:flex sm:flex-row-reverse">
-                <button
-                  type="button"
-                  className="bg-black mt-3 w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 text-base font-medium text-white focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 sm:mt-0 sm:ml-3 sm:w-auto sm:text-sm"
-                  onClick={handleModalSave}
-                >
-                  Save
-                </button>
-                <button
-                  type="button"
-                  className="mt-3 w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-gray-300 text-base font-medium text-gray-700 hover:bg-gray-400 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500 sm:mt-0 sm:ml-3 sm:w-auto sm:text-sm"
-                  onClick={handleModalClose}
-                >
-                  Close
-                </button>
+
+              <div className="mt-2">
+                <textarea
+                  placeholder="New Bio"
+                  value={newBio}
+                  onChange={(e) => setNewBio(e.target.value)}
+                  maxLength={150} // Set your desired maximum length
+                  className="border rounded-md p-2 text-black w-full"
+                />
+              </div>
+
+              <div className="mt-2">
+                <input
+                  className="text-black"
+                  type="file"
+                  accept="image/*"
+                  onChange={handleFileChange}
+                />
+              
+                  <img alt="Preview" className="mt-2 max-w-full" />
+ 
               </div>
             </div>
           </div>
         </div>
-      )}
+        <div className="bg-gray-50 px-4 py-3 sm:px-6 sm:flex sm:flex-row-reverse">
+          <button
+            type="button"
+            className="bg-black mt-3 w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 text-base font-medium text-white focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 sm:mt-0 sm:ml-3 sm:w-auto sm:text-sm"
+            onClick={handleModalSave}
+          >
+            Save
+          </button>
+          <button
+            type="button"
+            className="mt-3 w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-gray-300 text-base font-medium text-gray-700 hover:bg-gray-400 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500 sm:mt-0 sm:ml-3 sm:w-auto sm:text-sm"
+            onClick={handleModalClose}
+          >
+            Close
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+)}
 
 
       {isOpen && (
@@ -778,6 +820,7 @@ const UserProfile = () => {
 
 
     </div>
+    
 
   );
 };

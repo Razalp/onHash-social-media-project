@@ -12,6 +12,10 @@ import Pro from './userSide/profilefortry/Pro';
 import { Button } from './components/ui/button';
 import Search from './userSide/Search/Search';
 import SerachUserProfile from './userSide/SerachUserProfile/SerachUserProfile';
+
+import Takefree from './userSide/Profile/Takefree';
+import CustomCard3 from './userSide/Profile/CustomCard3 ';
+
 // import { Button } from './'
 function App() {
   return (
@@ -24,9 +28,9 @@ function App() {
         <Route path='/log-in' element={<Login />} />
         <Route path='/profile' element={<UserProfile />} />
         <Route path='/create' element={<Createpost />} />
-        <Route path='/pro' element={<Pro />} />
         <Route path='/search' element={<Search />} />
         <Route path='/SerachUserProfile/:userId' element={<SerachUserProfile />} />
+        <Route path='/pro' element={<CustomCard3 />} />
 
         {/* adminSide - Use ProtectedRoute for admin routes */}
         <Route path='/dashboard' element={<ProtectedRoute allowedRole={true}><DashBoard /></ProtectedRoute>} />

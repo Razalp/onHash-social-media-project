@@ -1,9 +1,11 @@
-body {
-    font-family: 'Nunito', sans-serif;
-    /* background-color: black; */
-  }
+
 .fullbg{
-    /* background-color: black; */
     color: white;
-    height: 100vh;
+    height: auto;
+  }
+  .boxer{
+
+  }
+  .drag-over {
+    border: 2px dashed #ffffff; 
   }

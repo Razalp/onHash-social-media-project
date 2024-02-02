@@ -40,15 +40,15 @@ const SideBar = () => {
           </div>
 
           <ul className="flex flex-col relative left-10 space-y-8 ">
-            <li className="hover:text-blue-200"><Link to="/"><FontAwesomeIcon icon={faHome} />  &nbsp; HOME</Link></li>
-            <li className="hover:text-blue-200"><Link to="/search"><FontAwesomeIcon icon={faSearch} /> &nbsp; SEARCH </Link></li>
-            <li className="hover:text-blue-200"><FontAwesomeIcon icon={faVideo} /> &nbsp; REELS</li>
-            <li className="hover:text-blue-200"><FontAwesomeIcon icon={faEnvelope} /> &nbsp; MESSAGE</li>
-            <li className="hover:text-blue-200"><FontAwesomeIcon icon={faBell} /> &nbsp; NOTIFICATIONS</li>
-            <li className="hover:text-blue-200"><Link to='/create'><FontAwesomeIcon icon={faPlusCircle} /> &nbsp; CREATE </Link></li>
-            <li className="hover:text-blue-200"><Link to='/profile'><FontAwesomeIcon icon={faUser} /> &nbsp; PROFILE</Link></li>
-            <li className="hover:text-blue-200"><FontAwesomeIcon icon={faEllipsisV} /> &nbsp; &nbsp; MORE</li>
-            <li className="hover:text-blue-200" onClick={handleSignOut}><FontAwesomeIcon icon={faSignOutAlt} /> &nbsp; SIGNOUT</li>
+            <li className="hover:text-blue-200 text-sm"><Link to="/"><FontAwesomeIcon className='size-4' icon={faHome} />  &nbsp; Home</Link></li>
+            <li className="hover:text-blue-200 text-sm"><Link to="/search"><FontAwesomeIcon className='size-4' icon={faSearch} /> &nbsp; Search </Link></li>
+            <li className="hover:text-blue-200 text-sm"><FontAwesomeIcon className='size-4' icon={faVideo} /> &nbsp; Reels</li>
+            <li className="hover:text-blue-200 text-sm"><FontAwesomeIcon icon={faEnvelope} /> &nbsp; Message</li>
+            <li className="hover:text-blue-200 text-sm"><FontAwesomeIcon className='size-4' icon={faBell} /> &nbsp; Notifications</li>
+            <li className="hover:text-blue-200 text-sm"><Link to='/create'><FontAwesomeIcon className='size-4' icon={faPlusCircle} /> &nbsp; Create </Link></li>
+            <li className="hover:text-blue-200 text-sm"><Link to='/profile'><FontAwesomeIcon icon={faUser} /> &nbsp; Profile</Link></li>
+            <li className="hover:text-blue-200 text-sm"><FontAwesomeIcon className='size-4' icon={faEllipsisV} /> &nbsp; More</li>
+            <li className="hover:text-blue-200 text-sm" onClick={handleSignOut}><FontAwesomeIcon className='size-4' icon={faSignOutAlt} /> &nbsp; Signout</li>
           </ul>
         </div>
       )}

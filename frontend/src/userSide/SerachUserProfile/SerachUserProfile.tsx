@@ -372,7 +372,7 @@ const SearchUserProfile = () => {
                     <br />
                     <div className="grid fullbg-profile justify-center hight-auto">
       {userPosts?.length > 0 ? (
-        <div className="grid grid-cols-3 gap-4">
+        <div className="grid grid-cols-3 gap-4 ">
           {userPosts.map((post:any) => (
             <div key={post._id} className="boxer">
               {post.image.length > 0 && (

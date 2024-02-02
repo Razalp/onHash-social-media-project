@@ -1,0 +1,121 @@
+ <div
+        className={`main-content p-8 flex justify-center items-center flex-col fullbg ${
+          isDragOver ? 'drag-over' : ''
+        }`}
+        onDragOver={handleDragOver}
+        onDragLeave={handleDragLeave}
+        onDrop={handleDrop}
+      >
+        <label htmlFor="imageInput" className="btn-white">
+          <FontAwesomeIcon icon={faCamera}/>  select image
+        </label>
+        <input
+  type="file"
+  id="imageInput"
+  accept="image/*"
+  style={{ display: 'none' }}
+  onChange={handleImageChange}
+  onDragOver={handleDragOver}
+  onDragLeave={handleDragLeave}
+  onDrop={handleDrop}
+/>
+
+
+        <h1>or</h1>
+
+        <button className="btn-white" onClick={handleCaptureFromCamera}>
+          Capture from Camera
+        </button>
+
+        {videoRef && (
+          <>
+            <button className="btn-white" onClick={handleCaptureImage}>
+              Capture Image
+            </button>
+            <div id="videoContainer" style={{ display: 'none' }} />
+          </>
+        )}
+
+     
+<br />
+        {previewImage && (
+          <>
+            <div className="image-preview images" style={{width:"300px" ,height:"auto"}}>
+              <img
+                src={previewImage}
+                alt="Preview"
+                className="preview-image"
+                style={{
+                  filter: `brightness(${brightness}%) contrast(${contrast}%) saturate(${saturate}%)`,
+                }}
+              />
+            </div>
+            <br />
+            <div className="preset-buttons w-60 flex space-x-4">
+  <button onClick={() => applyPresetFilter('original')}>
+    <img src={previewImage} alt="Original" />
+    orginal
+  </button>
+  <button onClick={() => applyPresetFilter('sepia')}>
+    <img src={previewImage} alt="Sepia" />
+    sepia
+  </button>
+  <button onClick={() => applyPresetFilter('vintage')}>
+    <img src={previewImage} alt="Vintage" />
+    vintage
+  </button>
+</div>
+
+            <br />
+            <br />
+
+            <div className="range-control">
+              <div>
+                <input
+                  type="range"
+                  min={0}
+                  max={200}
+                  value={brightness}
+                  onChange={(e) => setBrightness(Number(e.target.value))}
+                />
+                <label>Brightness: {brightness}%</label>
+              </div>
+
+              <div>
+                <input
+                  type="range"
+                  min={0}
+                  max={200}
+                  value={contrast}
+                  onChange={(e) => setContrast(Number(e.target.value))}
+                />
+                <label>Contrast: {contrast}%</label>
+              </div>
+
+              <div>
+                <input
+                  type="range"
+                  min={0}
+                  max={200}
+                  value={saturate}
+                  onChange={(e) => setSaturate(Number(e.target.value))}
+                />
+                <label>Saturation: {saturate}%</label>
+              </div>
+            </div>
+
+            <div className="caption-input">
+              <input
+                type="text"
+                placeholder="Enter caption"
+                value={caption}
+                onChange={(e) => setCaption(e.target.value)}
+              />
+            </div>
+
+            <Button variant="outline" onClick={handleCreatePost}>
+              Create
+            </Button>
+          </>
+        )}
+      </div>
