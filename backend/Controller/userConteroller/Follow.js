@@ -56,21 +56,35 @@ const unFollow = async (req, res) => {
     }
 };
 
-const getFollowers= async (req, res) => {
+const getFollowers = async (req, res) => {
     try {
         const { userId } = req.params;
+        const {currentUserId } = req.body;
+        console.log(currentUserId)
+        
 
-        const userData = await Follow.findOne({user:userId}).populate('user')
+
+        const userData = await Follow.findOne({ user: userId }).populate('user');
 
         if (!userData) {
             return res.status(404).json({ error: 'User not found' });
         }
 
         const followers = userData.followers;
-        const following = userData.following; 
+        const following = userData.following;
+
         const followersData = await User.find({ _id: { $in: followers } });
         const followingData = await User.find({ _id: { $in: following } });
-        res.json({ userData ,followersData,followingData });
+
+        const isFollowed = followers.includes(currentUserId.toString());
+        console.log(isFollowed)
+        const followersCount = followers.length;
+        const followingCount = following.length;
+
+            console.log(followersCount);
+            console.log(followersCount);
+
+        res.json({ userData, followersData,isFollowed, followingData,followersCount,followingCount});
     } catch (error) {
         console.error('Error getting followers:', error);
         res.status(500).json({ error: 'Internal Server Error' });
@@ -99,9 +113,6 @@ const UsergetFollowers= async (req, res) => {
         res.status(500).json({ error: 'Internal Server Error' });
     }
 };
-
-
-
 
 
 export { follow, unFollow ,getFollowers ,UsergetFollowers };

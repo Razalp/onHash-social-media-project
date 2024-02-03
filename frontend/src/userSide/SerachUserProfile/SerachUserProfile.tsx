@@ -11,6 +11,7 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faHeart, faComment, faFlag, faUserCircle ,faKeyboard } from '@fortawesome/free-solid-svg-icons'
 import Swal from "sweetalert2";
+import { current } from "@reduxjs/toolkit";
 
 
 
@@ -19,7 +20,7 @@ const SearchUserProfile = () => {
 
     const [userData, setUserData] = useState<any[]>([]);
     const [userPosts, setUserPosts] = useState([]);
-    const [isFollowing, setIsFollowing] = useState(false);
+    const [isFollowing, setIsFollowing] = useState<boolean>();
     const [followers, setFollowers] = useState();
     const [following, setFollowing] = useState();
     const [followingData,setFollowingData] = useState<any[]>();
@@ -42,6 +43,7 @@ const SearchUserProfile = () => {
       const [Serachuser,setSearchUser] =useState<any[]>([])
       const [showEmojiPopup, setShowEmojiPopup] = useState(false);
       const emojiList = ['❤️', '😊', '👍', '🎉', '🔥', '😂', '🌟', '👏'];
+      const [isFollowed,setIsFollowed] =useState<Boolean>()
 
 
       const handleEmojiReaction = (emoji:any) => {
@@ -104,27 +106,34 @@ const SearchUserProfile = () => {
         setShowCommentBox(!showCommentBox);
       };
 
-        const handleComment = async (e:any) => {
-    try {
-      e.preventDefault();
-        const postId = selectedPost.post._id;
-
+      const handleComment = async (e: any) => {
+        try {
+          e.preventDefault();
+          const postId = selectedPost.post._id;
       
-            if (commentText.trim() !== '') {
-                const commentResponse = await Axios.post(`/api/user/comments/${postId}`, {
-                    currentUserId: userId,
-                    text: commentText,
-                });
-                const updatedPostWithComment = commentResponse.data;
-                setCommentText('');
-
-
-            
-            }
-    } catch (error) {
-        console.error('Error adding comment:', error);
-    }
-};
+          if (commentText.trim() !== '') {
+            const commentResponse = await Axios.post(`/api/user/comments/${postId}`, {
+              currentUserId: userId,
+              text: commentText,
+            });
+      
+            const updatedPostWithComment = commentResponse.data;
+    
+            setSelectedPost((prevPost:any) => ({
+              ...prevPost,
+              post: {
+                ...prevPost.post,
+                comments: updatedPostWithComment.comments,
+              },
+            }));
+      
+            setCommentText('');
+          }
+        } catch (error) {
+          console.error('Error adding comment:', error);
+        }
+      };
+      
 
       const handleLike = async () => {
         try {
@@ -235,51 +244,71 @@ const SearchUserProfile = () => {
 
 
     const handleFollow = async () => {
-        try {
-            const response = await Axios.post(`/api/user/follow/${userId}`, {
-                user: getCurrentUserId()
-            });
-            if (response.data) {
-                setIsFollowing(true);
-                toast.success('You are now following this user');
-            } else {
-                toast.error('Error following user');
-            }
-        } catch (error) {
-            console.error('Error following user:', error);
-            toast.error('Error following user');
+      try {
+          const response = await Axios.post(`/api/user/follow/${userId}`, {
+              user: getCurrentUserId()
+          });
+  
+          if (response.data) {
+              setIsFollowing(true);
+              localStorage.setItem(`isFollowing_${userId}`, 'true');
+              toast.success('You are now following this user');
+          } else {
+              toast.error('Error following user');
+          }
+      } catch (error) {
+          console.error('Error following user:', error);
+          toast.error('Error following user');
+      }
+  };
+  
+  const handleUnfollow = async () => {
+      try {
+          const response = await Axios.post(`/api/user/unfollow/${userId}`, {
+              user: getCurrentUserId()
+          });
+  
+          if (response.data) {
+              setIsFollowing(false);
+              localStorage.setItem(`isFollowing_${userId}`, 'false');
+              toast.success('You have unfollowed this user');
+          } else {
+              toast.error('Error unfollowing user');
+          }
+      } catch (error) {
+          console.error('Error unfollowing user:', error);
+          toast.error('Error unfollowing user');
+      }
+  };
+  
+
+  const getCurrentUserId = () => {
+      const token = localStorage.getItem('accessToken');
+
+      if (token) {
+          const decodedToken: any = jwtDecode(token);
+          return decodedToken.userId;
+      }
+
+      return null;
+  };
+
+  useEffect(() => {
+    const getFollowStatus = () => {
+
+        const localStorageKey = `isFollowing_${userId}`;
+
+  
+        const localIsFollowing = localStorage.getItem(localStorageKey);
+
+        if (localIsFollowing) {
+            setIsFollowing(localIsFollowing === 'true');
         }
     };
 
-    // Unfollow user
-    const handleUnfollow = async () => {
-        try {
-            const response = await Axios.post(`/api/user/unfollow/${userId}`, {
-                user: getCurrentUserId()
-            });
-            if (response.data) {
-                setIsFollowing(false);
-                toast.success('You have unfollowed this user');
-            } else {
-                toast.error('Error unfollowing user');
-            }
-        } catch (error) {
-            console.error('Error unfollowing user:', error);
-            toast.error('Error unfollowing user');
-        }
-    };
+    getFollowStatus();
+}, [userId]);
 
-    const getCurrentUserId = () => {
-        const token = localStorage.getItem('accessToken');
-
-        if (token) {
-            const decodedToken: any = jwtDecode(token);
-            return decodedToken.userId;
-        }
-
-        return null;
-    };
-    // console.log(getCurrentUserId())
 
     interface UserData {
         follower: any[];
@@ -287,20 +316,27 @@ const SearchUserProfile = () => {
     }
 
     const getFollowers = async () => {
-        try {
-            const response: any = await Axios.get(`/api/user/followers/${userId}`);
-            // console.log(response.data,"dataaaa");
-
-            setFollowers(response.data.userData.followers.length);
-            setFollowing(response.data.userData.following.length);
-            setFollowersData(response.data.followersData)
-            setFollowingData(response.data.followingData)
-            // console.log(response.data.followingData,"helo")
-
-        } catch (error) {
-            console.error('Error getting followers:', error);
-        }
-    };
+      try {
+          const currentUserId = getCurrentUserId(); // Call getCurrentUserId to get the current user ID
+  
+          if (!currentUserId) {
+              return; // Handle the case where currentUserId is null or undefined
+          }
+  
+          const response = await Axios.post(`/api/user/followers/${userId}`, {
+              currentUserId,
+          });
+  
+          setFollowers(response.data.followersCount);
+          setFollowing(response.data.followingCount);
+          setFollowersData(response.data.followersData);
+          setFollowingData(response.data.followingData);
+          setIsFollowing(response.data.isFollowed)
+      } catch (error) {
+          console.error('Error getting followers:', error);
+      }
+  };
+  
 
     useEffect(() => {
         getFollowers();
@@ -351,13 +387,13 @@ const SearchUserProfile = () => {
                         </ul>
                         <br />
                         <ul className="flex space-x-4">
-                            {isFollowing ? (
-                                <li><Button variant="ghost" onClick={handleUnfollow}>UNFOLLOW</Button></li>
-                            ) : (
-                                <li><Button variant="outline" onClick={handleFollow}>FOLLOW</Button></li>
-                            )}
-                            <li><Button variant='secondary'>MESSAGE</Button></li>
-                        </ul>
+                    {isFollowing? (
+                        <li><Button variant="ghost" onClick={handleUnfollow}>UNFOLLOW</Button></li>
+                    ) : (
+                        <li><Button variant="outline" onClick={handleFollow}>FOLLOW</Button></li>
+                    )}
+                    <li><Button variant='secondary'>MESSAGE</Button></li>
+                </ul>
                     </div>
                 </div>
                 <div className="flex items-center justify-items-start flex-col">
@@ -391,9 +427,7 @@ const SearchUserProfile = () => {
       ) : (
         <div className="text-center bg-black flex flex-col">
           <p className="text-lg font-bold mb-4">No posts available</p>
-          <Button variant="outline" onClick={() => handleGoToPost()} className="text-black">
-            Go to create
-          </Button>
+
         </div>
       )}
       {selectedPost.post && (

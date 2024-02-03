@@ -50,7 +50,8 @@ const UserProfile = () => {
   const [error,setError] =useState('')
 
   
-  const [likeData,SetLikeData] =useState<any>('')
+  const [likeData, SetLikeData] = useState<any[]>([]);
+
   const [commentData,SetCommentData] =useState<any>([])
   const [likeCount,SetLikeCount] =useState<any>('')
   const [commentCount,SetCommentCount] =useState<any>('')
@@ -77,7 +78,7 @@ const UserProfile = () => {
 
         
         const response = await Axios.get(`/api/user/getPostDetailes/${postId}`);
-
+get
         SetLikeData(response.data.likes);
         SetCommentData(response.data.comments);
         const token = localStorage.getItem('accessToken');

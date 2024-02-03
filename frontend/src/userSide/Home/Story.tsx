@@ -14,7 +14,7 @@ const Story = () => {
   }, [navigate]);
 
   return (
-    <div className="max-w-2xl mx-auto p-8">
+    <div className="max-w-xl  mx-auto p-8">
      
 
       <ul className="flex space-x-6">

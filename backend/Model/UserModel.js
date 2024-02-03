@@ -37,18 +37,19 @@ const userSchema = new Schema({
         type: Boolean,
         default: false,
     },
-    following: [
-        {
-            type: mongoose.Schema.Types.ObjectId,
-            ref: 'User',
-        },
-    ],
-    followers: [
-        {
-            type: mongoose.Schema.Types.ObjectId,
-            ref: 'User',
-        },
-    ],
+    // following: [
+    //     {
+    //         type: mongoose.Schema.Types.ObjectId,
+    //         ref: 'User',
+    //     },
+    // ],
+    // followers: [
+    //     {
+    //         type: mongoose.Schema.Types.ObjectId,
+    //         ref: 'User',
+    //     },
+    // ],
+
 });
 
 const User = mongoose.model('User', userSchema);
