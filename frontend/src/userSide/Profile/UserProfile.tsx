@@ -57,8 +57,8 @@ const UserProfile = () => {
   const [commentCount,SetCommentCount] =useState<any>('')
   const [openLikes, setOpenLikes] = useState(false);
   const [postLikes, setPostLikes] = useState<any>({});
-  const [alreadyLike,setAlreadyLike] =useState(false)
-  console.log(commentData)
+  const [alreadyLike,setAlreadyLike] =useState<boolean>()
+
 
 
   const opensLikes = () => {
@@ -73,14 +73,8 @@ const UserProfile = () => {
     const fetchPostDetails = async () => {
       try {
 
-        const postId = selectedPost.post._id;
-        if(postId){
-
-        
-        const response = await Axios.get(`/api/user/getPostDetailes/${postId}`);
-get
-        SetLikeData(response.data.likes);
-        SetCommentData(response.data.comments);
+        const postId = selectedPost?.post?._id;
+        console.log(postId,"postett")
         const token = localStorage.getItem('accessToken');
   
         if (!token) {
@@ -88,18 +82,22 @@ get
         }
     
         const decodedToken :any = jwtDecode(token);
-        const currentUserId = decodedToken.userId;
+        const userId = decodedToken.userId;
 
-        const userAlreadyLiked = response.data.likes.some((like:any) => like.user === currentUserId);
+        if(postId!=null){
 
-        if(userAlreadyLiked){
-          setAlreadyLike(true)
-        }else{
-          setAlreadyLike(false)
-        }
-        console.log(userAlreadyLiked)
-                
-        console.log(response.data.likes)
+        
+        const response = await Axios.get(`/api/user/getPostDetailes/${postId}/${userId}`);
+
+        SetLikeData(response.data.likes);
+        SetCommentData(response.data.comments);
+        setIsLiked(response.data.hasLiked)
+        const token = localStorage.getItem('accessToken');
+  
+        if (!token) {
+          return;
+        }       
+
         }else{
           return null
         }
@@ -108,8 +106,10 @@ get
         setError('');
       }
     };
+if(selectedPost){
+  fetchPostDetails();
 
-    fetchPostDetails();
+}
   }, [selectedPost]);
 
 
@@ -214,7 +214,6 @@ get
   }, []);
   
   
-
   const handleComment = async (e: any) => {
     try {
       e.preventDefault();
@@ -233,18 +232,18 @@ get
   
           const updatedPostWithComment = commentResponse.data;
   
- 
-          SetCommentData((prevComments:any) => [ updatedPostWithComment.comment,...prevComments]);
+          SetCommentData((prevComments: any) => [updatedPostWithComment.comment, ...prevComments]);
   
           setCommentText('');
         }
       } else {
-        // Handle the case when there is no token
+   
       }
     } catch (error) {
       console.error('Error adding comment:', error);
     }
   };
+  
   
   const openModals = (post: any, user: any) => {
     setSelectedPost({ post, user });
@@ -414,9 +413,10 @@ get
     getFollowers();
   }, []);
 
-  useEffect(() => {
-    handleLike();
-  }, []); 
+  // useEffect(() => {
+  //   console.log(selectedPost)
+  //   handleLike();
+  // }, [selectedPost]); 
 
 
   return (
@@ -443,7 +443,7 @@ get
             </button>
             <div className="flex flex-col mt-4 text-center"></div> */}
             <Takefree user={userData} handleedit={handleEditClick} userpostlength={userPosts.length} followers={followers} following={following}
-            openModal={openModal} opens={opens}
+            openModal={openModal} opens={opens} getInitials={getInitials}
               ></Takefree>
            
 
@@ -577,42 +577,46 @@ get
   </h1>
 </div>
 
-            {showCommentBox && (
-           <div>
-              <form onClick={handleComment}>
-                <input
-                  placeholder="Add a comment..."
-                  value={commentText}
-                  onChange={(e) => setCommentText(e.target.value)}
-                  className="w-1/2 p-2 mt-2 rounded-md border border-gray-300"
-                />
-
-                <button type="submit" className="ml-1 w-1">
-                  ↩️
-                </button>
-              </form>
-              <div className="comments-container">
-        <h3 className="text-white mt-4">Comments:</h3>
-        <ul className="list-none p-0">
-        {commentData.map((comment, index) => (
-  <li key={index} className="text-white">
-    <div>
-      <img
-        src={`http://localhost:3000/upload/${comment?.user?.profilePicture}`}
-        alt="User Profile"
-        className="w-8 h-8 rounded-full mr-2"
+{showCommentBox && (
+  <div>
+    <form onClick={handleComment}>
+      <input
+        placeholder="Add a comment..."
+        value={commentText}
+        onChange={(e) => setCommentText(e.target.value)}
+        className="w-1/2 p-2 mt-2 rounded-md border border-gray-300"
       />
-      <span>{comment?.user?.username}</span>
-    </div>
-    <p>{comment?.text}</p>
-    <p className="text-gray-500">{comment?.createdAt}</p>
-  </li>
-))}
-
-        </ul>
-      </div>
+      <button type="submit" className="ml-1 w-1">
+        ↩️
+      </button>
+    </form>
+    <div className="comments-container">
+      <h3 className="text-white mt-4">Comments:</h3>
+      <br />
+      <ul className="list-none p-0">
+        {commentData.map((comment, index) => (
+          <li key={index} className="text-white space-y-4">
+            <div className="flex justify-between ">
+              <div className="flex">
+                <img
+                  src={`http://localhost:3000/upload/${comment?.user?.profilePicture}`}
+                  alt="User Profile"
+                  className="w-8 h-8 rounded-full mr-2"
+                />
+                <span>{comment?.user?.username}</span>
               </div>
-            )}
+              <p>{comment?.text}</p>
+              <p className="text-gray-500">
+                {comment?.createdAt ? new Date(comment.createdAt).toLocaleString() : ""}
+              </p>
+            </div>
+          </li>
+        ))}
+      </ul>
+    </div>
+  </div>
+)}
+
             <br />
           </div>
         </Modal>

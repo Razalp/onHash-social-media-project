@@ -10,6 +10,7 @@ import { jwtDecode } from "jwt-decode";
 import Story from "./Story";
 import LazyLoad from 'react-lazyload';
 import LoadingSpinner from './LoadingSpinner'; // Replace with your actual LoadingSpinner component
+import { Spinner } from "react-bootstrap";
 
 const Home = () => {
   const navigate = useNavigate();
@@ -41,8 +42,13 @@ const Home = () => {
         const userId = decodedToken.userId;
 
         setLoading(true);
-        const response = await Axios.get(`/api/user/home/${userId}`);
-        setPosts(response.data);
+        if(userId!==null){
+          const response = await Axios.get(`/api/user/home/${userId}`);
+          setPosts(response.data);
+
+        }else{
+          return <Spinner/>
+        }
       } catch (error) {
         console.error("Error fetching posts:", error);
       } finally {

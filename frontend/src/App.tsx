@@ -10,6 +10,7 @@ import ProtectedRoute from './ProtectedRoute';
 import Createpost from './userSide/CreatePost/Createpost';
 import Search from './userSide/Search/Search';
 import SerachUserProfile from './userSide/SerachUserProfile/SerachUserProfile';
+import ReportPage from './adminSide/ReportPage/ReportPage';
 
 function App() {
   const token = localStorage.getItem('accessToken');
@@ -38,6 +39,7 @@ function App() {
             <Route path='/create' element={<Createpost />} />
             <Route path='/dashboard' element={<ProtectedRoute allowedRole={true}><DashBoard /></ProtectedRoute>} />
             <Route path="/userManagement" element={<ProtectedRoute allowedRole={true}><UserManagement /></ProtectedRoute>}/>
+            <Route path="/Report" element={<ProtectedRoute allowedRole={true}><ReportPage /></ProtectedRoute>}/>
           </>
         )}
 

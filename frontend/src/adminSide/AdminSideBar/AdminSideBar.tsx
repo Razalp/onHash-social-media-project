@@ -39,13 +39,13 @@ const AdminSideBar = () => {
           </div>
 
           <ul className="flex flex-col relative left-20 space-y-8">
- <li className="hover:text-blue-200"><Link to="/dashboard"><FontAwesomeIcon icon={faTachometerAlt} /> &nbsp; DASHBOARD</Link></li>
- <li className="hover:text-blue-200"><Link to="/userManagement"><FontAwesomeIcon icon={faUsers} /> &nbsp; USERS </Link></li>
- <li className="hover:text-blue-200"><FontAwesomeIcon icon={faChartLine} /> &nbsp; REPORT</li>
- <li className="hover:text-blue-200"><FontAwesomeIcon icon={faRunning} /> &nbsp; ACTIVITIES</li>
- <li className="hover:text-blue-200"><FontAwesomeIcon icon={faTag} /> &nbsp; ADD PROMO</li>
- <li className="hover:text-blue-200"><Link to='/profile'><FontAwesomeIcon icon={faUser} /> &nbsp; PROFILE</Link></li>
- <li className="hover:text-blue-200" onClick={handleSignOut}><FontAwesomeIcon icon={faSignOutAlt} /> &nbsp; SIGNOUT</li>
+ <li className="hover:text-blue-200 text-sm"><Link to="/dashboard"><FontAwesomeIcon icon={faTachometerAlt} /> &nbsp; Dashboard</Link></li>
+ <li className="hover:text-blue-200 text-sm"><Link to="/userManagement"><FontAwesomeIcon icon={faUsers} /> &nbsp; Users </Link></li>
+ <li className="hover:text-blue-200 text-sm"><Link to="/Report"><FontAwesomeIcon icon={faChartLine} /> &nbsp; Reports</Link></li>
+ <li className="hover:text-blue-200 text-sm"><FontAwesomeIcon icon={faRunning} /> &nbsp; Activites</li>
+ <li className="hover:text-blue-200 text-sm"><FontAwesomeIcon icon={faTag} /> &nbsp; Add promo</li>
+ <li className="hover:text-blue-200 text-sm"><Link to='/profile'><FontAwesomeIcon icon={faUser} /> &nbsp; Profile</Link></li>
+ <li className="hover:text-blue-200 text-sm" onClick={handleSignOut}><FontAwesomeIcon icon={faSignOutAlt} /> &nbsp; Signout </li>
 </ul>
         </div>
       )}

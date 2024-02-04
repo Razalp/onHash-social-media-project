@@ -93,7 +93,7 @@ const UserManagement = () => {
   return (
     <>
       <AdminSideBar />
-      <div className='fullbg overflow-x-auto'>
+      <div className='fullbg' style={{height:'100vh'}}>
       <div className='flex justify-end'>
     <input
       className='p-2 text-black border border-gray-300 rounded-md focus:outline-none focus:border-blue-500'
@@ -123,7 +123,7 @@ const UserManagement = () => {
                   <td className="px-4 py-2">{item?.username?.toString()}</td>
                   <td className="px-4 py-2">{item?.email}</td>
                   <td className="px-4 py-2 text-center">
-                    <img src={`http://localhost:3000/upload/${item.profilePicture}`} alt="User Profile" className="size-30 rounded-full" />
+                    <img src={`http://localhost:3000/upload/${item.profilePicture}`} alt="User Profile" className="w-30 h-32 rounded-full" />
                   </td>
                   <td className="px-4 py-2 text-center">{item?.isAdmin?.toString()}</td>
                   <td className="px-4 py-2 text-center">{item?.isUpgrade.toString()}</td>

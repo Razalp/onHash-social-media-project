@@ -9,6 +9,7 @@ import {
     BlockUser
 } from '../Controller/adminController/AdminController.js'
 import { verifyToken } from '../MiddelWare/verifyToken.js';
+import { getReported } from '../Controller/adminController/ReporteManagament.js';
 
 //get
 router.get('/userManagament' ,verifyToken,userGet)
@@ -19,6 +20,10 @@ router.put('/block/:id',verifyToken,BlockUser)
 
 //delete
 router.delete('/userManagement/:id',verifyToken,deleteUser)
+
+
+
+router.get('/report',verifyToken,getReported)
 
 
 

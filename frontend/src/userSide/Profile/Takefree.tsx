@@ -1,13 +1,16 @@
 import React from 'react';
 
-const Takefree = ({user,handleedit ,userpostlength ,followers, following ,openModal ,opens}) => {
+const Takefree = ({user,handleedit ,userpostlength ,followers, following ,openModal ,opens ,getInitials}) => {
+  const profilePictureUrl = user.profilePicture
+  ? `http://localhost:3000/upload/${user.profilePicture}`
+  : `https://ui-avatars.com/api/?name=${getInitials(user.username)}&background=random&size=200`;
   return (
     <div className="max-w-2xl mx-4 sm:max-w-sm md:max-w-sm lg:max-w-sm xl:max-w-sm sm:mx-auto md:mx-auto lg:mx-auto xl:mx-auto mt-16 bg-gray-900 shadow-xl rounded-lg text-gray-900 w-full h-full ">
       <div className="mx-auto w-32 h-32 relative -mt-16 border-4 border-blue-50 rounded-full overflow-hidden">
         <img
         onClick={handleedit}
           className="object-cover object-center h-auto w-auto"
-          src={`http://localhost:3000/upload/${user.profilePicture}`}
+          src={profilePictureUrl}
           alt="Woman looking front"
         />
         

@@ -51,8 +51,10 @@ router.get('/getUserFollows/:userId',verifyToken,UsergetFollowers)
 router.post('/likes/:postId',verifyToken,LikePost)
 router.post('/comments/:postId',verifyToken,comments)
 router.post('/report/:postId',verifyToken,report)
-router.get('/getPostDetailes/:postId', verifyToken, getPostDetails);
+
+router.get('/getPostDetailes/:postId/:userId', verifyToken, getPostDetails);
 router.get('/home/:userId',verifyToken,homePost)
+
 // router.post('/comment/:postId', verifyToken, commantPost);
 // router.post('/reportPost/:postId', verifyToken, reportPost);
 

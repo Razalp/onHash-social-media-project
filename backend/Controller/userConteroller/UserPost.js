@@ -1,11 +1,6 @@
 import Post from '../../Model/PostSchema.js'
 import User from '../../Model/UserModel.js'
 import Follow from '../../Model/FollowSchema.js';
-import mongoose from 'mongoose';
-const isValidObjectId = (id) => {
-  return mongoose.Types.ObjectId.isValid(id);
-};
-
 const myPost= async (req, res) => {
     try {
       const { userId } = req.params;
@@ -43,11 +38,6 @@ const myPost= async (req, res) => {
     const { currentUserId } = req.body;
   
     try {
-      if (!isValidObjectId(postId)) {
-        console.error('Invalid Post ID');
-        return res.status(400).json({ message: 'Invalid Post ID' });
-      }
-  
       const post = await Post.findById(postId);
       if (!post) {
         return res.status(404).json({ message: 'Post not found' });
@@ -102,7 +92,8 @@ const comments =async (req, res) => {
 
 const report =async (req, res) => {
   try {
-    console.log('hello')
+    console.log("reported")
+
     const postId = req.params.postId;
 
     const post = await Post.findById(postId);
@@ -132,7 +123,9 @@ const report =async (req, res) => {
 
 
 const getPostDetails =  async (req, res) => {
-  const postId = req.params.postId;
+  const { postId } = req.params;
+  const {userId} =req.params
+  
 
   try {
       const post = await Post.findById(postId)
@@ -141,7 +134,7 @@ const getPostDetails =  async (req, res) => {
               path: 'comments.user',
               select: '-password', 
           });
-          console.log(post)
+   
 
       if (!post) {
           return res.status(404).json({ error: 'Post not found' });
@@ -153,9 +146,10 @@ const getPostDetails =  async (req, res) => {
           text: comment.text,
           createdAt: comment.createdAt,
       }));
-      console.log(comments)
+      const hasLiked = post.likes.some(like => like._id.toString() === userId);
+      console.log('isliked' ,hasLiked)
 
-      res.json({ likes, comments });
+      res.json({ likes, comments ,hasLiked});
   } catch (error) {
       console.error(error);
       res.status(500).json({ error: 'Internal Server Error' });
@@ -165,10 +159,10 @@ const getPostDetails =  async (req, res) => {
 const homePost =async (req, res) => {
   try {
     const { userId } = req.params;
-
-
+    console.log(userId,"hello")
     const following = await Follow.findOne({ user: userId }).populate('following');
 
+    // console.log(following,"following")
     if (!following) {
       return res.status(404).json({ message: 'User is not following anyone yet.' });
     }
@@ -179,13 +173,14 @@ const homePost =async (req, res) => {
       .populate('user')
       .sort({ createdAt: -1 });
 
-      console.log(posts)
+    
     res.json(posts);
   } catch (error) {
     console.error(error);
     res.status(500).json({ message: 'Internal Server Error' });
   }
 };
+
 
 
 
@@ -200,6 +195,7 @@ const homePost =async (req, res) => {
     comments,
     report,
     getPostDetails,
-    homePost
+    homePost,
+
   
   }

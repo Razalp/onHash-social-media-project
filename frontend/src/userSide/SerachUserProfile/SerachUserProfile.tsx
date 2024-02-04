@@ -35,7 +35,7 @@ const SearchUserProfile = () => {
         },
       });
      
-      const [isLiked, setIsLiked] = useState(false);
+      const [isLiked, setIsLiked] = useState();
       const [commentText, setCommentText] = useState('');
       const [showCommentBox, setShowCommentBox] = useState(false);
       const [selectedReason, setSelectedReason] = useState("");
@@ -44,6 +44,10 @@ const SearchUserProfile = () => {
       const [showEmojiPopup, setShowEmojiPopup] = useState(false);
       const emojiList = ['❤️', '😊', '👍', '🎉', '🔥', '😂', '🌟', '👏'];
       const [isFollowed,setIsFollowed] =useState<Boolean>()
+      const [error,setError] =useState('')
+      const [likeData, SetLikeData] = useState<any[]>([]);
+      const [commentData,SetCommentData] =useState<any>([])
+      const [postLikes, setPostLikes] = useState<any>({});
 
 
       const handleEmojiReaction = (emoji:any) => {
@@ -135,19 +139,38 @@ const SearchUserProfile = () => {
       };
       
 
-      const handleLike = async () => {
+      const handleLike = async (postId: any) => {
         try {
-          const postId = selectedPost.post._id;
+          const token = localStorage.getItem('accessToken');
       
+          if (token) {
+            const decodedToken: any = jwtDecode(token);
+            const userId = decodedToken.userId;
       
-            const response = await Axios.post(`/api/user/likes/${postId}`, { userId });
+   
+            const response = await Axios.post(`/api/user/likes/${postId}`, { currentUserId: userId });
             const updatedPost = response.data;
-            setIsLiked(true);
-        
+      
+   
+            const likedPosts = JSON.parse(localStorage.getItem('likedPosts') || '{}');
+            likedPosts[postId] = !likedPosts[postId];
+            localStorage.setItem('likedPosts', JSON.stringify(likedPosts));
+      
+            setPostLikes((prevPostLikes: any) => ({
+              ...prevPostLikes,
+              [postId]: !prevPostLikes[postId],
+            }));
+          }
         } catch (error) {
           console.error('Error liking post:', error);
         }
       };
+    
+      useEffect(() => {
+
+        const likedPosts = JSON.parse(localStorage.getItem('likedPosts') || '{}');
+        setPostLikes(likedPosts);
+      }, []);
 
       useEffect(() => {
         const fetchUserProfile = async () => {
@@ -342,6 +365,48 @@ const SearchUserProfile = () => {
         getFollowers();
 
     }, [userId]);
+
+    useEffect(() => {
+   
+      const fetchPostDetails = async () => {
+        try {
+
+          const token:any = localStorage.getItem('accessToken');
+
+          if (!token) {
+            return
+          }
+          const decodedToken: any = jwtDecode(token);
+          const currentUserId=decodedToken.userId;
+
+  
+          const postId = selectedPost.post._id;
+          if(postId){
+  
+          
+          const response = await Axios.get(`/api/user/getPostDetailes/${postId}/${currentUserId}`);
+  
+          SetLikeData(response.data.likes);
+          SetCommentData(response.data.comments);   
+          setIsLiked(response.data.hasLiked)
+          console.log(likeData)
+          const token = localStorage.getItem('accessToken');
+    
+          if (!token) {
+            return;
+          }       
+  
+          }else{
+            return null
+          }
+        } catch (error) {
+          console.error(error);
+          setError('');
+        }
+      };
+  
+      fetchPostDetails();
+    }, [selectedPost]);
     
 
 
@@ -458,13 +523,13 @@ const SearchUserProfile = () => {
         <h1 className="text-white relative left-6">Likes</h1>
         <div className="post-icons flex justify-between">
           <div className="flex items-center space-x-3 relative left-6">
-            <button onClick={handleLike}>
-              <FontAwesomeIcon
-                icon={faHeart}
-                className={`icon-button ${isLiked ? 'text-red-600' : 'text-white'}`}
-                style={{ fontSize: '26px' }}
-              />
-            </button>
+          <button onClick={() => handleLike(selectedPost.post._id)}>
+                  <FontAwesomeIcon
+                    icon={faHeart}
+                    className={`icon-button ${postLikes[selectedPost.post._id] ? 'text-red-600' : 'text-white'}`}
+                    style={{ fontSize: '26px' }}
+                  />
+                </button>
             <FontAwesomeIcon
               onClick={handleComments}
               icon={faComment}
@@ -479,25 +544,48 @@ const SearchUserProfile = () => {
           
         </div>
         {showCommentBox && (
-        <form onClick={handleComment}>
-          <input
-            placeholder="Add a comment..."
-            value={commentText}
-            onChange={(e) => setCommentText(e.target.value)}
-            className="w-1/2 p-2 mt-2 rounded-md border border-gray-300"
-          />
-          <Button variant="outline" type="submit" className="ml-1 w-1">
-            ↩️
-          </Button>
-          <Button onClick={() => handleEmojiReaction('❤️')} className="ml-1 w-1">
-            ❤️
-          </Button>
-          {/* Add more emoji buttons as needed */}
-        </form>
-        )}
-        <br />
-      </div>
-    </Modal>
+  <div>
+    <form onClick={handleComment}>
+      <input
+        placeholder="Add a comment..."
+        value={commentText}
+        onChange={(e) => setCommentText(e.target.value)}
+        className="w-1/2 p-2 mt-2 rounded-md border border-gray-300"
+      />
+      <button type="submit" className="ml-1 w-1">
+        ↩️
+      </button>
+    </form>
+    <div className="comments-container">
+      <h3 className="text-white mt-4">Comments:</h3>
+      <br />
+      <ul className="list-none p-0">
+        {commentData.map((comment, index) => (
+          <li key={index} className="text-white space-y-4">
+            <div className="flex justify-between ">
+              <div className="flex">
+                <img
+                  src={`http://localhost:3000/upload/${comment?.user?.profilePicture}`}
+                  alt="User Profile"
+                  className="w-8 h-8 rounded-full mr-2"
+                />
+                <span>{comment?.user?.username}</span>
+              </div>
+              <p>{comment?.text}</p>
+              <p className="text-gray-500">
+                {comment?.createdAt ? new Date(comment.createdAt).toLocaleString() : ""}
+              </p>
+            </div>
+          </li>
+        ))}
+      </ul>
+    </div>
+  </div>
+)}
+
+            <br />
+          </div>
+        </Modal>
       )}
     </div>
 

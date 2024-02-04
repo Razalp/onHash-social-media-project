@@ -7,7 +7,7 @@ const ReportPage = () => {
     const [reports, setReports] = useState([]);
 
     // Function to handle report deletion
-    const handleDelete = async (postId) => {
+    const handleDelete = async (postId:any) => {
         try {
             await Axios.delete(`/api/admin/posts/reject-reports/${postId}`);
             // Reload reports after deletion
@@ -31,9 +31,10 @@ const ReportPage = () => {
 
     const fetchReportData = async () => {
         try {
-            const response = await Axios.get('/api/admin/reports');
+            const response = await Axios.get('/api/admin/report');
             setReports(response.data);
-            console.log(response.data);
+            console.log(response.data)
+
         } catch (error) {
             console.error('Error fetching report data:', error);
         }
@@ -45,16 +46,10 @@ const ReportPage = () => {
     }, []);
 
     return (
-        <>
+        <div className='bg-black' >
             <AdminSideBar />
-            <div className='fullbg overflow-x-auto'>
-                <div className='flex justify-end'>
-                    <input
-                        className='p-2 text-black border border-gray-300 rounded-md focus:outline-none focus:border-blue-500'
-                        type='text'
-                        placeholder='Search users...'
-                    />
-                </div>
+            <div className='bg-black ' style={{height:"100vh"}} >
+               
                 <br />
                 <table className="w-full table-fixed text-white border-collapse">
                     <thead className="bg-gray-800 text-gray-300">
@@ -81,7 +76,7 @@ const ReportPage = () => {
     {report.image && report.image.length > 0 && (
         <div className="image-container">
             
-            <img className='w-36 h-30' src={`http://localhost:3000/upload/${report.image[0]}`} alt="" />
+            <img className='w-32 h-32 ' src={`http://localhost:3000/upload/${report.image[0]}`} alt="" />
         </div>
     )}
 </td>
@@ -118,7 +113,7 @@ const ReportPage = () => {
                     </tbody>
                 </table>
             </div>
-        </>
+        </div>
     );
 };
 
