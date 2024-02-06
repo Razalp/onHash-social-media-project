@@ -2,6 +2,7 @@
 import User from '../../Model/UserModel.js';
 import Follow from '../../Model/FollowSchema.js';
 
+
 // Follow user
 const follow = async (req, res) => {
     try {
@@ -60,7 +61,7 @@ const getFollowers = async (req, res) => {
     try {
         const { userId } = req.params;
         const {currentUserId } = req.body;
-        console.log(currentUserId)
+   
         
 
 
@@ -77,12 +78,11 @@ const getFollowers = async (req, res) => {
         const followingData = await User.find({ _id: { $in: following } });
 
         const isFollowed = followers.includes(currentUserId.toString());
-        console.log(isFollowed)
+  
         const followersCount = followers.length;
         const followingCount = following.length;
 
-            console.log(followersCount);
-            console.log(followersCount);
+
 
         res.json({ userData, followersData,isFollowed, followingData,followersCount,followingCount});
     } catch (error) {
@@ -115,4 +115,24 @@ const UsergetFollowers= async (req, res) => {
 };
 
 
-export { follow, unFollow ,getFollowers ,UsergetFollowers };
+const mutualFriends = async (req, res) => {
+    try {
+  
+        const { currentUserId, userId } = req.params;
+        const followers1 = await Follow.findOne({ user: currentUserId }).select('followers');
+        const followers2 = await Follow.findOne({ user: userId }).select('followers');
+        const mutualFriends = followers1.followers.filter(follower =>
+            followers2.followers.includes(follower)
+        );
+
+        const mutualFriendsDetails = await User.find({ _id: { $in: mutualFriends } });
+   
+        res.json(mutualFriendsDetails);
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ error: 'Internal Server Error' });
+    }
+};
+
+
+export { follow, unFollow ,getFollowers ,UsergetFollowers,mutualFriends };

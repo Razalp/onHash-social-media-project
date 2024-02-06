@@ -13,10 +13,10 @@ import {
 } from '../Controller/userConteroller/UserAuth.js ';
 
 import {
-  myPost ,searchUser ,LikePost,comments ,report,getPostDetails ,homePost
+  myPost ,searchUser ,LikePost,comments ,report,getPostDetails ,homePost 
 } from '../Controller/userConteroller/UserPost.js'
 
-import { follow ,unFollow ,getFollowers ,UsergetFollowers } from '../Controller/userConteroller/Follow.js'
+import { follow ,unFollow ,getFollowers ,UsergetFollowers ,mutualFriends } from '../Controller/userConteroller/Follow.js'
 
 //get
 router.get('/user-counts',verifyToken, userDashBoard)
@@ -46,6 +46,7 @@ router.post('/follow/:userId',verifyToken,follow)
 router.post('/unfollow/:userId',verifyToken,unFollow)
 router.post('/followers/:userId',verifyToken,getFollowers)
 router.get('/getUserFollows/:userId',verifyToken,UsergetFollowers)
+router.get('/mutual-friends/:currentUserId/:userId',verifyToken,mutualFriends)
 
 //likeAndcommant
 router.post('/likes/:postId',verifyToken,LikePost)
@@ -57,11 +58,6 @@ router.get('/home/:userId',verifyToken,homePost)
 
 // router.post('/comment/:postId', verifyToken, commantPost);
 // router.post('/reportPost/:postId', verifyToken, reportPost);
-
-
-
-
-
 //put 
 router.put('/users/:userId',verifyToken,editUser)
 

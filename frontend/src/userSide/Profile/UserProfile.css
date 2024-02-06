@@ -40,5 +40,25 @@ body {
                5px 5px 10px #141414;
 }
 
+.like-button {
+  background: none;
+  border: none;
+  cursor: pointer;
+  transition: opacity 0.3s ease-in-out;
+}
+
+.icon-button {
+  transition: color 0.3s ease-in-out;
+}
+
+.icon-button.text-white {
+  color: white;
+}
+
+.icon-button.text-red-600 {
+  color: #e53e3e; /* Red color */
+}
+
+
 
  

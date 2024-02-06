@@ -6,18 +6,17 @@ import Axios from '@/axious/instance';
 const ReportPage = () => {
     const [reports, setReports] = useState([]);
 
-    // Function to handle report deletion
     const handleDelete = async (postId:any) => {
         try {
-            await Axios.delete(`/api/admin/posts/reject-reports/${postId}`);
-            // Reload reports after deletion
+            await Axios.delete(`/api/admin/postDelete/${postId}`);
+  
             fetchReportData();
         } catch (error) {
             console.error('Error deleting reports:', error);
         }
     };
 
-    // Function to handle image deletion
+
     const handleDeleteImage = async (postId, imageId) => {
         try {
             await Axios.delete(`/api/admin/posts/image/${postId}/${imageId}`);
@@ -59,7 +58,7 @@ const ReportPage = () => {
                             <th className="px-4 py-2 text-left">EMAIL</th>
                             <th className="px-4 py-2 text-center">IMAGE</th>
                             <th className="px-4 py-2 text-center">REPORT</th>
-                            <th className="px-4 py-2 text-center">REPORTED USERS</th>
+                     
                             <th className="px-4 py-2 text-center">ACTION</th>
                             <th></th>
                         </tr>
@@ -72,7 +71,7 @@ const ReportPage = () => {
                                     <td className="px-4 py-2">{report?.user?.username}</td>
                                     <td className="px-4 py-2">{report?.user?.email}</td>
                                     <td className="px-4 py-2 text-center">
-                                    <h1>{report.rejected ? "the image is rejected" : "some issues"}</h1>
+                              
     {report.image && report.image.length > 0 && (
         <div className="image-container">
             
@@ -80,12 +79,13 @@ const ReportPage = () => {
         </div>
     )}
 </td>
-                                    <td className="px-4 py-2 text-center"></td>
+                                    
                                     <td className='px-4 py-2 text-center'>
                                         {report.reports.map((reportItem: any, index) => (
                                             <div key={index}>{reportItem.reason}</div>
                                         ))}
                                     </td>
+                                
 
                                     <td className="px-4 py-2 space-y-2 text-center">
                                         <button
@@ -94,12 +94,7 @@ const ReportPage = () => {
                                         >
                                             DELETE
                                         </button>
-                                        <button
-                                            className='btn-black'
-                                            onClick={() => handleDeleteImage(report._id, report.image[0]._id)}
-                                        >
-                                            REJECT
-                                        </button>
+                                      
                                     </td>
                                     <td className="px-4 py-2 text-center"></td>
                                 </tr>

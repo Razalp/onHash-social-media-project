@@ -11,8 +11,9 @@ import { useNavigate } from 'react-router-dom';
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCamera } from '@fortawesome/free-solid-svg-icons';
 import upload from './Image post.gif'
-import Cropper from 'react-cropper';
-import 'cropperjs/dist/cropper.css';
+import ReactCrop from 'react-image-crop';
+import 'react-image-crop/dist/ReactCrop.css';
+
 const Createpost = () => {
   const [previewImage, setPreviewImage] = useState<string | null>(null);
   const [caption, setCaption] = useState<string>('');
@@ -22,8 +23,38 @@ const Createpost = () => {
   const [brightness, setBrightness] = useState<number>(100);
   const [contrast, setContrast] = useState<number>(100);
   const [saturate, setSaturate] = useState<number>(100);
-  const [cropper, setCropper] = useState<any>(null);
+  const [crop, setCrop] = useState<ReactCrop.Crop>({ aspect: 16 / 9 });
+  const [croppedImageUrl, setCroppedImageUrl] = useState<string | null>(null);
+  const [imageRef, setImageRef] = useState<HTMLImageElement | null>(null);
 
+  const handleImageCrop = () => {
+    if (imageRef && crop.width && crop.height) {
+      const canvas = document.createElement('canvas');
+      const scaleX = imageRef.naturalWidth / imageRef.width;
+      const scaleY = imageRef.naturalHeight / imageRef.height;
+      canvas.width = crop.width;
+      canvas.height = crop.height;
+      const ctx = canvas.getContext('2d');
+      if (ctx) {
+        ctx.drawImage(
+          imageRef,
+          crop.x * scaleX,
+          crop.y * scaleY,
+          crop.width * scaleX,
+          crop.height * scaleY,
+          0,
+          0,
+          crop.width,
+          crop.height
+        );
+        const croppedImageUrl = canvas.toDataURL('image/jpeg');
+        setCroppedImageUrl(croppedImageUrl);
+      }
+    }
+  };
+  const handleImageLoad = (image: HTMLImageElement) => {
+    setImageRef(image);
+  };
 
   const token = localStorage.getItem('accessToken');
   const navigate = useNavigate();
@@ -356,9 +387,14 @@ const Createpost = () => {
             </div>
 
             <div className="caption-input mb-4">
-                <input type="text" placeholder="Enter caption" value={caption}
-                    onChange={(e) => setCaption(e.target.value)} />
-            </div>
+  <input
+    type="text"
+    placeholder="Enter caption"
+    className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 text-gray-700 sm:text-sm"
+    value={caption}
+    onChange={(e) => setCaption(e.target.value)}
+  />
+</div>
 
             <Button variant="outline" onClick={handleCreatePost}>
                 Create

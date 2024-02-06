@@ -43,7 +43,7 @@ const myPost= async (req, res) => {
         return res.status(404).json({ message: 'Post not found' });
       }
   
-      const likedIndex = post.likes.indexOf(currentUserId);
+      const likedIndex = post.likes.findIndex(like => like._id.toString() === currentUserId);
   
       if (likedIndex !== -1) {
         post.likes.splice(likedIndex, 1);
@@ -92,9 +92,10 @@ const comments =async (req, res) => {
 
 const report =async (req, res) => {
   try {
-    console.log("reported")
+
 
     const postId = req.params.postId;
+
 
     const post = await Post.findById(postId);
 
@@ -103,6 +104,7 @@ const report =async (req, res) => {
     }
 
     const { userId, reason } = req.body;
+
 
     if (post.reportedBy.includes(userId)) {
       return res.status(400).json({ message: 'User has already reported this post' });
@@ -122,47 +124,44 @@ const report =async (req, res) => {
 };
 
 
-const getPostDetails =  async (req, res) => {
+const getPostDetails = async (req, res) => {
   const { postId } = req.params;
-  const {userId} =req.params
-  
+  const { userId } = req.params;
 
   try {
-      const post = await Post.findById(postId)
-          .populate('likes')
-          .populate({
-              path: 'comments.user',
-              select: '-password', 
-          });
-   
+    const post = await Post.findById(postId)
+      .populate('likes')
+      .populate({
+        path: 'comments.user',
+        select: '-password',
+      });
 
-      if (!post) {
-          return res.status(404).json({ error: 'Post not found' });
-      }
+    if (!post) {
+      return res.status(404).json({ error: 'Post not found' });
+    }
 
-      const likes = post.likes.map(user => ({ user }));
-      const comments = post.comments.map(comment => ({
-          user: comment.user,
-          text: comment.text,
-          createdAt: comment.createdAt,
-      }));
-      const hasLiked = post.likes.some(like => like._id.toString() === userId);
-      console.log('isliked' ,hasLiked)
+    const likes = post.likes.map(user => ({ user }));
+    const comments = post.comments.map(comment => ({
+      user: comment.user,
+      text: comment.text,
+      createdAt: comment.createdAt,
+    }));
+    const hasLiked = post.likes.some(like => like._id.toString() === userId);
 
-      res.json({ likes, comments ,hasLiked});
+    res.json({ likes, comments, hasLiked });
   } catch (error) {
-      console.error(error);
-      res.status(500).json({ error: 'Internal Server Error' });
+    console.error(error);
+    res.status(500).json({ error: 'Internal Server Error' });
   }
 };
 
 const homePost =async (req, res) => {
   try {
     const { userId } = req.params;
-    console.log(userId,"hello")
+
     const following = await Follow.findOne({ user: userId }).populate('following');
 
-    // console.log(following,"following")
+
     if (!following) {
       return res.status(404).json({ message: 'User is not following anyone yet.' });
     }

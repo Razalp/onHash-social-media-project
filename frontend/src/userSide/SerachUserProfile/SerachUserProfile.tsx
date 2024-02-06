@@ -48,6 +48,33 @@ const SearchUserProfile = () => {
       const [likeData, SetLikeData] = useState<any[]>([]);
       const [commentData,SetCommentData] =useState<any>([])
       const [postLikes, setPostLikes] = useState<any>({});
+      const [mutualFriends, setMutualFriends] = useState<any>([]);
+      
+      useEffect(() => {
+        const fetchMutualFriends = async () => {
+            try {
+                const token = localStorage.getItem('accessToken');
+    
+                if (!token) {
+                    return;
+                }
+                const decodedToken:any = jwtDecode(token);
+                const currentUserId = decodedToken.userId;
+    
+                const response = await Axios.get(`/api/user/mutual-friends/${currentUserId}/${userId}`);
+
+                setMutualFriends(response.data);
+
+                console.log(response.data)
+                
+            } catch (error) {
+                console.error('Error fetching mutual friends:', error);
+            }
+        };
+    
+        fetchMutualFriends();
+    }, [userId]);
+    
 
 
       const handleEmojiReaction = (emoji:any) => {
@@ -254,7 +281,7 @@ const SearchUserProfile = () => {
         if (userId) {
             fetchUserPosts();
         }
-    }, [userId]);
+    },[]);
 
 
 
@@ -435,6 +462,7 @@ const SearchUserProfile = () => {
                                 <span className="text-sm">Post</span>
                                 <span className="text-gray-600 text-base">{userPosts?.length}</span>
                             </li>
+                          
                             <li
                                 className="text-xl flex flex-col items-center hover:text-yellow-200 cursor-pointer"
 
@@ -464,8 +492,23 @@ const SearchUserProfile = () => {
                 <div className="flex items-center justify-items-start flex-col">
                     <div className="flex justify-start w-6/12 flex-col">
                         <h1></h1>
+                       
+                        <div className="flex space-x-1"> 
+                     
+  {mutualFriends?.map((friend:any) => (
+    
+    <img
+      key={friend?._id}
+      src={`http://localhost:3000/upload/${friend?.profilePicture}`}
+      alt={friend.username}
+      className="w-5 h-5 rounded-full object-cover"
+    />
+  ))}
+</div>
+
                         <br />
                         <h1 className="text-3xl">Post</h1>
+                        
                     </div>
                 </div>
                 <div className="bg-black">
