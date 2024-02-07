@@ -13,7 +13,7 @@ import {
 } from '../Controller/userConteroller/UserAuth.js ';
 
 import {
-  myPost ,searchUser ,LikePost,comments ,report,getPostDetails ,homePost 
+  myPost ,searchUser ,LikePost,comments ,report,getPostDetails ,homePost,stories
 } from '../Controller/userConteroller/UserPost.js'
 
 import { follow ,unFollow ,getFollowers ,UsergetFollowers ,mutualFriends } from '../Controller/userConteroller/Follow.js'
@@ -38,6 +38,7 @@ router.post('/sign-out',signOut)
 router.post('/resendotp',resendOTP)
 router.post('/update-profile',verifyToken, upload.single('profilePicture'), updateProfile);
 router.post('/upload-post', verifyToken, upload.array('images', 5), uploadPost);
+router.post('/stories', verifyToken, upload.single('media'),stories)
 
 
 //follow

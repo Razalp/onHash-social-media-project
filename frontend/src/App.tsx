@@ -11,6 +11,7 @@ import Createpost from './userSide/CreatePost/Createpost';
 import Search from './userSide/Search/Search';
 import SerachUserProfile from './userSide/SerachUserProfile/SerachUserProfile';
 import ReportPage from './adminSide/ReportPage/ReportPage';
+import Story from './userSide/Home/Story';
 
 function App() {
   const token = localStorage.getItem('accessToken');
@@ -31,6 +32,8 @@ function App() {
         <Route path='/' element={<Home />} />
         <Route path='/search' element={<Search />} />
         <Route path='/SerachUserProfile/:userId' element={<SerachUserProfile />} />
+        <Route path='/story' element={<Story />} />
+   
 
         {/* Authenticated routes */}
         {token && (
@@ -40,6 +43,7 @@ function App() {
             <Route path='/dashboard' element={<ProtectedRoute allowedRole={true}><DashBoard /></ProtectedRoute>} />
             <Route path="/userManagement" element={<ProtectedRoute allowedRole={true}><UserManagement /></ProtectedRoute>}/>
             <Route path="/Report" element={<ProtectedRoute allowedRole={true}><ReportPage /></ProtectedRoute>}/>
+   
           </>
         )}
 
