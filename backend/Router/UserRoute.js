@@ -1,8 +1,4 @@
 import express from 'express'
-import multer from 'multer';
-import User from '../Model/UserModel.js'
-import jwt from "jsonwebtoken"
-import Post from '../Model/PostSchema.js'
 import { verifyToken } from '../MiddelWare/verifyToken.js';
 
 import verifyRefreshToken from '../MiddelWare/refreshToken.js';
@@ -13,18 +9,20 @@ import {
 } from '../Controller/userConteroller/UserAuth.js ';
 
 import {
-  myPost ,searchUser ,LikePost,comments ,report,getPostDetails ,homePost,stories
+  myPost ,searchUser ,LikePost,comments ,report,getPostDetails ,homePost,stories,getStories,notificationsOfUser
 } from '../Controller/userConteroller/UserPost.js'
 
 import { follow ,unFollow ,getFollowers ,UsergetFollowers ,mutualFriends } from '../Controller/userConteroller/Follow.js'
+import { chatSend, receiver} from '../Controller/userConteroller/Chating.js'
 
-//get
+
 router.get('/user-counts',verifyToken, userDashBoard)
 router.get('/get-profile/:userId',verifyToken,getProfile)
 router.get('/my-post/:userId', verifyToken, myPost);
 
 router.get('/serachUser-post/:userId', verifyToken, myPost);
 router.get('/searchUser',verifyToken,searchUser)
+router.get('/notifications/:userId', verifyToken, notificationsOfUser)
 
 
 
@@ -39,6 +37,8 @@ router.post('/resendotp',resendOTP)
 router.post('/update-profile',verifyToken, upload.single('profilePicture'), updateProfile);
 router.post('/upload-post', verifyToken, upload.array('images', 5), uploadPost);
 router.post('/stories', verifyToken, upload.single('media'),stories)
+router.get('/getStories/:userId',verifyToken,getStories)
+
 
 
 //follow
@@ -62,6 +62,12 @@ router.get('/home/:userId',verifyToken,homePost)
 //put 
 router.put('/users/:userId',verifyToken,editUser)
 
+
+
+//chat 
+
+router.post('/send',verifyToken,chatSend);
+router.get('/:senderId/:receiverId',verifyToken,receiver)
   
 
 

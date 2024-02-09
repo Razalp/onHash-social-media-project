@@ -1,6 +1,7 @@
 // Import your models
 import User from '../../Model/UserModel.js';
 import Follow from '../../Model/FollowSchema.js';
+import Notification from '../../Model/NotificationsSchema.js';
 
 
 // Follow user
@@ -9,19 +10,22 @@ const follow = async (req, res) => {
         const { userId } = req.params;
         const { user: currentUserId } = req.body;
 
-
+        // Update the user's followers
         const currentUser = await Follow.findOneAndUpdate(
             { user: currentUserId },
             { $addToSet: { following: userId } },
             { new: true, upsert: true }
         );
 
-
+        // Update the followed user's followers
         const followedUser = await Follow.findOneAndUpdate(
             { user: userId },
             { $addToSet: { followers: currentUserId } },
             { new: true, upsert: true }
         );
+
+        // Create a notification for the followed user
+        await createNotification(userId, `${currentUserId} followed you.`, currentUserId);
 
         res.json({ currentUser, followedUser });
     } catch (error) {
@@ -30,25 +34,27 @@ const follow = async (req, res) => {
     }
 };
 
-
 const unFollow = async (req, res) => {
     try {
         const { userId } = req.params;
         const { user: currentUserId } = req.body;
 
-
+        // Update the user's following list
         const currentUser = await Follow.findOneAndUpdate(
             { user: currentUserId },
             { $pull: { following: userId } },
             { new: true }
         );
 
-
+        // Update the unfollowed user's followers list
         const unfollowedUser = await Follow.findOneAndUpdate(
             { user: userId },
             { $pull: { followers: currentUserId } },
             { new: true }
         );
+
+        // Create a notification for the unfollowed user
+        await createNotification(userId, ` unfollowed you.`,currentUserId);
 
         res.json({ currentUser, unfollowedUser });
     } catch (error) {
@@ -56,6 +62,20 @@ const unFollow = async (req, res) => {
         res.status(500).json({ error: 'Internal Server Error' });
     }
 };
+
+async function createNotification(userId, message, link) {
+    try {
+        const notification = new Notification({
+            user: userId,
+            message,
+            link
+        });
+        await notification.save();
+    } catch (error) {
+        console.error('Error creating notification:', error);
+        throw error;
+    }
+}
 
 const getFollowers = async (req, res) => {
     try {

@@ -2,6 +2,7 @@ import Post from '../../Model/PostSchema.js'
 import User from '../../Model/UserModel.js'
 import Follow from '../../Model/FollowSchema.js';
 import Story from '../../Model/storySchema.js'
+import Notification from '../../Model/NotificationsSchema.js'
 const myPost= async (req, res) => {
     try {
       const { userId } = req.params;
@@ -37,58 +38,76 @@ const myPost= async (req, res) => {
   const LikePost = async function LikePost(req, res) {
     const { postId } = req.params;
     const { currentUserId } = req.body;
-  
+
     try {
-      const post = await Post.findById(postId);
-      if (!post) {
-        return res.status(404).json({ message: 'Post not found' });
-      }
-  
-      const likedIndex = post.likes.findIndex(like => like._id.toString() === currentUserId);
-  
-      if (likedIndex !== -1) {
-        post.likes.splice(likedIndex, 1);
-      } else {
-        post.likes.push(currentUserId);
-      }
-  
-      await post.save();
-  
-      res.json(post);
+        const post = await Post.findById(postId);
+        if (!post) {
+            return res.status(404).json({ message: 'Post not found' });
+        }
+
+        const likedIndex = post.likes.findIndex(like => like._id.toString() === currentUserId);
+
+        if (likedIndex !== -1) {
+            post.likes.splice(likedIndex, 1);
+        } else {
+            post.likes.push(currentUserId);
+            // Create a notification for the post author when someone likes the post
+            await createNotification(post.user,' liked your post', postId);
+        }
+
+        await post.save();
+
+        res.json(post);
     } catch (error) {
-      console.error(error);
-      res.status(500).json({ message: 'Internal Server Error' });
+        console.error(error);
+        res.status(500).json({ message: 'Internal Server Error' });
     }
-  };
-
-
-const comments =async (req, res) => {
-
-  const { postId } = req.params;
-  const { currentUserId, text } = req.body;
-
-  try {
-      const post = await Post.findById(postId);
-
-      if (!post) {
-          return res.status(404).json({ message: 'Post not found' });
-      }
-
-      const newComment = {
-          user: currentUserId,
-          text,
-          createdAt: new Date(),
-      };
-
-      post.comments.push(newComment);
-      await post.save();
-
-      res.json(post);
-  } catch (error) {
-      console.error(error);
-      res.status(500).json({ message: 'Internal Server Error' });
-  }
 };
+
+const comments = async (req, res) => {
+    const { postId } = req.params;
+    const { currentUserId, text } = req.body;
+
+    try {
+        const post = await Post.findById(postId);
+
+        if (!post) {
+            return res.status(404).json({ message: 'Post not found' });
+        }
+
+        const newComment = {
+            user: currentUserId,
+            text,
+            createdAt: new Date(),
+        };
+
+        post.comments.push(newComment);
+        await post.save();
+
+        // Create a notification for the post author when someone comments on the post
+        await createNotification(post.user, ` commented on your post.`, postId);
+
+        res.json(post);
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ message: 'Internal Server Error' });
+    }
+};
+
+async function createNotification(userId, message, link) {
+    try {
+        const notification = new Notification({
+            user: userId,
+            message,
+            link
+        });
+        await notification.save();
+    } catch (error) {
+        console.error('Error creating notification:', error);
+        throw error;
+    }
+}
+
 
 
 const report =async (req, res) => {
@@ -174,7 +193,7 @@ const stories = async (req, res) => {
   try {
     const { content, userId } = req.body;
     const mediaPath = req.file.path;
-    const fileName = req.file.filename; // Extract just the file name
+    const fileName = req.file.filename;
 
     const expiresAt = new Date();
     expiresAt.setHours(expiresAt.getHours() + 24);
@@ -195,6 +214,52 @@ const stories = async (req, res) => {
   }
 };
 
+const getStories = async (req, res) => {
+  try {
+    const userId = req.params.userId;
+
+    // Find the users that the specified user is following
+    const following = await Follow.findOne({ user: userId });
+    if (!following) {
+      return res.status(404).json({ message: "User not found or not following anyone" });
+    }
+    const followingIds = following.following;
+    followingIds.push(userId);
+    const stories = await Story.find({ user: { $in: followingIds } }).populate('user', 'username profilePicture');
+    console.log(stories)
+
+    res.json(stories);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
+
+import {io} from '../../server.js'
+
+const notificationsOfUser = async (req, res) => {
+  try {
+    const userId = req.params.userId;
+    const user = await User.findById(userId);
+    if (!user) {
+      return res.status(404).json({ error: 'User not found' });
+    }
+
+    const notifications = await Notification.find({ user: userId }).sort({ createdAt: -1 });
+
+    io.to(userId).emit('newNotifications', { userId, notifications }); 
+
+    res.json(notifications);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: 'Internal server error' });
+  }
+};
+
+
+
+
+
 
   export {
     myPost,
@@ -204,6 +269,7 @@ const stories = async (req, res) => {
     report,
     getPostDetails,
     homePost, 
-    stories
-  
+    stories,
+    getStories,
+    notificationsOfUser
   }
