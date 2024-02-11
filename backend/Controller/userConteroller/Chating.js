@@ -22,21 +22,23 @@ const chatSend = async (req, res) => {
 };
 
 const receiver = async (req, res) => {
-  try {
-    const { sender, receiver } = req.params;
-
-    const messages = await Chat.find({
-      $or: [
-        { sender: sender, receiver: receiver },
-        { sender: receiver, receiver: sender },
-      ],
-    }).sort({ createdAt: 1 });
-
-    res.status(200).json(messages);
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ message: 'Internal server error' });
-  }
-};
-
+    try {
+      const { senderId, receiverId } = req.params; 
+  
+      const messages = await Chat.find({
+        $or: [
+          { sender: senderId, receiver: receiverId }, 
+          { sender: receiverId, receiver: senderId },
+        ],
+      }).sort({ createdAt: 1 });
+  
+      console.log(messages);
+  
+      res.status(200).json(messages);
+    } catch (error) {
+      console.error(error);
+      res.status(500).json({ message: 'Internal server error' });
+    }
+  };
+  
 export { chatSend, receiver };
