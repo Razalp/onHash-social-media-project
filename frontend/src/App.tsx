@@ -12,7 +12,7 @@ import Search from './userSide/Search/Search';
 import SerachUserProfile from './userSide/SerachUserProfile/SerachUserProfile';
 import ReportPage from './adminSide/ReportPage/ReportPage';
 import Story from './userSide/Home/Story';
-// import Notifications from './userSide/Notifications/Notifications';
+import Notifications from './userSide/Notifications/Notifications';
 import Chat from './userSide/Chat/Chat';
 
 function App() {
@@ -35,7 +35,7 @@ function App() {
         <Route path='/search' element={<Search />} />
         <Route path='/SerachUserProfile/:userId' element={<SerachUserProfile />} />
         <Route path='/story' element={<Story />} />
-        {/* <Route path='/notifications' element={<Notifications />} /> */}
+        <Route path='/notifications' element={<Notifications />} />
         <Route path='/chat' element={<Chat />} />
    
 

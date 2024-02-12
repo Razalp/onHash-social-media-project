@@ -45,13 +45,20 @@ const io = new Server(server, {
   }
 });
 
-// io.on('connection', (socket) => {
-//   console.log('A user connected');
+io.on('connection', (socket) => {
+  console.log('A user connected');
 
-//   socket.on('disconnect', () => {
-//     console.log('User disconnected');
-//   });
-// });
+  socket.on('disconnect', () => {
+    console.log('User disconnected');
+  });
+
+  // Handle incoming messages
+  socket.on('chat message', (msg) => {
+    console.log('message: ' + msg);
+    // Broadcast the message to all connected clients
+    io.emit('chat message', msg);
+  });
+});
 
 app.get('/', (req, res) => {
   res.send('Hello, Express!');

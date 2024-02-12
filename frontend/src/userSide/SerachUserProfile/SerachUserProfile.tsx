@@ -49,6 +49,7 @@ const SearchUserProfile = () => {
       const [commentData,SetCommentData] =useState<any>([])
       const [postLikes, setPostLikes] = useState<any>({});
       const [mutualFriends, setMutualFriends] = useState<any>([]);
+      const [mutualOpen ,setMutalClose] =useState(false)
       
       useEffect(() => {
         const fetchMutualFriends = async () => {
@@ -236,6 +237,13 @@ const SearchUserProfile = () => {
     const closeModal = () => {
       setIsOpen(false);
     };
+
+    const setMutalCloseOpen=()=>{
+      setMutalClose(true)
+    }
+    const setMutalClosed=()=>{
+      setMutalClose(false)
+    }
 
     const opens =()=>{
         setOpen(true)
@@ -493,7 +501,7 @@ const SearchUserProfile = () => {
                     <div className="flex justify-start w-6/12 flex-col">
                         <h1></h1>
                        
-                        <div className="flex space-x-1"> 
+                        <div className="flex space-x-1" onClick={setMutalCloseOpen}> 
                      
   {mutualFriends?.map((friend:any) => (
     
@@ -661,9 +669,7 @@ const SearchUserProfile = () => {
                 />
                 <span className="block">{follower.username}</span>
               </div>
-              <Button variant='outline' className="relative left-32">
-                Follow
-              </Button>
+             
             </div>
           ))}
         </div>
@@ -699,9 +705,46 @@ const SearchUserProfile = () => {
                 />
                 <span className="block">{following.username}</span>
               </div>
-              <Button variant='outline' className="w-">
-                Follow
-              </Button>
+           
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+  </>
+)}
+
+
+
+{mutualOpen && (
+  <>
+    <div
+      onClick={setMutalClosed}
+      className="fixed inset-0 bg-black opacity-50 w-full h-full z-10"
+    />
+
+    <div className="fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-slate-950 p-4 sm:p-8 rounded shadow-lg z-20 max-w-screen-md w-full sm:w-96">
+      <div className="flex justify-end">
+        <Button variant="ghost" onClick={setMutalClosed} >
+          X
+        </Button>
+      </div>
+      <div className="text-center">
+        <h1 className="text-xl text-white mb-4">mutualFriends</h1>
+        <div className="text-gray-300 flex flex-col">
+
+
+          {mutualFriends?.map((friend: any) => (
+            <div key={friend._id} className="p-2 sm:p-4 flex w-full sm:w-auto">
+              <div className="flex items-center">
+                <img
+                  src={ `http://localhost:3000/upload/${friend?.profilePicture}`}
+                  alt={`${friend.username}'s Profile`}
+                  className="w-10 h-10 sm:w-12 sm:h-12 rounded-full mr-2"
+                />
+                <span className="block">{friend.username}</span>
+              </div>
+          
             </div>
           ))}
         </div>

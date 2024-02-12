@@ -13,7 +13,7 @@ import {
 } from '../Controller/userConteroller/UserPost.js'
 
 import { follow ,unFollow ,getFollowers ,UsergetFollowers ,mutualFriends } from '../Controller/userConteroller/Follow.js'
-import { chatSend, receiver} from '../Controller/userConteroller/Chating.js'
+import { chatSend, receiver , chatHistories } from '../Controller/userConteroller/Chating.js'
 
 
 router.get('/user-counts',verifyToken, userDashBoard)
@@ -68,6 +68,8 @@ router.put('/users/:userId',verifyToken,editUser)
 
 router.post('/send',verifyToken,chatSend);
 router.get('/:senderId/:receiverId',verifyToken,receiver)
+// router.get('/historyofChat/:senderId',verifyToken,chatHistory)
+router.post('/chatHistories/:userId',verifyToken,chatHistories)
   
 
 

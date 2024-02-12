@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import io from 'socket.io-client';
 import Axios from '@/axious/instance';
 import SideBar from '../SideBar/SideBar';
 import { jwtDecode } from 'jwt-decode';
@@ -9,64 +10,76 @@ const Chat = () => {
     const [selectedUser, setSelectedUser] = useState<any>([]);
     const [inputMessage, setInputMessage] = useState('');
     const [messages, setMessages] = useState([]);
+    const [senderId, setSenderId] = useState('');
+    const [socket, setSocket] = useState<any>(null);
+    const [chatHistory,setChatHistory]=useState<any>([])
 
     useEffect(() => {
-        // Fetch messages when selected user changes
-        if (selectedUser.length > 0) {
-            fetchMessages();
+        const token:any = localStorage.getItem('accessToken');
+        if (!token) {
+            return;
         }
-    }, [selectedUser]);
+        const decodedToken: any = jwtDecode(token);
+        const currentUserId = decodedToken.userId;
 
+
+        const newSocket = io('http://localhost:3000');
+        setSocket(newSocket);
+        console.log('Socket connected');
+
+
+        return () => newSocket.disconnect();
+    }, []);
+
+    useEffect(() => {
+        if (socket) {
+            // Listen for incoming messages
+            socket.on('chat message', (msg: any) => {
+                setMessages((prevMessages: any) => [msg,...prevMessages ]);
+            });
+        }
+    }, [socket]);
     const sendMessage = async () => {
         try {
-            const token = localStorage.getItem('accessToken');
-            if (!token) {
+            if (!socket || !selectedUser || !selectedUser.userId) {
+                console.error('Error: Socket not connected or no recipient selected');
                 return;
             }
 
-            const decodedToken: any = jwtDecode(token);
-            const currentUserId = decodedToken.userId;
-
-            const response = await Axios.post('/api/user/send', {
-                sender: currentUserId,
+            // Send message to the server via WebSocket
+            socket.emit('chat message', {
+                sender: senderId,
                 receiver: selectedUser.userId,
                 content: inputMessage
             });
-            console.log(response.data.message);
-            
-            // After sending message, fetch messages again
-            fetchMessages();
+            await Axios.post('/api/user/send', {
+                sender: senderId,
+                receiver: selectedUser.userId,
+                content: inputMessage
+            });
+           
+
+            // Clear input field after sending message
+            setInputMessage('');
         } catch (error) {
             console.error('Error sending message:', error);
         }
     };
-
-    useEffect(() => {
-        // Fetch messages when selected user changes
-        if (selectedUser.length > 0) {
-            const token = localStorage.getItem('accessToken');
-            if (!token) {
-                return;
-            }
-    
-            const decodedToken: any = jwtDecode(token);
-            const senderId = decodedToken.userId;
-    
-            fetchMessages(senderId);
-        }
-    }, [selectedUser]);
-
-    const fetchMessages = async (senderId:any) => {
+    const fetchMessages = async () => {
         try {
             const token = localStorage.getItem('accessToken');
             if (!token || !selectedUser.userId) {
                 return;
             }
             const decodedToken: any = jwtDecode(token);
+            const currentUserId = decodedToken.userId;
+            setSenderId(currentUserId);
+            console.log(typeof currentUserId)
+
             const receiverId = selectedUser.userId;
-            console.log(senderId, receiverId)
-    
-            const response = await Axios.get(`/api/user/${senderId}/${receiverId}`);
+            console.log(currentUserId, receiverId);
+
+            const response = await Axios.get(`/api/user/${currentUserId}/${receiverId}`);
             const messages = response.data;
             setMessages(messages);
             console.log('Messages:', messages);
@@ -74,23 +87,42 @@ const Chat = () => {
             console.error('Error fetching messages:', error);
         }
     };
-    
-    // Then in useEffect, call fetchMessages with senderId
+
     useEffect(() => {
-        // Fetch messages when selected user changes
-        if (selectedUser.length > 0) {
-            const token = localStorage.getItem('accessToken');
-            if (!token) {
-                return;
-            }
-    
-            const decodedToken: any = jwtDecode(token);
-            const senderId = decodedToken.userId;
-    
-            fetchMessages(senderId);
+        if (selectedUser && selectedUser.userId) {
+            fetchMessages();
         }
     }, [selectedUser]);
-    
+
+    useEffect(() => {
+        const fetchChatHistory = async () => {
+          try {
+            const token = localStorage.getItem('accessToken');
+            if (!token) {
+              return;
+            }
+            const decodedToken: any = jwtDecode(token);
+            const userId = decodedToken.userId;
+            const response = await Axios.post(`/api/user/chatHistories/${userId}`)
+            setChatHistory(response.data);
+            console.log(response.data)
+      
+            // Listen for 'newChatHistory' event
+            socket.on('newChatHistory', (newChatHistory) => {
+              setChatHistory(newChatHistory);
+            });
+      
+          } catch (error) {
+            console.error('Error fetching chat history:', error);
+          }
+        };
+      
+        fetchChatHistory();
+      }, []);
+      
+
+
+
 
     const handleSearch = async () => {
         try {
@@ -112,20 +144,20 @@ const Chat = () => {
         }
     };
 
-    const handleUserClick = (user:any) => {
+    const handleUserClick = (user: any) => {
         setSelectedUser({
             userId: user._id,
             profilePicture: user.profilePicture,
             name: user.username
         });
-        
-        setSearchResults([]); 
-        console.log(selectedUser)
+
+        setSearchResults([]);
+        console.log(selectedUser);
     };
 
     return (
         <div>
-            <SideBar/>
+            <SideBar />
             <div className='bg-gray-950'>
                 <div className="w-full h-32 bg-black"></div>
 
@@ -133,28 +165,13 @@ const Chat = () => {
                     <div className="py-6 h-screen">
                         <div className="flex border border-grey rounded shadow-lg h-full">
                             <div className="w-1/4 border flex flex-col">
-                                <div className="py-2 px-3 bg-gray-200 flex flex-row justify-between items-center">
-                                    <div>
-                                        <img className="w-12 h-12 rounded-full" src="https://source.unsplash.com/random" alt="Profile" />
-                                    </div>
-                                    <div className="flex">
-                                        <div>
-                                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24"><path fill="#727A7E" d="M12 20.664a9.163 9.163 0 0 1-6.521-2.702.977.977 0 0 1 1.381-1.381 7.269 7.269 0 0 0 10.024.244.977.977 0 0 1 1.313 1.445A9.192 9.192 0 0 1 12 20.664zm7.965-6.112a.977.977 0 0 1-.944-1.229 7.26 7.26 0 0 0-4.8-8.804.977.977 0 0 1 .594-1.86 9.212 9.212 0 0 1 6.092 11.169.976.976 0 0 1-.942.724zm-16.025-.39a.977.977 0 0 1-.953-.769 9.21 9.21 0 0 1 6.626-10.86.975.975 0 1 1 .52 1.882l-.015.004a7.259 7.259 0 0 0-5.223 8.558.978.978 0 0 1-.955 1.185z"></path></svg>
-                                        </div>
-                                        <div className="ml-4">
-                                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24"><path opacity=".55" fill="#263238" d="M19.005 3.175H4.674C3.642 3.175 3 3.789 3 4.821V21.02l3.544-3.514h12.461c1.033 0 2.064-1.06 2.064-2.093V4.821c-.001-1.032-1.032-1.646-2.064-1.646zm-4.989 9.869H7.041V11.1h6.975v1.944zm3-4H7.041V7.1h9.975v1.944z"></path></svg>
-                                        </div>
-                                        <div className="ml-4">
-                                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24"><path fill="#263238" fillOpacity=".6" d="M12 7a2 2 0 1 0-.001-4.001A2 2 0 0 0 12 7zm0 2a2 2 0 1 0-.001 3.999A2 2 0 0 0 12 9zm0 6a2 2 0 1 0-.001 3.999A2 2 0 0 0 12 15z"></path></svg>
-                                        </div>
-                                    </div>
-                                </div>
+                                
                                 <div className="px-6 py-4 bg-gray-200">
                                     <div>
-                                        <input 
-                                            type="text" 
-                                            className="w-full px-3 py-2 bg-gray-300 rounded-lg outline-none" 
-                                            placeholder="Search or start new chat" 
+                                        <input
+                                            type="text"
+                                            className="w-full px-3 py-2 bg-gray-300 rounded-lg outline-none"
+                                            placeholder="Search or start new chat"
                                             value={searchQuery}
                                             onChange={handleInputChange}
                                         />
@@ -188,18 +205,28 @@ const Chat = () => {
                                     </div>
                                 </div>
                                 <div className="bg-gray-100 flex-1 overflow-auto">
-                                    <div className='flex mt-2 ml-2'>
-                                        <img src="https://source.unsplash.com/random" className='w-10 h-10 rounded-full' alt="" />
-                                        <h1 className='mt-2.5 ml-4'>hello</h1>
-                                    </div>
-                                </div>
+  {chatHistory.map(chat => (
+    <div className='flex mt-2 ml-2' key={chat._id}>
+      <img 
+        src={`http://localhost:3000/upload/${chat.receiver.profilePicture}`} 
+        className='w-10 h-10 rounded-full cursor-pointer' 
+        alt=""
+        onClick={() => handleUserClick(chat.receiver)}
+      />
+      <h1 className='mt-2.5 ml-4'>{chat.receiver.username}: {chat.message}</h1>
+    </div>
+  ))}
+</div>
+
+
                             </div>
-                            <div className="w-3/4 border flex flex-col">
+                   
+                             <div className="w-3/4 border flex flex-col">
                                 <div className="py-2 px-3 bg-gray-200 flex flex-row justify-between items-center">
                                     <div className="flex items-center">
                                         <div>
                                             <img
-                                                className="w-10 h-10 rounded-full"
+                                                className="w-10 h-10 rounded-full object-cover"
                                                 src={selectedUser ? `http://localhost:3000/upload/${selectedUser.profilePicture}` : 'https://source.unsplash.com/random'}
                                                 alt="Avatar"
                                             />
@@ -222,11 +249,22 @@ const Chat = () => {
                                         </div>
                                     </div>
                                 </div>
-                                <div className="flex-1 overflow-auto" style={{ backgroundColor: '#DAD3CC' }}>
+                                <div className="flex flex-col-reverse flex-1 overflow-auto" style={{ backgroundColor: '#DAD3CC' }}>
+    <div className="text-center py-2 text-gray-600">
+        {new Date().toLocaleDateString()}
+    </div>
     {messages.length > 0 ? (
-        messages.map((message:any, index) => (
-            <div key={index} className={message.sender === senderId ? 'text-right' : 'text-left'}>
-                {message.content && <p>{message.content}</p>}
+        messages.map((message: any, index) => (
+            <div key={index} className={`flex justify-between ${message.sender === senderId ? 'flex-row-reverse' : 'flex-row'}`}>
+                <div className={`bg-gray-300 rounded-lg p-2 ${message.sender === senderId ? 'ml-4' : 'mr-4'}`}>
+                    <p>{message.content}</p>
+                    <div className="flex justify-end items-center mt-1">
+                        <span className="text-xs text-gray-600">{new Date(message.createdAt).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}</span>
+                        {message.sender === senderId && (
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" className="w-4 h-4 ml-1 text-gray-600"><path fillRule="evenodd" d="M0 11a.5.5 0 0 1 .5-.5h4a.5.5 0 0 1 0 1H1.5a.5.5 0 0 1-.5-.5zM7.5 9a.5.5 0 0 1 .5-.5h11a.5.5 0 0 1 0 1h-11a.5.5 0 0 1-.5-.5zM7 14a.5.5 0 0 1 .5-.5h11a.5.5 0 0 1 0 1H7.5a.5.5 0 0 1-.5-.5z"/></svg>
+                        )}
+                    </div>
+                </div>
             </div>
         ))
     ) : (
@@ -234,22 +272,25 @@ const Chat = () => {
     )}
 </div>
 
+
+
                                 <div className="bg-gray-200 px-4 py-4 flex items-center">
-                                    <input 
-                                        type="text" 
-                                        className="w-full px-4 py-2 rounded-lg border focus:outline-none focus:border-indigo-500 text-sm" 
-                                        placeholder="Type your message..." 
+                                    <input
+                                        type="text"
+                                        className="w-full px-4 py-2 rounded-lg border focus:outline-none focus:border-indigo-500 text-sm"
+                                        placeholder="Type your message..."
                                         value={inputMessage}
                                         onChange={(e) => setInputMessage(e.target.value)}
                                     />
-                                    <button 
+                                    <button
                                         className="ml-4 px-4 py-2 bg-blue-500 text-white rounded-lg"
                                         onClick={sendMessage}
                                     >
                                         Send
                                     </button>
                                 </div>
-                            </div>
+                            </div> 
+                       
                         </div>
                     </div>
                 </div>
