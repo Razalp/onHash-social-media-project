@@ -206,17 +206,21 @@ const Chat = () => {
                                 </div>
                                 <div className="bg-gray-100 flex-1 overflow-auto">
   {chatHistory.map(chat => (
-    <div className='flex mt-2 ml-2' key={chat._id}>
+    <div className='flex items-center mt-2 ml-2' key={chat._id}>
       <img 
         src={`http://localhost:3000/upload/${chat.receiver.profilePicture}`} 
         className='w-10 h-10 rounded-full cursor-pointer' 
         alt=""
         onClick={() => handleUserClick(chat.receiver)}
       />
-      <h1 className='mt-2.5 ml-4'>{chat.receiver.username}: {chat.message}</h1>
+      <div className='ml-3'>
+        <h1 className='text-sm font-semibold'>{chat.receiver.username}</h1>
+        <p className='text-sm text-gray-600'>{chat.message}</p>
+      </div>
     </div>
   ))}
 </div>
+
 
 
                             </div>
@@ -250,27 +254,24 @@ const Chat = () => {
                                     </div>
                                 </div>
                                 <div className="flex flex-col-reverse flex-1 overflow-auto" style={{ backgroundColor: '#DAD3CC' }}>
-    <div className="text-center py-2 text-gray-600">
-        {new Date().toLocaleDateString()}
-    </div>
-    {messages.length > 0 ? (
-        messages.map((message: any, index) => (
-            <div key={index} className={`flex justify-between ${message.sender === senderId ? 'flex-row-reverse' : 'flex-row'}`}>
-                <div className={`bg-gray-300 rounded-lg p-2 ${message.sender === senderId ? 'ml-4' : 'mr-4'}`}>
-                    <p>{message.content}</p>
-                    <div className="flex justify-end items-center mt-1">
-                        <span className="text-xs text-gray-600">{new Date(message.createdAt).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}</span>
-                        {message.sender === senderId && (
-                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" className="w-4 h-4 ml-1 text-gray-600"><path fillRule="evenodd" d="M0 11a.5.5 0 0 1 .5-.5h4a.5.5 0 0 1 0 1H1.5a.5.5 0 0 1-.5-.5zM7.5 9a.5.5 0 0 1 .5-.5h11a.5.5 0 0 1 0 1h-11a.5.5 0 0 1-.5-.5zM7 14a.5.5 0 0 1 .5-.5h11a.5.5 0 0 1 0 1H7.5a.5.5 0 0 1-.5-.5z"/></svg>
-                        )}
+            {messages.length > 0 ? (
+                messages.map((message:any, index) => (
+                    <div key={index} className={`flex justify-between ${message.sender === senderId ? 'flex-row-reverse' : 'flex-row'}`}>
+                        <div className={`bg-gray-300 rounded-lg p-2 ${message.sender === senderId ? 'ml-4' : 'mr-4'}`}>
+                            <p>{message.content}</p>
+                            <div className="flex justify-end items-center mt-1">
+                                <span className="text-xs text-gray-600">{new Date(message.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</span>
+                                {message.sender === senderId && (
+                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" className="w-4 h-4 ml-1 text-gray-600"><path fillRule="evenodd" d="M0 11a.5.5 0 0 1 .5-.5h4a.5.5 0 0 1 0 1H1.5a.5.5 0 0 1-.5-.5zM7.5 9a.5.5 0 0 1 .5-.5h11a.5.5 0 0 1 0 1h-11a.5.5 0 0 1-.5-.5zM7 14a.5.5 0 0 1 .5-.5h11a.5.5 0 0 1 0 1H7.5a.5.5 0 0 1-.5-.5z"/></svg>
+                                )}
+                            </div>
+                        </div>
                     </div>
-                </div>
-            </div>
-        ))
-    ) : (
-        <p>No messages to display</p>
-    )}
-</div>
+                ))
+            ) : (
+                <p>No messages to display</p>
+            )}
+        </div>
 
 
 

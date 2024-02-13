@@ -39,7 +39,7 @@
             { sender: senderId, receiver: receiverId }, 
             { sender: receiverId, receiver: senderId },
           ],
-        }).sort({ createdAt: 1 });
+        }).sort({ createdAt: -1 });
     
 
     
@@ -83,10 +83,11 @@
             username: chat.receiver.username,
             profilePicture: chat.receiver.profilePicture
           },
-          message: chat.message,
+          message: chat.content,
           createdAt: chat.createdAt
         }));
-    
+
+        console.log(formattedChats)
         // Emit 'newChatHistory' event to the user
         // Instead of emitting to a specific user, emit to all connected clients
         io.emit('newChatHistory', formattedChats);

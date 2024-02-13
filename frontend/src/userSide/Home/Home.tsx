@@ -116,7 +116,7 @@ const Home = () => {
 
     const fetchPostDetails = async (postId:any) => {
       try {
-        console.log(postId, "postett")
+       
         const token = localStorage.getItem('accessToken');
         if (!token) {
           return;

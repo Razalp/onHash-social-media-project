@@ -50,6 +50,7 @@ const SearchUserProfile = () => {
       const [postLikes, setPostLikes] = useState<any>({});
       const [mutualFriends, setMutualFriends] = useState<any>([]);
       const [mutualOpen ,setMutalClose] =useState(false)
+
       
       useEffect(() => {
         const fetchMutualFriends = async () => {

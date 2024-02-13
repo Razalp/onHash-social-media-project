@@ -19,10 +19,23 @@ const Login = () => {
     const [password, setPassword] = useState('');
     const handleLogIn = async () => {
       try {
+
+        if (!email) {
+          toast.error('Please provide both email .');
+          return;
+        }
+        if (!password) {
+          toast.error('Please provide both password .');
+          return;
+        }
+        
+
         const response = await axios.post('http://localhost:3000/api/user/logIn', {
           email,
           password,
         });
+
+       
     
         if (response.status === 200) {
           const data = response.data;

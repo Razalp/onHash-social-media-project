@@ -49,10 +49,8 @@ const UserProfile = () => {
   const [showCommentBox, setShowCommentBox] = useState(false);
   const [selectedReason, setSelectedReason] = useState("");
   const [error, setError] = useState('')
-
-
+  const [isLoading, setIsLoading] = useState(false);
   const [likeData, SetLikeData] = useState<any[]>([]);
-
   const [commentData, SetCommentData] = useState<any>([])
   const [likeCount, SetLikeCount] = useState<any>('')
   const [commentCount, SetCommentCount] = useState<any>('')
@@ -60,6 +58,28 @@ const UserProfile = () => {
   const [postLikes, setPostLikes] = useState<any>({});
   const [alreadyLike, setAlreadyLike] = useState<boolean>()
   const [mutualFriends, setMutualFriends] = useState([]);
+
+
+  const handleDeleteProfilePicture = async () => {
+    try {
+      const token = localStorage.getItem('accessToken');
+
+      if (!token) {
+        return;
+      }
+
+      const decodedToken: any = jwtDecode(token);
+      const userId = decodedToken.userId;
+      setIsLoading(true);
+      await Axios.delete(`/api/user/delete-profile-picture/${userId}`);
+      setIsLoading(false);
+
+    } catch (error) {
+      console.error('Error deleting profile picture:', error);
+      setIsLoading(false);
+  
+    }
+  };
 
 
 
@@ -427,7 +447,7 @@ const UserProfile = () => {
       <div className="" style={{ height: '100vh', paddingBottom: '10px', marginBottom: '10px' }}>
         <div className="flex items-center justify-center space-x-8 p-8">
           <Takefree user={userData} handleedit={handleEditClick} userpostlength={userPosts.length} followers={followers} following={following}
-            openModal={openModal} opens={opens} getInitials={getInitials}
+            openModal={openModal} opens={opens} getInitials={getInitials} 
           ></Takefree>
         </div>
         <div className="flex items-center justify-items-start flex-col" >
@@ -583,6 +603,13 @@ const UserProfile = () => {
                     <h3 className="text-lg leading-6 font-medium text-gray-900" id="modal-title">
                       Edit Profile
                     </h3>
+                    <br />
+                    <div>
+      <Button variant={"outline"} onClick={handleDeleteProfilePicture} disabled={isLoading} className="mr-36" >
+        {isLoading ? 'Deleting...' : 'Delete Profile Picture'}
+      </Button>
+    </div>
+    <br />
                     <div className="mt-2">
                       <input
                         type="text"

@@ -14,6 +14,7 @@ import {
 
 import { follow ,unFollow ,getFollowers ,UsergetFollowers ,mutualFriends } from '../Controller/userConteroller/Follow.js'
 import { chatSend, receiver , chatHistories } from '../Controller/userConteroller/Chating.js'
+import { deleteProfile } from '../Controller/userConteroller/UserAuth.js';
 
 
 router.get('/user-counts',verifyToken, userDashBoard)
@@ -35,6 +36,7 @@ router.post('/verify-otp',otpVerify)
 router.post('/sign-out',signOut)
 router.post('/resendotp',resendOTP)
 router.post('/update-profile',verifyToken, upload.single('profilePicture'), updateProfile);
+router.delete('/delete-profile-picture/:userId',verifyToken,deleteProfile)
 router.post('/upload-post', verifyToken, upload.array('images', 5), uploadPost);
 router.post('/stories', verifyToken, upload.single('media'),stories)
 router.get('/getStories/:userId',verifyToken,getStories)

@@ -218,21 +218,33 @@ const getStories = async (req, res) => {
   try {
     const userId = req.params.userId;
 
-    // Find the users that the specified user is following
     const following = await Follow.findOne({ user: userId });
     if (!following) {
       return res.status(404).json({ message: "User not found or not following anyone" });
     }
     const followingIds = following.following;
     followingIds.push(userId);
-    const stories = await Story.find({ user: { $in: followingIds } }).populate('user', 'username profilePicture');
-    console.log(stories)
 
-    res.json(stories);
+    // Fetch stories for followed users
+    const stories = await Story.find({ user: { $in: followingIds } }).populate('user', 'username profilePicture');
+
+    // Filter out duplicate users
+    const uniqueUsers = new Map();
+    const uniqueStories = stories.filter(story => {
+      const userId = story.user._id.toString();
+      if (!uniqueUsers.has(userId)) {
+        uniqueUsers.set(userId, true);
+        return true;
+      }
+      return false;
+    });
+console.log(uniqueStories)
+    res.json(uniqueStories);
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
 };
+
 
 
 import {io} from '../../server.js'

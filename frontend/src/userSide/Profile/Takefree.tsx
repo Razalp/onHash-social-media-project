@@ -1,6 +1,6 @@
 import React from 'react';
 
-const Takefree = ({user,handleedit ,userpostlength ,followers, following ,openModal ,opens ,getInitials}) => {
+const Takefree = ({user,handleedit ,userpostlength ,followers, following ,openModal ,opens ,getInitials   }) => {
   const profilePictureUrl = user.profilePicture
   ? `http://localhost:3000/upload/${user.profilePicture}`
   : `https://ui-avatars.com/api/?name=${getInitials(user.username)}&background=random&size=200`;
