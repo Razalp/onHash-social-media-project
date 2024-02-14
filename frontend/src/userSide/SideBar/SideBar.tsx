@@ -36,7 +36,7 @@ const SideBar = () => {
       {isOpen && (
         <div>
           <div className="p-4 ">
-            <img src={HashOnImage} alt="HashOn Logo" className="size-10 mb-4" />
+            <img src={HashOnImage} alt="HashOn Logo" className="size-10 mb-4 " />
           </div>
 
           <ul className="flex flex-col relative left-10 space-y-8 ">

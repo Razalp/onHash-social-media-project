@@ -312,6 +312,8 @@ const SearchUserProfile = () => {
               setIsFollowing(true);
               localStorage.setItem(`isFollowing_${userId}`, 'true');
               toast.success('You are now following this user');
+              // Update follower count
+              setFollowers(prevCount => prevCount + 1);
           } else {
               toast.error('Error following user');
           }
@@ -331,6 +333,8 @@ const SearchUserProfile = () => {
               setIsFollowing(false);
               localStorage.setItem(`isFollowing_${userId}`, 'false');
               toast.success('You have unfollowed this user');
+              // Update follower count
+              setFollowers(prevCount => prevCount - 1);
           } else {
               toast.error('Error unfollowing user');
           }
@@ -339,6 +343,7 @@ const SearchUserProfile = () => {
           toast.error('Error unfollowing user');
       }
   };
+  
   
 
   const getCurrentUserId = () => {

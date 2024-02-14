@@ -1,5 +1,3 @@
-// StoryModel.js
-
 import mongoose from 'mongoose';
 const { Schema } = mongoose;
 
@@ -23,7 +21,7 @@ const storySchema = new Schema({
     },
     expiresAt: {
         type: Date,
-        required: true,
+        default: () => Date.now() + 60000,
     },
     viewers: [
         {
@@ -33,6 +31,8 @@ const storySchema = new Schema({
     ],
 });
 
+storySchema.index({ expiresAt: 1 }, { expireAfterSeconds: 0 });
+
 const Story = mongoose.model('Story', storySchema);
 
-export default mongoose.models.Story || mongoose.model('Story', storySchema);
+export default Story;

@@ -76,8 +76,8 @@ const Login = () => {
     <>
     <ToastContainer position="top-center" autoClose={5000} hideProgressBar={false} newestOnTop={false} closeOnClick pauseOnFocusLoss draggable pauseOnHover />
       <div className='header flex items-center relative top-5 left-10'>
-        <img src={HashOnImage} className='logo size-24 relative left-4' alt="" />
-        <h1 className='text-4xl font-bold relative left-8'>HashOn</h1>
+        <img src={HashOnImage} className='logo size-24 relative left-4 animate-bounce' alt="" />
+        <h1 className='text-4xl font-bold relative left-8 animate-bounce'>HashOn</h1>
       </div>
       <div className='relative top-20 main-container flex flex-col-reverse lg:flex-row justify-center items-center space-y-8 lg:space-y-0'>
         <div className='login-form flex flex-col justify-between lg:mr-8'>

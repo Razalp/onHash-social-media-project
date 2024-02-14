@@ -305,7 +305,7 @@ const Home = () => {
 >
   <FontAwesomeIcon
     icon={faHeart}
-    className={`icon-button ${postLikes[post._id] ? 'text-red-600' : 'text-white'}`}
+    className={`icon-button ${postLikes[post._id] ? 'text-red-600' : 'text-white'} hover:animate-bounce`}
     style={{ fontSize: '26px' }}
   />
 </button>
