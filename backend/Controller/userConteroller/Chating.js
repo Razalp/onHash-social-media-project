@@ -1,6 +1,7 @@
   import Chat from '../../Model/Chat.js'; 
   import User from '../../Model/UserModel.js'
   import { io } from '../../server.js'; 
+  import Notification from '../../Model/NotificationsSchema.js'
 
   const chatSend = async function chatSend(req, res) {
     try {
@@ -88,8 +89,7 @@
         }));
 
         console.log(formattedChats)
-        // Emit 'newChatHistory' event to the user
-        // Instead of emitting to a specific user, emit to all connected clients
+
         io.emit('newChatHistory', formattedChats);
     
         res.json(formattedChats);
@@ -101,9 +101,61 @@
     
 
 
+    const notificationsOfUser = async (req, res) => {
+      try {
+        const userId = req.params.userId;
+        const user = await User.findById(userId);
+        if (!user) {
+          return res.status(404).json({ error: 'User not found' });
+        }
+    
+        const notifications = await Notification.find({ user: userId }).sort({ createdAt: -1 });
+    
+        const notificationsWithUserInfo = await Promise.all(
+          notifications.map(async (notification) => {
+            const linkUserId = notification.link;
+            const linkedUser = await User.findById(linkUserId);
+            if (linkedUser) {
+              return {
+                ...notification.toJSON(),
+                linkedUserProfile: linkedUser.profilePicture,
+                linkedUserUsername: linkedUser.username
+              };
+            } else {
+              return notification.toJSON();
+            }
+          })
+        );
+    
+ 
+        io.emit(`notifications_${userId}`, notificationsWithUserInfo); // Emit notifications for the specific user
+    
+        res.json(notificationsWithUserInfo);
+      } catch (error) {
+        console.error(error);
+        res.status(500).json({ error: 'Internal server error' });
+      }
+    };
 
-
+    const deleteNotification = async (req, res) => {
+      try {
+        const notificationId = req.params.notificationId;
+    
+        // Delete the notification by ID
+        const deletedNotification = await Notification.findByIdAndDelete(notificationId);
+    
+        // Check if the notification was found and deleted
+        if (!deletedNotification) {
+          return res.status(404).json({ error: 'Notification not found' });
+        }
+    
+        res.json({ message: 'Notification deleted successfully' });
+      } catch (error) {
+        console.error(error);
+        res.status(500).json({ error: 'Internal server error' });
+      }
+    };
 
    
     
-  export { chatSend, receiver ,chatHistories  };
+  export { chatSend, receiver ,chatHistories ,notificationsOfUser,deleteNotification  };

@@ -3,6 +3,7 @@ import io from 'socket.io-client';
 import Axios from '@/axious/instance';
 import SideBar from '../SideBar/SideBar';
 import { jwtDecode } from 'jwt-decode';
+import Online from './Online world-pana (1).png'
 
 const Chat = () => {
     const [searchQuery, setSearchQuery] = useState('');
@@ -13,6 +14,7 @@ const Chat = () => {
     const [senderId, setSenderId] = useState('');
     const [socket, setSocket] = useState<any>(null);
     const [chatHistory,setChatHistory]=useState<any>([])
+
 
     useEffect(() => {
         const token:any = localStorage.getItem('accessToken');
@@ -39,6 +41,9 @@ const Chat = () => {
             });
         }
     }, [socket]);
+    
+
+
     const sendMessage = async () => {
         try {
             if (!socket || !selectedUser || !selectedUser.userId) {
@@ -123,7 +128,6 @@ const Chat = () => {
 
 
 
-
     const handleSearch = async () => {
         try {
             const response = await Axios.get(`/api/user/searchUser?query=${searchQuery}`);
@@ -158,8 +162,8 @@ const Chat = () => {
     return (
         <div>
             <SideBar />
-            <div className='bg-gray-950'>
-                <div className="w-full h-32 bg-black"></div>
+            <div className='bg-black border-black'>
+                <div className="w-full h-32 bg-black  border-black"></div>
 
                 <div className="container mx-auto" style={{ marginTop: '-128px' }}>
                     <div className="py-6 h-screen">
@@ -224,8 +228,8 @@ const Chat = () => {
 
 
                             </div>
-                   
-                             <div className="w-3/4 border flex flex-col">
+                             {selectedUser?.userId ? ( 
+                              <div className="w-3/4 border flex flex-col">
                                 <div className="py-2 px-3 bg-gray-200 flex flex-row justify-between items-center">
                                     <div className="flex items-center">
                                         <div>
@@ -291,6 +295,12 @@ const Chat = () => {
                                     </button>
                                 </div>
                             </div> 
+                            ):
+                            <div className='border border-black'>
+                            <img src={Online} className='w-full h-full ml-16' alt="" />
+                        </div>
+                        
+                        }
                        
                         </div>
                     </div>

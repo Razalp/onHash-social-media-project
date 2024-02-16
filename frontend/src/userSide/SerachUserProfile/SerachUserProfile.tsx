@@ -51,7 +51,7 @@ const SearchUserProfile = () => {
       const [mutualFriends, setMutualFriends] = useState<any>([]);
       const [mutualOpen ,setMutalClose] =useState(false)
 
-      
+     
       useEffect(() => {
         const fetchMutualFriends = async () => {
             try {

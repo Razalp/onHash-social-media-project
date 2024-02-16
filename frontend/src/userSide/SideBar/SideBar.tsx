@@ -6,6 +6,7 @@ import HashOnImage from '../../assets/HashOn.png';
 import './SideBar.css';
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faHome, faSearch, faCompass, faVideo, faEnvelope, faBell, faPlusCircle, faUser, faEllipsisV, faSignOutAlt, faArrowLeft, faArrowRight } from "@fortawesome/free-solid-svg-icons";
+import Notifications from '../Notifications/Notifications';
 
 const SideBar = () => {
   const [isOpen, setIsOpen] = useState(true);
@@ -44,7 +45,7 @@ const SideBar = () => {
             <li className="hover:text-blue-200 text-sm"><Link to="/search"><FontAwesomeIcon className='size-4' icon={faSearch} /> &nbsp; Search </Link></li>
             <li className="hover:text-blue-200 text-sm"><FontAwesomeIcon className='size-4' icon={faVideo} /> &nbsp; Reels</li>
             <li className="hover:text-blue-200 text-sm"><Link to='/chat'><FontAwesomeIcon icon={faEnvelope} /> &nbsp; Message </Link></li>
-            <li className="hover:text-blue-200 text-sm"><FontAwesomeIcon className='size-4' icon={faBell} /> &nbsp; Notifications</li>
+            <li className="hover:text-blue-200 text-sm flex"><FontAwesomeIcon className='size-4' icon={faBell} /> &nbsp; &nbsp; <Notifications/></li>
             <li className="hover:text-blue-200 text-sm"><Link to='/create'><FontAwesomeIcon className='size-4' icon={faPlusCircle} /> &nbsp; Create </Link></li>
             <li className="hover:text-blue-200 text-sm"><Link to='/profile'><FontAwesomeIcon icon={faUser} /> &nbsp; Profile</Link></li>
             <li className="hover:text-blue-200 text-sm"><FontAwesomeIcon className='size-4' icon={faEllipsisV} /> &nbsp; More</li>

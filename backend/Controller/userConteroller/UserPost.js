@@ -204,7 +204,7 @@ const stories = async (req, res) => {
       media: fileName, 
       expiresAt,
     });
-
+console.log('sror created')
     const savedStory = await newStory.save();
 
     res.status(201).json(savedStory);
@@ -238,7 +238,7 @@ const getStories = async (req, res) => {
       }
       return false;
     });
-console.log(uniqueStories)
+
     res.json(uniqueStories);
   } catch (error) {
     res.status(500).json({ message: error.message });
@@ -246,27 +246,25 @@ console.log(uniqueStories)
 };
 
 
+const deletePost=async (req, res) => {
+  const { postId } = req.params;
 
-import {io} from '../../server.js'
-
-const notificationsOfUser = async (req, res) => {
   try {
-    const userId = req.params.userId;
-    const user = await User.findById(userId);
-    if (!user) {
-      return res.status(404).json({ error: 'User not found' });
+    const deletedPost = await Post.findByIdAndDelete(postId);
+
+    if (!deletedPost) {
+  
+      return res.status(404).json({ message: 'Post not found' });
     }
 
-    const notifications = await Notification.find({ user: userId }).sort({ createdAt: -1 });
-
-    io.to(userId).emit('newNotifications', { userId, notifications }); 
-
-    res.json(notifications);
+    return res.status(200).json({ message: 'Post deleted successfully' });
   } catch (error) {
-    console.error(error);
-    res.status(500).json({ error: 'Internal server error' });
+
+    console.error('Error deleting post:', error);
+    return res.status(500).json({ message: 'Internal Server Error' });
   }
 };
+
 
 
 
@@ -283,5 +281,6 @@ const notificationsOfUser = async (req, res) => {
     homePost, 
     stories,
     getStories,
-    notificationsOfUser
+    deletePost
+
   }

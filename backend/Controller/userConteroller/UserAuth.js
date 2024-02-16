@@ -376,6 +376,4 @@ export {
     userDashBoard,
     getProfile,
     deleteProfile
-
-    
 }

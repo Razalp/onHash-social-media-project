@@ -2,7 +2,7 @@
 import User from '../../Model/UserModel.js';
 import Follow from '../../Model/FollowSchema.js';
 import Notification from '../../Model/NotificationsSchema.js';
-
+import { io } from '../../server.js'; 
 
 // Follow user
 const follow = async (req, res) => {
@@ -25,7 +25,9 @@ const follow = async (req, res) => {
         );
 
         // Create a notification for the followed user
-        await createNotification(userId, `${currentUserId} followed you.`, currentUserId);
+
+        await createNotification(userId, `start follow you.`, currentUserId);
+
 
         res.json({ currentUser, followedUser });
     } catch (error) {
@@ -54,7 +56,9 @@ const unFollow = async (req, res) => {
         );
 
         // Create a notification for the unfollowed user
-        await createNotification(userId, ` unfollowed you.`,currentUserId);
+        await createNotification(userId, `unfollowed you.`, currentUserId);
+
+
 
         res.json({ currentUser, unfollowedUser });
     } catch (error) {
@@ -71,11 +75,13 @@ async function createNotification(userId, message, link) {
             link
         });
         await notification.save();
+        io.emit(`notifications_${userId}`, notification); // Emit notification to the specific user
     } catch (error) {
         console.error('Error creating notification:', error);
         throw error;
     }
 }
+
 
 const getFollowers = async (req, res) => {
     try {

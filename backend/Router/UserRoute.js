@@ -9,22 +9,23 @@ import {
 } from '../Controller/userConteroller/UserAuth.js ';
 
 import {
-  myPost ,searchUser ,LikePost,comments ,report,getPostDetails ,homePost,stories,getStories,notificationsOfUser
+  myPost ,searchUser ,LikePost,comments ,report,getPostDetails ,homePost,stories,getStories,deletePost
 } from '../Controller/userConteroller/UserPost.js'
 
 import { follow ,unFollow ,getFollowers ,UsergetFollowers ,mutualFriends } from '../Controller/userConteroller/Follow.js'
-import { chatSend, receiver , chatHistories } from '../Controller/userConteroller/Chating.js'
+import { chatSend, receiver , chatHistories ,notificationsOfUser,deleteNotification } from '../Controller/userConteroller/Chating.js'
 import { deleteProfile } from '../Controller/userConteroller/UserAuth.js';
 
 
 router.get('/user-counts',verifyToken, userDashBoard)
 router.get('/get-profile/:userId',verifyToken,getProfile)
 router.get('/my-post/:userId', verifyToken, myPost);
+router.delete('/post/delete/:postId',verifyToken,deletePost)
 
 router.get('/serachUser-post/:userId', verifyToken, myPost);
 router.get('/searchUser',verifyToken,searchUser)
 router.get('/notifications/:userId', verifyToken, notificationsOfUser)
-
+router.delete('/notifications/:notificationId',verifyToken,deleteNotification)
 
 
 

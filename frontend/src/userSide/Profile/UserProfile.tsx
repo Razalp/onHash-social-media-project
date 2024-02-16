@@ -60,6 +60,40 @@ const UserProfile = () => {
   const [mutualFriends, setMutualFriends] = useState([]);
 
 
+  const handleDeletePost = async () => {
+    try {
+      // Display confirmation dialog using SweetAlert
+      const confirmResult = await Swal.fire({
+        title: 'Are you sure?',
+        text: "You won't be able to revert this!",
+
+        showCancelButton: true,
+        confirmButtonColor: '#000',
+        cancelButtonColor: '#000',
+        confirmButtonText: 'Yes, delete it!',
+      });
+  
+
+      if (confirmResult.isConfirmed) {
+        const response = await Axios.delete(`/api/user/post/delete/${selectedPost.post._id}`);
+        if (response.status === 200) {
+          console.log(response.data.message);
+
+          Swal.fire('Deleted!', 'Your post has been deleted.', 'success');
+        } else {
+          console.error(response.data.message);
+          Swal.fire('Error', 'Failed to delete the post.', 'error');
+        }
+      }
+    } catch (error) {
+      console.error('Error deleting post:', error);
+
+      Swal.fire('Error', 'Failed to delete the post.', 'error');
+    }
+  };
+
+
+
   const handleDeleteProfilePicture = async () => {
     try {
       const token = localStorage.getItem('accessToken');
@@ -539,6 +573,7 @@ const UserProfile = () => {
                         style={{ fontSize: '26px' }}
                       />
                     </div>
+                    <button onClick={handleDeletePost} className="text-red-600">Delete</button>
                   </div>
                   <br />
                   <div className="flex justify-between">
