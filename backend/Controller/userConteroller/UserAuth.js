@@ -7,6 +7,7 @@ import UserOtp from "../../Model/UserOtpModel.js";
 import multer from 'multer';
 import path from 'path';
 import Post from '../../Model/PostSchema.js'
+import internal from "stream";
 
 
 // import repository from '../../repository/repository.js   
@@ -96,6 +97,9 @@ const otpVerify = async (req, res) => {
     }
 };
 
+
+
+
 const resendOTP = async (req, res) => {
     try {
         const { email } = req.body;
@@ -122,7 +126,6 @@ const resendOTP = async (req, res) => {
         res.status(500).json({ error: 'Internal Server Error' });
     }
 };
-
 
 
     const login = async (req, res) => {
@@ -280,6 +283,28 @@ const updateProfile = async (req, res) => {
             res.status(500).json({ message: 'Internal Server Error' });
         }
     };
+
+    const changePassword=async (req,res)=>{
+        try{
+            const {userId} =req.body.params
+            if(!userId){
+                return res.json("there is no user")
+            }
+            const user=User.findById({userId});
+            if (req.body.password) user.password = req.body.password;
+
+            const updatedUser = await user.save();
+    
+            
+    
+        }catch(error){
+
+            res.status(500).json({message:'Internal Server Error'})
+        }
+    }
+    
+
+
     const uploadPost = async (req, res) => {
         try {
             if (!req.userId) {
@@ -375,5 +400,6 @@ export {
     uploadPost,
     userDashBoard,
     getProfile,
-    deleteProfile
+    deleteProfile,
+    changePassword
 }

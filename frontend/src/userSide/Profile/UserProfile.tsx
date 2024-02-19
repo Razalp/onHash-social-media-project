@@ -672,7 +672,7 @@ const UserProfile = () => {
                         onChange={handleFileChange}
                       />
 
-                      <img alt="Preview" className="mt-2 max-w-full" />
+                    
 
                     </div>
                   </div>

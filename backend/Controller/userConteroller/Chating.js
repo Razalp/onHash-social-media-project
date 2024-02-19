@@ -8,17 +8,20 @@
         // Extract sender, receiver, and content from request body
         const { sender, receiver, content } = req.body;
 
-        // Create a new message using the Chat model
+        // Image file, if provided
+        const image = req.file ? req.file.filename : null;
+
+        // Create a new message using the Message model
         const newMessage = new Chat({
             sender,
             receiver,
             content,
+            image: image || null,
         });
 
-    
         await newMessage.save();
 
-
+        // Emit the message to the receiver's room
         io.emit(`message-${receiver}`, newMessage);
 
         // Respond with success message
@@ -28,8 +31,7 @@
         console.error(error);
         res.status(500).json({ message: 'Internal server error' });
     }
-}
-
+};
   const receiver = async (req, res) => {
       try {
         const { senderId, receiverId } = req.params; 
@@ -43,7 +45,7 @@
         }).sort({ createdAt: -1 });
     
 
-    
+
         res.status(200).json(messages);
       } catch (error) {
         console.error(error);
@@ -88,7 +90,7 @@
           createdAt: chat.createdAt
         }));
 
-        console.log(formattedChats)
+        // console.log(formattedChats)
 
         io.emit('newChatHistory', formattedChats);
     

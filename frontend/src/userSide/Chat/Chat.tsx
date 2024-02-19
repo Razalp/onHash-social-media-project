@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import io from 'socket.io-client';
 import Axios from '@/axious/instance';
 import SideBar from '../SideBar/SideBar';
@@ -14,21 +14,34 @@ const Chat = () => {
     const [senderId, setSenderId] = useState('');
     const [socket, setSocket] = useState<any>(null);
     const [chatHistory,setChatHistory]=useState<any>([])
+    const [selectedImage, setSelectedImage] = useState(null);
+    const [showModal, setShowModal] = useState(false);
+    const fileInputRef = useRef(null);
+    
 
+    const handleFileInputChange = (e) => {
+        const image = e.target.files[0];
+        setSelectedImage(image); // Update selectedImage state
+        setShowModal(true); // Show modal when an image is selected
+    };
+    
+
+    const handleCloseModal = () => {
+        setSelectedImage(null);
+        setShowModal(false);
+    };
 
     useEffect(() => {
-        const token:any = localStorage.getItem('accessToken');
+        const token: any = localStorage.getItem('accessToken');
         if (!token) {
             return;
         }
         const decodedToken: any = jwtDecode(token);
         const currentUserId = decodedToken.userId;
 
-
         const newSocket = io('http://localhost:3000');
         setSocket(newSocket);
         console.log('Socket connected');
-
 
         return () => newSocket.disconnect();
     }, []);
@@ -37,65 +50,77 @@ const Chat = () => {
         if (socket) {
             // Listen for incoming messages
             socket.on('chat message', (msg: any) => {
-                setMessages((prevMessages: any) => [msg,...prevMessages ]);
+                // When a new message arrives, refetch messages
+           
+                setMessages((prevMessages: any) => [msg, ...prevMessages]);
             });
         }
     }, [socket]);
     
 
-
-    const sendMessage = async () => {
-        try {
-            if (!socket || !selectedUser || !selectedUser.userId) {
-                console.error('Error: Socket not connected or no recipient selected');
-                return;
-            }
-
-            // Send message to the server via WebSocket
-            socket.emit('chat message', {
-                sender: senderId,
-                receiver: selectedUser.userId,
-                content: inputMessage
-            });
-            await Axios.post('/api/user/send', {
-                sender: senderId,
-                receiver: selectedUser.userId,
-                content: inputMessage
-            });
-           
-
-            // Clear input field after sending message
-            setInputMessage('');
-        } catch (error) {
-            console.error('Error sending message:', error);
+   // Update the sendMessage function to send the image file along with the message
+const sendMessage = async () => {
+    try {
+        if (!socket || !selectedUser || !selectedUser.userId) {
+            console.error('Error: Socket not connected or no recipient selected');
+            return;
         }
-    };
-    const fetchMessages = async () => {
-        try {
-            const token = localStorage.getItem('accessToken');
-            if (!token || !selectedUser.userId) {
-                return;
-            }
-            const decodedToken: any = jwtDecode(token);
-            const currentUserId = decodedToken.userId;
-            setSenderId(currentUserId);
-            console.log(typeof currentUserId)
 
-            const receiverId = selectedUser.userId;
-            console.log(currentUserId, receiverId);
-
-            const response = await Axios.get(`/api/user/${currentUserId}/${receiverId}`);
-            const messages = response.data;
-            setMessages(messages);
-            console.log('Messages:', messages);
-        } catch (error) {
-            console.error('Error fetching messages:', error);
+        // Create FormData object to send the image file to the server
+        const formData = new FormData();
+        formData.append('sender', senderId);
+        formData.append('receiver', selectedUser.userId);
+        formData.append('content', inputMessage);
+        if (selectedImage) {
+            formData.append('image', selectedImage); // Append the image file directly
         }
-    };
 
+        // Send message to the server via WebSocket
+        socket.emit('chat message', {
+            sender: senderId,
+            receiver: selectedUser.userId,
+            content: inputMessage,
+            image: selectedImage ? selectedImage.name : null,
+        });
+
+        // Send the FormData object containing the image file to the server
+        await Axios.post('/api/user/send', formData);
+
+        // Clear input field after sending message
+        setInputMessage('');
+        setSelectedImage(null);
+        setShowModal(false);
+         fetchMessages();
+    } catch (error) {
+        console.error('Error sending message:', error);
+    }
+};
+
+    
+    
+const fetchMessages = async () => {
+    try {
+        const token = localStorage.getItem('accessToken');
+        if (!token || !selectedUser.userId) {
+            return;
+        }
+        const decodedToken: any = jwtDecode(token);
+        const currentUserId = decodedToken.userId;
+        setSenderId(currentUserId);
+
+        const receiverId = selectedUser.userId;
+
+        const response = await Axios.get(`/api/user/${currentUserId}/${receiverId}`);
+        const messages = response.data;
+        setMessages(messages);
+    } catch (error) {
+        console.error('Error fetching messages:', error);
+    }
+};
     useEffect(() => {
         if (selectedUser && selectedUser.userId) {
             fetchMessages();
+            
         }
     }, [selectedUser]);
 
@@ -258,42 +283,88 @@ const Chat = () => {
                                     </div>
                                 </div>
                                 <div className="flex flex-col-reverse flex-1 overflow-auto" style={{ backgroundColor: '#DAD3CC' }}>
-            {messages.length > 0 ? (
-                messages.map((message:any, index) => (
-                    <div key={index} className={`flex justify-between ${message.sender === senderId ? 'flex-row-reverse' : 'flex-row'}`}>
-                        <div className={`bg-gray-300 rounded-lg p-2 ${message.sender === senderId ? 'ml-4' : 'mr-4'}`}>
-                            <p>{message.content}</p>
-                            <div className="flex justify-end items-center mt-1">
-                                <span className="text-xs text-gray-600">{new Date(message.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</span>
-                                {message.sender === senderId && (
-                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" className="w-4 h-4 ml-1 text-gray-600"><path fillRule="evenodd" d="M0 11a.5.5 0 0 1 .5-.5h4a.5.5 0 0 1 0 1H1.5a.5.5 0 0 1-.5-.5zM7.5 9a.5.5 0 0 1 .5-.5h11a.5.5 0 0 1 0 1h-11a.5.5 0 0 1-.5-.5zM7 14a.5.5 0 0 1 .5-.5h11a.5.5 0 0 1 0 1H7.5a.5.5 0 0 1-.5-.5z"/></svg>
-                                )}
-                            </div>
-                        </div>
-                    </div>
-                ))
-            ) : (
-                <p>No messages to display</p>
+                                {messages.length > 0 ? (
+    messages.map((message: any, index) => (
+        <div key={index} className={`flex justify-between ${message.sender === senderId ? 'flex-row-reverse' : 'flex-row'}`}>
+            <div className={`bg-gray-300 rounded-lg p-2 ${message.sender === senderId ? 'ml-4' : 'mr-4'}`}>
+                {message.image ? (
+                    // If the message contains an image, render the image
+                    <img src={`http://localhost:3000/upload/${message.image}`} alt="message-image" className="w-72 h-80 mb-2" />
+                ) : (
+                    // If the message is text, render the text content
+                    <p>{message.content}</p>
+                )}
+                <div className="flex justify-end items-center mt-1">
+                    <span className="text-xs text-gray-600">{new Date(message.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</span>
+                    {message.sender === senderId && (
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" className="w-4 h-4 ml-1 text-gray-600"><path fillRule="evenodd" d="M0 11a.5.5 0 0 1 .5-.5h4a.5.5 0 0 1 0 1H1.5a.5.5 0 0 1-.5-.5zM7.5 9a.5.5 0 0 1 .5-.5h11a.5.5 0 0 1 0 1h-11a.5.5 0 0 1-.5-.5zM7 14a.5.5 0 0 1 .5-.5h11a.5.5 0 0 1 0 1H7.5a.5.5 0 0 1-.5-.5z"/></svg>
+                    )}
+                </div>
+            </div>
+        </div>
+    ))
+) : (
+    <p>No messages to display</p>
+)}
+</div>
+
+
+
+        <div>
+        <div className="bg-gray-200 px-4 py-4 flex items-center">
+    <input
+        type="text"
+        className="w-full px-4 py-2 rounded-lg border focus:outline-none focus:border-indigo-500 text-sm"
+        placeholder="Type your message..."
+        value={inputMessage}
+        onChange={(e) => setInputMessage(e.target.value)}
+    />
+   <button
+    className="ml-4 px-4 py-2 bg-black hover:bg-gray-700 text-white rounded-lg w-24"
+    onClick={sendMessage}
+>
+    Send
+</button>
+<input
+    type="file"
+    accept="image/*"
+    className="hidden"
+    ref={fileInputRef}
+    onChange={(e) => handleFileInputChange(e)}
+/>
+<button
+    className="ml-2 px-4 py-2 bg-black hover:bg-gray-700 text-white rounded-lg w-32"
+    onClick={() => fileInputRef.current.click()}
+>
+     🗃️ 
+</button>
+
+</div>
+
+
+{showModal && (
+    <div className="fixed inset-0 flex justify-center items-center bg-gray-800 bg-opacity-50">
+        <div className="bg-white w-96 p-8 rounded-lg flex flex-col items-center justify-center">
+            {selectedImage && typeof selectedImage === 'object' && (
+                <img src={URL.createObjectURL(selectedImage)} alt="Selected" className="mb-4" />
             )}
+
+            <div className="flex justify-between w-full">
+                <button onClick={handleCloseModal} className="bg-black hover:bg-gray-700 text-white font-bold py-2 px-4 rounded mr-2">
+                    Cancel
+                </button>
+                <button onClick={sendMessage} className="bg-black hover:bg-gray-700 text-white font-bold py-2 px-4 rounded">
+                    Send
+                </button>
+            </div>
+        </div>
+    </div>
+)}
+
+
+
         </div>
 
-
-
-                                <div className="bg-gray-200 px-4 py-4 flex items-center">
-                                    <input
-                                        type="text"
-                                        className="w-full px-4 py-2 rounded-lg border focus:outline-none focus:border-indigo-500 text-sm"
-                                        placeholder="Type your message..."
-                                        value={inputMessage}
-                                        onChange={(e) => setInputMessage(e.target.value)}
-                                    />
-                                    <button
-                                        className="ml-4 px-4 py-2 bg-blue-500 text-white rounded-lg"
-                                        onClick={sendMessage}
-                                    >
-                                        Send
-                                    </button>
-                                </div>
                             </div> 
                             ):
                             <div className='border border-black'>

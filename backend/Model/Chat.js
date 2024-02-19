@@ -1,5 +1,3 @@
-// MessageModel.js
-
 import mongoose from 'mongoose';
 const { Schema } = mongoose;
 
@@ -16,13 +14,15 @@ const messageSchema = new Schema({
     },
     content: {
         type: String,
-        required: true,
+
+    },
+    image: {
+        type: String,
     },
     createdAt: {
         type: Date,
         default: Date.now,
     },
-
 });
 
 const Message = mongoose.model('Message', messageSchema);

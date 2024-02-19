@@ -5,7 +5,7 @@ import verifyRefreshToken from '../MiddelWare/refreshToken.js';
 import upload from '../MiddelWare/multerConfig.js';
 const router=express.Router();
 import {
-    signIn, login ,otpVerify, signOut, resendOTP, updateProfile ,editUser,uploadPost,userDashBoard,getProfile
+    signIn, login ,otpVerify, signOut, resendOTP, updateProfile ,editUser,uploadPost,userDashBoard,getProfile ,changePassword
 } from '../Controller/userConteroller/UserAuth.js ';
 
 import {
@@ -69,7 +69,7 @@ router.put('/users/:userId',verifyToken,editUser)
 
 //chat 
 
-router.post('/send',verifyToken,chatSend);
+router.post('/send', verifyToken, upload.single('image'), chatSend);
 router.get('/:senderId/:receiverId',verifyToken,receiver)
 // router.get('/historyofChat/:senderId',verifyToken,chatHistory)
 router.post('/chatHistories/:userId',verifyToken,chatHistories)
