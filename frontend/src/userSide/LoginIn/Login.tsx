@@ -104,6 +104,8 @@ const Login = () => {
                     </button>
             <button className='btn-white'><Link to='/sign-up'>Sign-up</Link></button>
           </div>
+          <br />
+          <button className='mr-24'><Link to='/forgetpasswod'>forget passwod</Link></button>
         </div>
         <div>
           <img src={sideView} className='size-96' alt="" />

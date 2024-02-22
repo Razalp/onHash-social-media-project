@@ -42,7 +42,7 @@ const Story = () => {
     }
   };
 
-  useEffect(() => {
+
     const fetchStories = async () => {
       try {
         const token = localStorage.getItem('accessToken');
@@ -63,9 +63,11 @@ const Story = () => {
         console.error('Error fetching stories:', error);
       }
     };
-  
-    fetchStories();
-  }, []);
+useEffect(()=>{
+  fetchStories()
+},[])
+
+
 
   const navigate = useNavigate();
 
@@ -115,6 +117,7 @@ const Story = () => {
         };
 
         fetchUserData();
+        
       }
     } catch (error) {
       console.error('Error decoding token:', error);
@@ -152,6 +155,7 @@ const Story = () => {
       const response = await Axios.post('/api/user/stories', formData);
       setShowModal(false);
       setShowModal(false);
+      fetchStories()
     } catch (error) {
       console.error('Error creating story:', error);
     }

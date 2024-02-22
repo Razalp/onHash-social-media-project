@@ -64,6 +64,27 @@ const myPost= async (req, res) => {
     }
 };
 
+const randomUser= async (req, res) => {
+  try {
+    const randomUsers = await User.aggregate([{ $sample: { size: 3 } }]);
+    res.json(randomUsers);
+    console.log(randomUsers)
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: 'Internal server error' });
+  }
+};
+// const randomUser= async (req, res) => {
+//   try {
+//     const randomUsers = await User.find({})
+//     res.json(randomUsers);
+//     console.log(randomUsers)
+//   } catch (error) {
+//     console.error(error);
+//     res.status(500).json({ message: 'Internal server error' });
+//   }
+// };
+
 const comments = async (req, res) => {
     const { postId } = req.params;
     const { currentUserId, text } = req.body;
@@ -281,6 +302,7 @@ const deletePost=async (req, res) => {
     homePost, 
     stories,
     getStories,
-    deletePost
+    deletePost,
+    randomUser
 
   }

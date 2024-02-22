@@ -5,11 +5,11 @@ import verifyRefreshToken from '../MiddelWare/refreshToken.js';
 import upload from '../MiddelWare/multerConfig.js';
 const router=express.Router();
 import {
-    signIn, login ,otpVerify, signOut, resendOTP, updateProfile ,editUser,uploadPost,userDashBoard,getProfile ,changePassword
+    signIn, login ,otpVerify, signOut, resendOTP, updateProfile ,editUser,uploadPost,userDashBoard,getProfile ,changePassword,forgotPassword, resetPassword 
 } from '../Controller/userConteroller/UserAuth.js ';
 
 import {
-  myPost ,searchUser ,LikePost,comments ,report,getPostDetails ,homePost,stories,getStories,deletePost
+  myPost ,searchUser ,LikePost,comments ,report,getPostDetails ,homePost,stories,getStories,deletePost,randomUser
 } from '../Controller/userConteroller/UserPost.js'
 
 import { follow ,unFollow ,getFollowers ,UsergetFollowers ,mutualFriends } from '../Controller/userConteroller/Follow.js'
@@ -51,6 +51,14 @@ router.post('/unfollow/:userId',verifyToken,unFollow)
 router.post('/followers/:userId',verifyToken,getFollowers)
 router.get('/getUserFollows/:userId',verifyToken,UsergetFollowers)
 router.get('/mutual-friends/:currentUserId/:userId',verifyToken,mutualFriends)
+
+router.get('/random-users',verifyToken,randomUser)
+
+// Route to handle forgot password request
+router.post('/forgot-password', forgotPassword);
+
+// Route to handle password reset request
+router.post('/reset-password', resetPassword);
 
 //likeAndcommant
 router.post('/likes/:postId',verifyToken,LikePost)

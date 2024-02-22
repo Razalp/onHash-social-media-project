@@ -41,22 +41,34 @@ const Chat = () => {
 
         const newSocket = io('http://localhost:3000');
         setSocket(newSocket);
-        console.log('Socket connected');
+  
 
         return () => newSocket.disconnect();
     }, []);
 
     useEffect(() => {
-        if (socket) {
+        if (socket && selectedUser && selectedUser.userId) {
+            // Join the room corresponding to the receiver's ID
+            socket.emit('joinRoom', `message-${selectedUser.userId}`);
+    
             // Listen for incoming messages
             socket.on('chat message', (msg: any) => {
-                // When a new message arrives, refetch messages
-           
+                // When a new message arrives, update the messages state
+                
                 setMessages((prevMessages: any) => [msg, ...prevMessages]);
+                if (selectedUser && selectedUser.userId) {
+                setTimeout(fetchMessages, 1000);
+                }
             });
         }
-    }, [socket]);
     
+        return () => {
+            // Leave the room when component unmounts
+            if (socket && selectedUser && selectedUser.userId) {
+                socket.emit('leaveRoom', `message-${selectedUser.userId}`);
+            }
+        }
+    }, [socket, selectedUser]);  
 
    // Update the sendMessage function to send the image file along with the message
 const sendMessage = async () => {
@@ -86,11 +98,16 @@ const sendMessage = async () => {
         // Send the FormData object containing the image file to the server
         await Axios.post('/api/user/send', formData);
 
+        
+
         // Clear input field after sending message
+        fetchMessages();
+     
+        
         setInputMessage('');
         setSelectedImage(null);
         setShowModal(false);
-         fetchMessages();
+        
     } catch (error) {
         console.error('Error sending message:', error);
     }
@@ -113,6 +130,8 @@ const fetchMessages = async () => {
         const response = await Axios.get(`/api/user/${currentUserId}/${receiverId}`);
         const messages = response.data;
         setMessages(messages);
+        fetchChatHistory()
+       
     } catch (error) {
         console.error('Error fetching messages:', error);
     }
@@ -124,7 +143,7 @@ const fetchMessages = async () => {
         }
     }, [selectedUser]);
 
-    useEffect(() => {
+
         const fetchChatHistory = async () => {
           try {
             const token = localStorage.getItem('accessToken');
@@ -135,7 +154,7 @@ const fetchMessages = async () => {
             const userId = decodedToken.userId;
             const response = await Axios.post(`/api/user/chatHistories/${userId}`)
             setChatHistory(response.data);
-            console.log(response.data)
+      
       
             // Listen for 'newChatHistory' event
             socket.on('newChatHistory', (newChatHistory) => {
@@ -146,6 +165,7 @@ const fetchMessages = async () => {
             console.error('Error fetching chat history:', error);
           }
         };
+        useEffect(() => {
       
         fetchChatHistory();
       }, []);
@@ -157,7 +177,7 @@ const fetchMessages = async () => {
         try {
             const response = await Axios.get(`/api/user/searchUser?query=${searchQuery}`);
             setSearchResults(response.data);
-            console.log(searchResults);
+    
         } catch (error) {
             console.error('Error fetching search results:', error);
         }
@@ -181,7 +201,7 @@ const fetchMessages = async () => {
         });
 
         setSearchResults([]);
-        console.log(selectedUser);
+  
     };
 
     return (
@@ -216,6 +236,7 @@ const fetchMessages = async () => {
                                                     {searchResults.map((user: any) => (
                                                         <li key={user._id} className="flex items-center space-x-4 mb-4" onClick={() => handleUserClick(user)}>
                                                             <img
+                                                      
                                                                 src={`http://localhost:3000/upload/${user?.profilePicture}`}
                                                                 alt={`${user.username}'s profile`}
                                                                 className="w-10 h-10 rounded-full object-cover"
@@ -289,7 +310,7 @@ const fetchMessages = async () => {
             <div className={`bg-gray-300 rounded-lg p-2 ${message.sender === senderId ? 'ml-4' : 'mr-4'}`}>
                 {message.image ? (
                     // If the message contains an image, render the image
-                    <img src={`http://localhost:3000/upload/${message.image}`} alt="message-image" className="w-72 h-80 mb-2" />
+                    <img src={`http://localhost:3000/upload/${message.image}`} alt="message-image" className="w-60 h-80 mb-2 object-cover" />
                 ) : (
                     // If the message is text, render the text content
                     <p>{message.content}</p>
@@ -306,6 +327,7 @@ const fetchMessages = async () => {
 ) : (
     <p>No messages to display</p>
 )}
+
 </div>
 
 

@@ -126,6 +126,61 @@ const resendOTP = async (req, res) => {
         res.status(500).json({ error: 'Internal Server Error' });
     }
 };
+const forgotPassword = async (req, res) => {
+    try {
+        const { email } = req.body;
+        const existingUser = await User.findOne({ email });
+        console.log("hello")
+
+        if (!existingUser) {
+            return res.status(404).json({ error: 'User not found with this email' });
+        }
+
+        const newOtp = generateOTP();
+
+        const otpDocument = new UserOtp({
+            email,
+            otp: newOtp,
+            createdAt: new Date(),
+            expireAt: new Date(Date.now() + 5 * 60 * 1000), // Set OTP expiration time
+        });
+
+        await otpDocument.save();
+
+        await sendOTPEmail(email, newOtp);
+
+        res.status(200).json({ message: 'OTP sent successfully' });
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ error: 'Internal Server Error' });
+    }
+};
+
+// Reset Password Route
+const    SALT_ROUNDS = 10;
+const resetPassword = async (req, res) => {
+    try {
+        const { email, otp, newPassword } = req.body;
+        const otpDocument = await UserOtp.findOne({ email, otp });
+
+        if (!otpDocument || otpDocument.expireAt < new Date()) {
+            return res.status(401).json({ error: 'Invalid OTP or expired' });
+        }
+
+        // OTP is valid, now reset the password
+        const hashedPassword = await bcryptjs.hash(newPassword, SALT_ROUNDS);
+        await User.findOneAndUpdate({ email }, { password: hashedPassword });
+
+
+        await UserOtp.deleteOne({ email, otp });
+        console.log("changed")
+
+        res.status(200).json({ message: 'Password reset successful' });
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ error: 'Internal Server Error' });
+    }
+};
 
 
     const login = async (req, res) => {
@@ -401,5 +456,6 @@ export {
     userDashBoard,
     getProfile,
     deleteProfile,
-    changePassword
+    changePassword,
+    forgotPassword, resetPassword 
 }

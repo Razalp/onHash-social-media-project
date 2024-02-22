@@ -11,18 +11,19 @@
         // Image file, if provided
         const image = req.file ? req.file.filename : null;
 
-        // Create a new message using the Message model
+
         const newMessage = new Chat({
             sender,
             receiver,
             content,
-            image: image || null,
+            image: image,
         });
+        console.log(newMessage)
 
         await newMessage.save();
 
         // Emit the message to the receiver's room
-        io.emit(`message-${receiver}`, newMessage);
+        io.to(`message-${receiver}`).emit('chat message', newMessage);
 
         // Respond with success message
         res.status(201).json({ message: 'Message sent successfully' });
@@ -61,7 +62,7 @@
     
         const chats = await Chat.find({ sender: userId })
                                  .populate('receiver', 'username profilePicture')
-                                 .sort({ createdAt: -1 }) // Sort by createdAt field in descending order
+                                 .sort({ createdAt: -1 }) 
                                  .exec();
     
         if (!chats || chats.length === 0) {

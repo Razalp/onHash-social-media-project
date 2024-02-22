@@ -12,6 +12,7 @@ import LazyLoad from 'react-lazyload';
 import LoadingSpinner from './LoadingSpinner'; 
 import { Button, Spinner } from "react-bootstrap";
 import Swal from 'sweetalert2'
+import RandomUserSug from "./RandomUserSug";
 
 const Home = () => {
   const navigate = useNavigate();
@@ -262,12 +263,12 @@ const Home = () => {
     <div className="bg-black"> 
       <SideBar />
       <Story />
-      <div className="">
-
-      </div>
+      <RandomUserSug/>
+      
       <div className="flex justify-center items-center" >
         
         <div className="grid gap-4 p-4 ">
+       
           {loading ? (
             <LoadingSpinner /> 
           ) : (

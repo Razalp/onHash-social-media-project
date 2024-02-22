@@ -312,7 +312,7 @@ const SearchUserProfile = () => {
               setIsFollowing(true);
               localStorage.setItem(`isFollowing_${userId}`, 'true');
               toast.success('You are now following this user');
-              // Update follower count
+
               setFollowers(prevCount => prevCount + 1);
           } else {
               toast.error('Error following user');

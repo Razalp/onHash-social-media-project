@@ -85,12 +85,14 @@ const UserProfile = () => {
           Swal.fire('Error', 'Failed to delete the post.', 'error');
         }
       }
+      // fetchUserData()
     } catch (error) {
       console.error('Error deleting post:', error);
 
       Swal.fire('Error', 'Failed to delete the post.', 'error');
     }
   };
+  
 
 
 
@@ -107,13 +109,14 @@ const UserProfile = () => {
       setIsLoading(true);
       await Axios.delete(`/api/user/delete-profile-picture/${userId}`);
       setIsLoading(false);
-
+      // fetchUserData();
     } catch (error) {
       console.error('Error deleting profile picture:', error);
       setIsLoading(false);
   
     }
   };
+  
 
 
 

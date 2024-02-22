@@ -14,6 +14,8 @@ import ReportPage from './adminSide/ReportPage/ReportPage';
 import Story from './userSide/Home/Story';
 import Notifications from './userSide/Notifications/Notifications';
 import Chat from './userSide/Chat/Chat';
+import ForgetPasswod from './userSide/ForgetPasswod/ForgetPasswod';
+import RandomUserSug from './userSide/Home/RandomUserSug';
 
 function App() {
   const token = localStorage.getItem('accessToken');
@@ -37,6 +39,8 @@ function App() {
         <Route path='/story' element={<Story />} />
         <Route path='/notifications' element={<Notifications />} />
         <Route path='/chat' element={<Chat />} />
+        <Route path='/forgetpasswod' element={<ForgetPasswod />} />
+        <Route path='/random-user' element={<RandomUserSug />} />
    
 
         {/* Authenticated routes */}

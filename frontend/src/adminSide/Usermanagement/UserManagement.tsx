@@ -3,10 +3,18 @@ import AdminSideBar from '../AdminSideBar/AdminSideBar';
 import './UserManagement.css';
 import Axios from '../../axious/instance';
 import Swal from 'sweetalert2';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faEllipsisV, faTimes, faTrashAlt, faUserShield } from '@fortawesome/free-solid-svg-icons';
+
 
 const UserManagement = () => {
   const [users, setUsers] = useState([]);
   const [searchQuery, setSearchQuery] = useState('');
+  const [showButtons, setShowButtons] = useState(null);
+  
+  const handleSelectButtonClick = (index) => {
+    setShowButtons(index);
+  };
 
   useEffect(() => {
     const fetchUsers = async () => {
@@ -95,6 +103,7 @@ const UserManagement = () => {
       <AdminSideBar />
       <div className='fullbg' style={{height:'100vh'}}>
       <div className='flex justify-end'>
+     
     <input
       className='p-2 text-black border border-gray-300 rounded-md focus:outline-none focus:border-blue-500'
       type='text'
@@ -117,25 +126,35 @@ const UserManagement = () => {
               </tr>
             </thead>
             <tbody className="bg-gray-700 divide-y divide-gray-600">
-            {filteredUsers.map((item: any, index) => (
-                <tr key={item?._id} className={index % 2 === 0 ? 'table-row bg-gray-800' : 'table-row bg-gray-700'}>
-                  <td className="py-2"></td>
-                  <td className="px-4 py-2">{item?.username?.toString()}</td>
-                  <td className="px-4 py-2">{item?.email}</td>
-                  <td className="px-4 py-2 text-center">
-                    <img src={`http://localhost:3000/upload/${item.profilePicture}`} alt="User Profile" className="w-30 h-32 rounded-full" />
-                  </td>
-                  <td className="px-4 py-2 text-center">{item?.isAdmin?.toString()}</td>
-                  <td className="px-4 py-2 text-center">{item?.isUpgrade.toString()}</td>
-                  <td className="px-4 py-2 space-y-2 text-center">
-                    <button className='btn-black' onClick={() => confirmDelete(item._id)}>DELETE</button>
-                    <button className='btn-black' onClick={() => confirmBlock(item._id)}>
-                    {item.isBlocked ? 'UNBLOCK' : 'BLOCK'}
-                    </button>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
+            {filteredUsers.map((item, index) => (
+          <tr key={item?._id} className={index % 2 === 0 ? 'table-row bg-gray-800' : 'table-row bg-gray-700'} onMouseEnter={() => handleSelectButtonClick(index)} onMouseLeave={() => setShowButtons(null)}>
+            <td className="py-2"></td>
+            <td className="px-4 py-2">{item?.username?.toString()}</td>
+            <td className="px-4 py-2">{item?.email}</td>
+            <td className="px-4 py-2 text-center">
+              <img src={`http://localhost:3000/upload/${item.profilePicture}`} alt="User Profile" className="w-20 h-20 object-cover rounded-full" />
+            </td>
+            <td className="px-4 py-2 text-center">{item?.isAdmin?.toString()}</td>
+            <td className="px-4 py-2 text-center">{item?.isUpgrade.toString()}</td>
+            <td className="px-4 py-2 space-y-2 text-center">
+  <button className="hover:bg-gray-800 rounded-full p-2">
+    <FontAwesomeIcon icon={faEllipsisV} />
+  </button>
+  <div className='button-container'>
+    {showButtons === index && (
+      <div className='flex space-x-3'>
+        <button className='' onClick={() => confirmDelete(item._id)}>
+          <FontAwesomeIcon icon={faTrashAlt} />
+        </button>
+        <button className='' onClick={() => confirmBlock(item._id)}>
+          <FontAwesomeIcon icon={item.isBlocked ? faTimes : faUserShield} /> 
+        </button>
+      </div>
+    )}
+  </div>
+</td>
+          </tr>
+        ))}        </tbody>
           </table>
         </div>
       </>
