@@ -9,7 +9,7 @@ import {
 } from '../Controller/userConteroller/UserAuth.js ';
 
 import {
-  myPost ,searchUser ,LikePost,comments ,report,getPostDetails ,homePost,stories,getStories,deletePost,randomUser
+  myPost ,searchUser ,LikePost,comments ,report,getPostDetails ,homePost,stories,getStories,deletePost,randomUser,userActivties
 } from '../Controller/userConteroller/UserPost.js'
 
 import { follow ,unFollow ,getFollowers ,UsergetFollowers ,mutualFriends } from '../Controller/userConteroller/Follow.js'
@@ -18,6 +18,7 @@ import { deleteProfile } from '../Controller/userConteroller/UserAuth.js';
 
 
 router.get('/user-counts',verifyToken, userDashBoard)
+router.get('/userActivties',verifyToken,userActivties)
 router.get('/get-profile/:userId',verifyToken,getProfile)
 router.get('/my-post/:userId', verifyToken, myPost);
 router.delete('/post/delete/:postId',verifyToken,deletePost)

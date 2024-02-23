@@ -6,7 +6,8 @@ import {
     userGet,
     deleteUser,
     editUser,
-    BlockUser
+    BlockUser,
+
 } from '../Controller/adminController/AdminController.js'
 import { verifyToken } from '../MiddelWare/verifyToken.js';
 import { getReported ,deletePost } from '../Controller/adminController/ReporteManagament.js';
@@ -25,6 +26,8 @@ router.delete('/userManagement/:id',verifyToken,deleteUser)
 
 router.get('/report',verifyToken,getReported)
 router.delete('/postDelete/:postId', deletePost);
+
+
 
 
 

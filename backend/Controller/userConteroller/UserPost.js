@@ -286,6 +286,27 @@ const deletePost=async (req, res) => {
   }
 };
 
+const userActivties=async (req, res) => {
+  try {
+      console.log("hello")
+      const userCount = await User.countDocuments();
+      const postCount = await Post.countDocuments();
+      let commentCount = 0;
+      const allPosts = await Post.find();
+      allPosts.forEach(post => {
+          commentCount += post.comments.length;
+      });
+      const followCount = await Follow.countDocuments();
+
+      console.log(userCount,postCount,commentCount,followCount)
+     
+      
+      res.json({ userCount, postCount, commentCount, followCount });
+  } catch (error) {
+      res.status(500).json({ error: error.message });
+  }
+};   
+
 
 
 
@@ -303,6 +324,7 @@ const deletePost=async (req, res) => {
     stories,
     getStories,
     deletePost,
-    randomUser
+    randomUser,
+    userActivties
 
   }

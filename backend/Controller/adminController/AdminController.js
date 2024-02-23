@@ -1,6 +1,6 @@
 import User from '../../Model/UserModel.js'
-
-
+import Post from '../../Model/PostSchema.js';
+import Follow from '../../Model/FollowSchema.js';
 const userGet =async(req,res)=>{
     try {
         const users = await User.find();
@@ -99,11 +99,14 @@ const BlockUser = async (req, res) => {
 //   };
 
 
+
+
 export {
     userGet,
     editUser,
     deleteUser,
     BlockUser,
     // users
+
 }
 

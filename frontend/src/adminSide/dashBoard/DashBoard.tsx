@@ -4,7 +4,9 @@ import { faUsers, faUserLock, faFile, faLock, faUserPlus, faThumbsUp, faComment,
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Axios from "../../axious/instance";
 import AdminSideBar from "../AdminSideBar/AdminSideBar";
-import PieChart from "./Chart"; // Import the PieChart component here
+import Chart from "./Chart"; // Import the PieChart component here
+// import BarChart from "./BarChart";
+
 
 const Dashboard = () => {
     const { userDetails } = useSelector((state: any) => state.userDetails) ?? {};
@@ -15,11 +17,17 @@ const Dashboard = () => {
         adminCount: 0,
         blockedCount: 0,
     });
+    const [userActivities, setUserActivities] = useState({
+        userCount: 0,
+        postCount: 0,
+        commentCount: 0,
+        followCount: 0,
+      });
 
     useEffect(() => {
         const fetchUserCounts = async () => {
             try {
-                const response = await Axios.get('api/user/user-counts');
+                const response = await Axios.get('/api/user/user-counts');
                 setUserCounts(response.data);
             } catch (error) {
                 console.error(error);
@@ -28,6 +36,20 @@ const Dashboard = () => {
 
         fetchUserCounts();
     }, []);
+    
+    useEffect(() => {
+        const fetchUserActivities = async () => {
+          try {
+            const response = await Axios.get("/api/user/userActivties"); 
+            setUserActivities(response.data);
+      
+          } catch (error) {
+            console.error(error);
+          }
+        };
+    
+        fetchUserActivities();
+      }, []);
 
     return (
         <div className="bg-black">
@@ -37,7 +59,10 @@ const Dashboard = () => {
            
                 <ul className="flex flex-wrap ml-20">
                     <div>
-                        <PieChart data={userCounts} /> 
+                        <Chart data={userCounts}   /> 
+                    </div>
+                    <div>
+                    {/* <BarChart userActivities={userActivities}/> */}
                     </div>
                     
                  

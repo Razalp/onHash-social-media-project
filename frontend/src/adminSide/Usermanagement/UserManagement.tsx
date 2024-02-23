@@ -29,11 +29,11 @@ const UserManagement = () => {
     fetchUsers();
   }, []);
 
-  const deleteUser = async (userId :any) => {
+  const deleteUser = async (userId) => {
     try {
       const response = await Axios.delete(`/api/admin/userManagement/${userId}`);
       if (response.data.message === 'User deleted successfully') {
-        setUsers((prevUsers) => prevUsers.filter((user :any) => user._id !== userId));
+        setUsers((prevUsers) => prevUsers.filter((user) => user._id !== userId));
 
         // Show success alert
         Swal.fire({
@@ -48,7 +48,7 @@ const UserManagement = () => {
     }
   };
 
-  const confirmDelete = (userId:any) => {
+  const confirmDelete = (userId) => {
     Swal.fire({
       title: 'Are you sure?',
       text: "You won't be able to revert this!",
@@ -63,11 +63,11 @@ const UserManagement = () => {
     });
   };
 
-  const blockUser = async (userId :any) => {
+  const blockUser = async (userId) => {
     try {
       await Axios.put(`/api/admin/block/${userId}`);
-      setUsers((prevUsers :any) =>
-        prevUsers.map((user :any) =>
+      setUsers((prevUsers) =>
+        prevUsers.map((user) =>
           user._id === userId ? { ...user, isBlocked: !user.isBlocked } : user
         )
       );
@@ -76,7 +76,7 @@ const UserManagement = () => {
     }
   };
 
-  const confirmBlock = (userId :any) => {
+  const confirmBlock = (userId) => {
     Swal.fire({
       title: 'Are you sure?',
       text: 'You are about to block/unblock this user!',
@@ -93,7 +93,7 @@ const UserManagement = () => {
 
   // Filter users based on the search query
   const filteredUsers = users.filter(
-    (user:any) =>
+    (user) =>
       user.username.toLowerCase().includes(searchQuery.toLowerCase()) ||
       user.email.toLowerCase().includes(searchQuery.toLowerCase())
   );
@@ -105,7 +105,7 @@ const UserManagement = () => {
       <div className='flex justify-end'>
      
     <input
-      className='p-2 text-black border border-gray-300 rounded-md focus:outline-none focus:border-blue-500'
+      className='p-2 text-sm text-black border border-gray-300 rounded-md focus:outline-none focus:border-blue-500'
       type='text'
       placeholder='Search users...'
       value={searchQuery}
@@ -114,9 +114,9 @@ const UserManagement = () => {
   </div>
         <br />
           <table className="w-full table-fixed text-white border-collapse">
-            <thead className="bg-gray-800 text-gray-300">
+            <thead className="bg-gray-800 text-gray-300 text-sm">
               <tr className="table-row">
-                <th className="py-2">SI NO</th>
+                <th className="py-2 text-sm">SI NO</th>
                 <th className="px-4 py-2 text-left">USERNAME</th>
                 <th className="px-4 py-2 text-left">EMAIL</th>
                 <th className="px-4 py-2 text-center">PROFILE</th>
@@ -128,9 +128,9 @@ const UserManagement = () => {
             <tbody className="bg-gray-700 divide-y divide-gray-600">
             {filteredUsers.map((item, index) => (
           <tr key={item?._id} className={index % 2 === 0 ? 'table-row bg-gray-800' : 'table-row bg-gray-700'} onMouseEnter={() => handleSelectButtonClick(index)} onMouseLeave={() => setShowButtons(null)}>
-            <td className="py-2"></td>
-            <td className="px-4 py-2">{item?.username?.toString()}</td>
-            <td className="px-4 py-2">{item?.email}</td>
+            <td className="py-2 text-sm"></td>
+            <td className="px-4 py-2 text-sm">{item?.username?.toString()}</td>
+            <td className="px-4 py-2 text-sm">{item?.email}</td>
             <td className="px-4 py-2 text-center">
               <img src={`http://localhost:3000/upload/${item.profilePicture}`} alt="User Profile" className="w-20 h-20 object-cover rounded-full" />
             </td>

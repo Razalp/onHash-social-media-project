@@ -1,6 +1,8 @@
 import { useState, useEffect } from 'react';
+import { createRoot } from "react-dom/client";
 import { AgChartsReact } from 'ag-charts-react';
 import { AgPieSeriesOptions } from 'ag-charts-community';
+
 
 // Chart Component
 const PieChart = ({ data }: { data: any }) => {
@@ -35,20 +37,22 @@ const PieChart = ({ data }: { data: any }) => {
       id: index.toString(), // Unique identifier for each segment
     }));
   }
+  
+  
 
   return (
-    <div className=''>
+<div>
     <div className='flex h-80'>
       <AgChartsReact options={chartOptions} />
       <AgChartsReact options={chartOptions} />
+
+    </div>
+        <div className='flex h-80'>
+        <AgChartsReact options={chartOptions} />
+        <AgChartsReact options={chartOptions} />
   
-    </div>
-    <div className='flex h-80'>
-      <AgChartsReact options={chartOptions} />
-      <AgChartsReact options={chartOptions} />
-  
-    </div>
-    </div>
+      </div>
+      </div>
   );
 };
 

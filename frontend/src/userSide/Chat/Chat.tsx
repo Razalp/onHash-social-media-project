@@ -4,6 +4,8 @@ import Axios from '@/axious/instance';
 import SideBar from '../SideBar/SideBar';
 import { jwtDecode } from 'jwt-decode';
 import Online from './Online world-pana (1).png'
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faVideo, faPhone } from '@fortawesome/free-solid-svg-icons';
 
 const Chat = () => {
     const [searchQuery, setSearchQuery] = useState('');
@@ -289,17 +291,16 @@ const fetchMessages = async () => {
                                             <p className="text-gray-800 font-bold">
                                                 {selectedUser.name}
                                             </p>
-                                            <p className="text-gray-600 text-xs mt-1">
-                                                {selectedUser.userId}
-                                            </p>
+                                            
                                         </div>
                                     </div>
                                     <div className="flex">
                                         <div>
-                                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24"><path fill="#263238" fillOpacity=".5" d="M15.9 14.3H15l-.3-.3c1-1.1 1.6-2.7 1.6-4.3 0-3.7-3-6.7-6.7-6.7S3 6 3 9.7s3 6.7 6.7 6.7c1.6 0 3.2-.6 4.3-1.6l.3.3v.8l5.1 5.1 1.5-1.5-5-5.2zm-6.2 0c-2.6 0-4.6-2.1-4.6-4.6s2.1-4.6 4.6-4.6 4.6 2.1 4.6 4.6-2 4.6-4.6 4.6z"></path></svg>
+                                        <FontAwesomeIcon icon={faPhone} /> 
                                         </div>
                                         <div className="ml-6">
-                                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24"><path fill="#263238" fillOpacity=".5" d="M11 18.5v-6h2v6h-2zm0-8.5c-2.8 0-5 2.2-5 5v2h2v-2c0-1.4 1.1-2.5 2.5-2.5s2.5 1.1 2.5 2.5v2h2v-2c0-2.8-2.2-5-5-5z"></path></svg>
+
+                                        <FontAwesomeIcon icon={faVideo} />
                                         </div>
                                     </div>
                                 </div>

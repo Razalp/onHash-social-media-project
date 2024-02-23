@@ -6,7 +6,7 @@ import Axios from '@/axious/instance';
 const ReportPage = () => {
     const [reports, setReports] = useState([]);
 
-    const handleDelete = async (postId:any) => {
+    const handleDelete = async (postId) => {
         try {
             await Axios.delete(`/api/admin/postDelete/${postId}`);
   
@@ -51,57 +51,50 @@ const ReportPage = () => {
                
                 <br />
                 <table className="w-full table-fixed text-white border-collapse">
-                    <thead className="bg-gray-800 text-gray-300">
+                    <thead className="bg-gray-800 text-gray-300 text-sm">
                         <tr className="table-row">
                             <th className="py-2"></th>
                             <th className="px-4 py-2 text-left">USERNAME</th>
                             <th className="px-4 py-2 text-left">EMAIL</th>
                             <th className="px-4 py-2 text-center">IMAGE</th>
                             <th className="px-4 py-2 text-center">REPORT</th>
-                     
                             <th className="px-4 py-2 text-center">ACTION</th>
                             <th></th>
                         </tr>
                     </thead>
                     <tbody className="bg-gray-700 divide-y divide-gray-600">
                         {Array.isArray(reports) && reports.length > 0 ? (
-                            reports.map((report: any, index) => (
+                            reports.map((report, index) => (
                                 <tr key={index} className='table-row bg-gray-800'>
                                     <td className="py-2"></td>
-                                    <td className="px-4 py-2">{report?.user?.username}</td>
-                                    <td className="px-4 py-2">{report?.user?.email}</td>
+                                    <td className="px-4 py-2 text-sm">{report?.user?.username}</td>
+                                    <td className="px-4 py-2 text-sm">{report?.user?.email}</td>
                                     <td className="px-4 py-2 text-center">
-                              
-    {report.image && report.image.length > 0 && (
-        <div className="image-container">
-            
-            <img className='w-32 h-32 ' src={`http://localhost:3000/upload/${report.image[0]}`} alt="" />
-        </div>
-    )}
-</td>
-                                    
-                                    <td className='px-4 py-2 text-center'>
-                                        {report.reports.map((reportItem: any, index) => (
+                                        {report.image && report.image.length > 0 && (
+                                            <div className="image-container">
+                                                <img className="w-20 h-20 object-cover rounded-full"  src={`http://localhost:3000/upload/${report.image[0]}`} alt="" />
+                                            </div>
+                                        )}
+                                    </td>
+                                    <td className='px-4 py-2 text-center text-sm'>
+                                        {report.reports.map((reportItem, index) => (
                                             <div key={index}>{reportItem.reason}</div>
                                         ))}
                                     </td>
-                                
-
                                     <td className="px-4 py-2 space-y-2 text-center">
                                         <button
-                                            className='btn-black'
+                                            className='btn-black text-sm'
                                             onClick={() => handleDelete(report._id)}
                                         >
                                             DELETE
                                         </button>
-                                      
                                     </td>
                                     <td className="px-4 py-2 text-center"></td>
                                 </tr>
                             ))
                         ) : (
                             <tr>
-                                <td colSpan="8" className="text-center py-4">No reports found.</td>
+                                <td colSpan="8" className="text-center py-4 text-sm">No reports found.</td>
                             </tr>
                         )}
 
