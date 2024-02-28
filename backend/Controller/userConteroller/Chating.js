@@ -5,10 +5,9 @@
 
   const chatSend = async function chatSend(req, res) {
     try {
-        // Extract sender, receiver, and content from request body
         const { sender, receiver, content } = req.body;
 
-        // Image file, if provided
+
         const image = req.file ? req.file.filename : null;
 
 
@@ -22,13 +21,12 @@
 
         await newMessage.save();
 
-        // Emit the message to the receiver's room
         io.to(`message-${receiver}`).emit('chat message', newMessage);
 
-        // Respond with success message
+ 
         res.status(201).json({ message: 'Message sent successfully' });
     } catch (error) {
-        // Handle errors
+
         console.error(error);
         res.status(500).json({ message: 'Internal server error' });
     }
@@ -36,7 +34,7 @@
   const receiver = async (req, res) => {
       try {
         const { senderId, receiverId } = req.params; 
-        // console.log(req.params)
+
     
         const messages = await Chat.find({
           $or: [
@@ -131,7 +129,7 @@
         );
     
  
-        io.emit(`notifications_${userId}`, notificationsWithUserInfo); // Emit notifications for the specific user
+        io.emit(`notifications_${userId}`, notificationsWithUserInfo);
     
         res.json(notificationsWithUserInfo);
       } catch (error) {

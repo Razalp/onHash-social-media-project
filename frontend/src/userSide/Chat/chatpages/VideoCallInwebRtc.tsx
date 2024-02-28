@@ -1,19 +1,52 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { useParams } from 'react-router-dom';
 import io from 'socket.io-client';
+import SimplePeer from 'simple-peer';
 
 const VideoCallInwebRtc = () => {
-    const localVideoRef = useRef(null);
-    const remoteVideoRef = useRef(null);
-    const peerRef = useRef(null);
-    const socketRef = useRef(null);
-    const [incomingCall, setIncomingCall] = useState(null);
+    const localVideoRef = useRef<any>(null);
+    const remoteVideoRef = useRef<any>(null);
+    const peerRef = useRef<any>(null);
+    const socketRef = useRef<any>(null);
+    const [incomingCall, setIncomingCall] = useState<any>(null);
+
+    useEffect(() => {
+
+        socketRef.current = io('http://localhost:3000');
+
+        socketRef.current.on('incoming video call', handleIncomingCallNotification);
+
+
+        return () => {
+            socketRef.current.disconnect();
+        };
+    }, []);
+
+
+    const handleIncomingCallNotification = (callData) => {
+        const { callerId, roomId } = callData;
+
+        setIncomingCall({ callerId, roomId });
+    };
+
+
+    const acceptCall = () => {
+  
+        socketRef.current.emit('accept video call', { callerId: incomingCall.callerId, roomId: incomingCall.roomId });
+        setIncomingCall(null);
+    };
+
+
+    const rejectCall = () => {
+     
+        socketRef.current.emit('reject video call', { callerId: incomingCall.callerId });
+        setIncomingCall(null);
+    };
 
     useEffect(() => {
         navigator.mediaDevices.getUserMedia({ video: true, audio: true })
             .then(stream => {
                 localVideoRef.current.srcObject = stream;
-                peerRef.current = createPeer(id, socketRef.current, stream);
+                peerRef.current = createPeer(null, socketRef.current, stream);
             });
 
         return () => {
@@ -23,80 +56,36 @@ const VideoCallInwebRtc = () => {
         };
     }, []);
 
-    useEffect(() => {
-        socketRef.current = io('http://localhost:3000');
-
-        socketRef.current.on('offer', handleReceiveCall);
-        socketRef.current.on('answer', handleAnswer);
-        socketRef.current.on('ice-candidate', handleNewICECandidateMsg);
-
-        return () => {
-            socketRef.current.disconnect();
-        };
-    }, []);
-
-    const createPeer = (userId, socket, stream) => {
-        const peer = new RTCPeerConnection({
-            iceServers: [
-                {
-                    urls: 'stun:stun.stunprotocol.org'
-                }
-            ]
+    const createPeer = (roomId, socket, stream) => {
+        const peer = new SimplePeer({
+            initiator: true,
+            trickle: false,
+            stream
         });
 
-        peer.onicecandidate = (event) => {
-            if (event.candidate) {
-                socket.emit('ice-candidate', {
-                    to: userId,
-                    candidate: event.candidate
-                });
-            }
-        };
+        peer.on('signal', signal => {
+            socket.emit('offer', {
+                roomId,
+                offer: signal
+            });
+        });
 
-        stream.getTracks().forEach(track => peer.addTrack(track, stream));
+        peer.on('stream', remoteStream => {
+            remoteVideoRef.current.srcObject = remoteStream;
+        });
+
+        peer.on('error', err => {
+            console.error('WebRTC error:', err);
+        });
 
         return peer;
-    };
-
-    const handleReceiveCall = async (offer) => {
-        setIncomingCall(offer);
-    };
-
-    const handleAnswer = (answer) => {
-        peerRef.current.setRemoteDescription(new RTCSessionDescription(answer));
-    };
-
-    const handleNewICECandidateMsg = (candidate) => {
-        peerRef.current.addIceCandidate(new RTCIceCandidate(candidate));
-    };
-
-    const acceptCall = async () => {
-        const stream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
-        localVideoRef.current.srcObject = stream;
-
-        peerRef.current = createPeer(incomingCall.from, socketRef.current, stream);
-        peerRef.current.setRemoteDescription(new RTCSessionDescription(incomingCall.offer));
-        const answer = await peerRef.current.createAnswer();
-        await peerRef.current.setLocalDescription(new RTCSessionDescription(answer));
-
-        socketRef.current.emit('answer', {
-            answer,
-            to: incomingCall.from
-        });
-
-        setIncomingCall(null);
-    };
-
-    const rejectCall = () => {
-
-        setIncomingCall(null);
     };
 
     return (
         <div className="flex justify-center items-center bg-black h-screen ">
             <div className="flex flex-col items-center justify-center h-full ">
-            <video ref={localVideoRef} autoPlay muted style={{ width: '900px', height: '500px', borderRadius: '10px', boxShadow: '0px 4px 6px rgba(0, 0, 0, 0.1)' }}></video>
-            <video ref={remoteVideoRef} autoPlay style={{ width: '80px', height: '64px', borderRadius: '10px', boxShadow: '0px 4px 6px rgba(0, 0, 0, 0.1)' }}></video>
+                <video ref={localVideoRef} autoPlay muted style={{ width: '900px', height: '500px', borderRadius: '10px', boxShadow: '0px 4px 6px rgba(0, 0, 0, 0.1)' }}></video>
+                <video ref={remoteVideoRef} autoPlay style={{ width: '80px', height: '64px', borderRadius: '10px', boxShadow: '0px 4px 6px rgba(0, 0, 0, 0.1)' }}></video>
 
                 {incomingCall && (
                     <div className="call-notification bg-gray-800 bg-opacity-75 p-4 rounded-lg shadow-md absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2">

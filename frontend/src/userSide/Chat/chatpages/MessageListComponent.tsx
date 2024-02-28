@@ -1,6 +1,6 @@
 import React from 'react';
 
-const MessageListComponent = ({ messages, senderId }) => {
+const MessageListComponent = ({ messages, senderId  }) => {
     return (
         <div className="flex flex-col-reverse flex-1 overflow-auto" style={{ backgroundColor: '#DAD3CC' }}>
             {messages.length > 0 ? (

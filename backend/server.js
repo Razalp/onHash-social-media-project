@@ -7,21 +7,14 @@ import { Server } from 'socket.io';
 import UserRouter from './Router/UserRoute.js';
 import Adminrouter from './Router/adminRoute.js';
 import path from 'path';
-
 dotenv.config();
-
 const app = express();
 const port = process.env.PORT || 3000;
-
-// Configure CORS to allow requests from all origins
 app.use(cors());
-
-// Add additional CORS headers to allow WebSocket connections
 app.use((req, res, next) => {
   res.header('Access-Control-Allow-Origin', '*');
   res.header('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE,PATCH,OPTIONS');
   res.header('Access-Control-Allow-Headers', 'Content-Type, Authorization, Content-Length, X-Requested-With');
-  // Allow WebSocket connections
   res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept');
   next();
 });
@@ -35,15 +28,12 @@ mongoose
 
 const server = http.createServer(app);
 
-// Pass the server instance to the Socket.IO Server
+
 const io = new Server(server, {
-  cors: {
-    origin: '*', // Allow requests from all origins
-    methods: ['GET', 'POST'], // Allow only GET and POST methods
-    allowedHeaders: ['Content-Type', 'Authorization'], // Allow only specific headers
-    credentials: true // Allow credentials (cookies, authorization headers, etc.)
-  }
+  cors:true
 });
+const emailToSocketIdMap =new Map()
+const socketidToEmailMap =new Map()
 
 io.on('connection', (socket) => {
   console.log('A user connected');
@@ -52,13 +42,55 @@ io.on('connection', (socket) => {
     console.log('User disconnected');
   });
 
-  // Handle incoming messages
   socket.on('chat message', (msg) => {
     console.log('message: ' + msg);
-    // Broadcast the message to all connected clients
     io.emit('chat message', msg);
   });
+
+  socket.on('start video call', (callData) => {
+    const { callerId, calleeId, roomId } = callData;
+    io.to(calleeId).emit('incoming video call', { callerId, roomId });
 });
+
+socket.on('accept video call', (callData) => {
+    const { callerId, roomId } = callData;
+    console.log('User with ID ' + callerId + ' accepted the call');
+    io.to(roomId).emit('video call accepted');
+});
+
+socket.on('reject video call', (callData) => {
+    const { callerId } = callData;
+    console.log('User with ID ' + callerId + ' rejected the call');
+
+});  
+socket.on("room:join", (data) => {
+  const { email, room } = data;
+  emailToSocketIdMap.set(email, socket.id);
+  socketidToEmailMap.set(socket.id, email);
+  io.to(room).emit("user:joined", { email, id: socket.id });
+  socket.join(room);
+  io.to(socket.id).emit("room:join", data);
+});
+
+socket.on("user:call", ({ to, offer }) => {
+  io.to(to).emit("incomming:call", { from: socket.id, offer });
+});
+
+socket.on("call:accepted", ({ to, ans }) => {
+  io.to(to).emit("call:accepted", { from: socket.id, ans });
+});
+
+socket.on("peer:nego:needed", ({ to, offer }) => {
+  console.log("peer:nego:needed", offer);
+  io.to(to).emit("peer:nego:needed", { from: socket.id, offer });
+});
+
+socket.on("peer:nego:done", ({ to, ans }) => {
+  console.log("peer:nego:done", ans);
+  io.to(to).emit("peer:nego:final", { from: socket.id, ans });
+})
+});
+
 
 app.get('/', (req, res) => {
   res.send('Hello, Express!');
@@ -66,11 +98,9 @@ app.get('/', (req, res) => {
 
 const __filename = new URL(import.meta.url).pathname;
 const __dirname = path.dirname(__filename);
-
 app.use(express.static(path.join('public')));
 app.use('/api/user', UserRouter);
 app.use('/api/admin', Adminrouter);
-
 server.listen(port, () => {
   console.log(`Server is running on http://localhost:${port}`);
 });

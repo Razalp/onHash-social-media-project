@@ -10,13 +10,8 @@
 
     import SearchComponent from './chatpages/SearchComponent';
     import MessageListComponent from './chatpages/MessageListComponent';
-    import Videocalls from './chatpages/Videocalls';
-    import VideoCallInwebRtc from './chatpages/VideoCallInwebRtc';
+
     import { Link, useNavigate, useParams } from 'react-router-dom';
-
-
-
-
     const Chat = () => {
         const [searchQuery, setSearchQuery] = useState('');
         const [searchResults, setSearchResults] = useState([]);
@@ -30,38 +25,20 @@
         const [showModal, setShowModal] = useState(false);
         const [showEmojiPicker, setShowEmojiPicker] = useState(false);
         const navigate = useNavigate();
-     
-        const [roomId, setRoomId] = useState(null);
-        const socketRef = useRef(null);
-
-        const handleVideoCallClick = () => {
-            navigate(`/roomwebRtc/${senderId}-${selectedUser.userId}`); 
-        };
-
-     
-        
         const fileInputRef = useRef(null);
-        const videoCallRef = useRef(null);
 
-        useEffect(() => {
-            const token: any = localStorage.getItem('accessToken');
-            if (!token) {
-                return;
+        const startVideoCall = () => {
+            if (socket && selectedUser && selectedUser.userId) {
+                const roomId = senderId + selectedUser.userId;
+                socket.emit('start video call', { callerId: senderId, calleeId: selectedUser.userId, roomId });
+                navigate(`/roomwebRtc/${senderId+selectedUser.userId}`)
+            } else {
+                console.error('Socket not connected or no recipient selected');
             }
-            const decodedToken: any = jwtDecode(token);
-            const currentUserId = decodedToken.userId;
-
-            const newSocket = io('http://localhost:3000');
-            setSocket(newSocket);
-
-            return () => newSocket.disconnect();
-        }, []);
-
-        
+        };
         
 
-    
-        
+
         const toggleEmojiPicker = () => {
             setShowEmojiPicker(!showEmojiPicker);
         };
@@ -231,6 +208,9 @@
                 name: user.username
             });
 
+        
+        
+
             setSearchResults([]);
         };
 
@@ -292,21 +272,15 @@
                                                     <FontAwesomeIcon icon={faPhone} />
                                                 </div>
                                                 <div className="ml-6">
-                                                {/* <FontAwesomeIcon icon={faVideo} className="cursor-pointer" onClick={handleVideoCallClick} /> */}
-                                                <FontAwesomeIcon icon={faVideo} className="cursor-pointer" onClick={handleVideoCallClick} />
+
+                                               <FontAwesomeIcon icon={faVideo} className="cursor-pointer" onClick={startVideoCall}/>
                                              
 
                             
                         </div>
                                             </div>
                                         </div>
-                                        <MessageListComponent messages={messages} senderId={senderId} />
-                                        
-
-
-                                        
-                                
-                                    
+                                        <MessageListComponent messages={messages} senderId={senderId}  />
                                         <div>
                                             <div className="bg-gray-200 px-4 py-4 flex items-center">
                                                 <input

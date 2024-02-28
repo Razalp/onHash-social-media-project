@@ -16,8 +16,10 @@ import Notifications from './userSide/Notifications/Notifications';
 import Chat from './userSide/Chat/Chat';
 import ForgetPasswod from './userSide/ForgetPasswod/ForgetPasswod';
 import RandomUserSug from './userSide/Home/RandomUserSug';
-import Videocalls from './userSide/Chat/chatpages/Videocalls';
 import VideoCallInwebRtc from './userSide/Chat/chatpages/VideoCallInwebRtc';
+import Lobby from './userSide/Chat/Screens/Lobby';
+import Room from './userSide/Chat/Screens/Room';
+
 
 function App() {
   const token = localStorage.getItem('accessToken');
@@ -43,7 +45,8 @@ function App() {
         <Route path='/chat' element={<Chat />} />
         <Route path='/forgetpasswod' element={<ForgetPasswod />} />
         <Route path='/random-user' element={<RandomUserSug />} />
-        <Route path='/room/:id' element={<Videocalls/>} />
+        <Route path='/lobby' element={<Lobby />} />
+        <Route path='/room/:id' element={<Room />} />
         <Route path='/roomwebRtc/:id' element={<VideoCallInwebRtc/>} />
 
    
