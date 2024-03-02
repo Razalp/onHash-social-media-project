@@ -452,7 +452,7 @@ const UserProfile = () => {
   useEffect(() => {
     const getFollowers = async () => {
       const token = localStorage.getItem('accessToken');
-
+      
       try {
         if (token) {
           const decodedToken: any = jwtDecode(token);

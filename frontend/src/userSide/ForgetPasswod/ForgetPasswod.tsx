@@ -9,7 +9,7 @@ const ForgetPassword = () => {
   const [modalIsOpen, setModalIsOpen] = useState(false);
   const [modalError, setModalError] = useState('');
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = async (e:any) => {
     e.preventDefault();
 
     try {
@@ -25,7 +25,7 @@ const ForgetPassword = () => {
     }
   };
 
-  const handleModalSubmit = async (e) => {
+  const handleModalSubmit = async (e:any) => {
     e.preventDefault();
 
     try {
@@ -33,7 +33,6 @@ const ForgetPassword = () => {
 
       if (response.status === 200) {
         setModalIsOpen(false);
-        // Optionally, you can redirect the user to the login page or show a success message
       } else {
         setModalError(response.data.error);
       }

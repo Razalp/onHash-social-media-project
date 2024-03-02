@@ -9,8 +9,6 @@ import { login } from '../../redux/userSlice';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
-// import { AuthContext } from '../../store/Auth';
-
 const Login = () => {
   // const { login } = useContext(AuthContext);  
     const navigate = useNavigate();
@@ -56,7 +54,6 @@ const Login = () => {
     
           toast.success('Login success');
     
-          // Check if the user is an admin and redirect accordingly
           if (user?.isAdmin) {
             navigate('/dashboard');
           } else {
