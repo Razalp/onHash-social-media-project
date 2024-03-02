@@ -14,8 +14,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faHeart, faComment, faFlag, faUserCircle, faKeyboard, faTrash, } from '@fortawesome/free-solid-svg-icons'
 import Swal from 'sweetalert2'
 import Takefree from "./Takefree";
-import { useSpring, animated } from 'react-spring';
-
+import { UserX } from 'lucide-react';
 
 
 const UserProfile = () => {
@@ -475,6 +474,7 @@ const UserProfile = () => {
     getFollowers();
   }, []);
 
+  
 
   return (
 
@@ -602,7 +602,7 @@ const UserProfile = () => {
                         <h3 className="text-white mt-4">Comments:</h3>
                         <br />
                         <ul className="list-none p-0">
-                          {commentData.map((comment, index) => (
+                          {commentData.map((comment:any, index:any) => (
                             <li key={index} className="text-white space-y-4">
                               <div className="flex justify-between ">
                                 <div className="flex">
@@ -643,8 +643,8 @@ const UserProfile = () => {
                     </h3>
                     <br />
                     <div>
-      <Button variant={"outline"} onClick={handleDeleteProfilePicture} disabled={isLoading} className="mr-36" >
-        {isLoading ? 'Deleting...' : 'Delete Profile Picture'}
+      <Button variant={"outline"} onClick={handleDeleteProfilePicture} disabled={isLoading} className="" >
+        {isLoading ? 'Deleting...' : <UserX />}
       </Button>
     </div>
     <br />
@@ -654,7 +654,7 @@ const UserProfile = () => {
                         placeholder="New Username"
                         value={newUsername}
                         onChange={handleNewUsernameChange}
-                        maxLength={20} // Set your desired maximum length
+                        maxLength={20}
                         className="border rounded-md p-2 text-black w-full"
                       />
                     </div>
@@ -663,7 +663,7 @@ const UserProfile = () => {
                         placeholder="New Bio"
                         value={newBio}
                         onChange={(e) => setNewBio(e.target.value)}
-                        maxLength={150} // Set your desired maximum length
+                        maxLength={150} 
                         className="border rounded-md p-2 text-black w-full"
                       />
                     </div>

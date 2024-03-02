@@ -47,22 +47,6 @@ io.on('connection', (socket) => {
     io.emit('chat message', msg);
   });
 
-  socket.on('start video call', (callData) => {
-    const { callerId, calleeId, roomId } = callData;
-    io.to(calleeId).emit('incoming video call', { callerId, roomId });
-});
-
-socket.on('accept video call', (callData) => {
-    const { callerId, roomId } = callData;
-    console.log('User with ID ' + callerId + ' accepted the call');
-    io.to(roomId).emit('video call accepted');
-});
-
-socket.on('reject video call', (callData) => {
-    const { callerId } = callData;
-    console.log('User with ID ' + callerId + ' rejected the call');
-
-});  
 socket.on("room:join", (data) => {
   const { email, room } = data;
   emailToSocketIdMap.set(email, socket.id);
@@ -89,6 +73,11 @@ socket.on("peer:nego:done", ({ to, ans }) => {
   console.log("peer:nego:done", ans);
   io.to(to).emit("peer:nego:final", { from: socket.id, ans });
 })
+socket.on("call:ended", ({ to, from }) => {
+  io.to(to).emit("call:ended");
+  io.to(from).emit("call:ended"); 
+});
+
 });
 
 

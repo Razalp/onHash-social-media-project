@@ -4,9 +4,9 @@ import { useNavigate } from 'react-router-dom';
 import { jwtDecode } from 'jwt-decode';
 import { Button } from '@/components/ui/button';
 import Axios from '@/axious/instance';
-import { Video } from 'lucide-react';
+import { Phone } from 'lucide-react';
 
-const Lobby = () => {
+const AudioLobby = () => {
     const [email, setEmail] = useState("");
     const [room, setRoom] = useState("");
     const [showModal, setShowModal] = useState(false);
@@ -18,7 +18,7 @@ const Lobby = () => {
         bio: '',
         profilePicture: '',
     });
-
+    const [showAudioLobby, setShowAudioLobby] = useState(false);
     useEffect(() => {
         const token = localStorage.getItem('accessToken');
 
@@ -56,7 +56,7 @@ const Lobby = () => {
     const handleJoinRoom = useCallback(
         (data) => {
             const { email, room } = data;
-            navigate(`/room/${room}`);
+            navigate(`/audio-room/${room}`);
         },
         [navigate]
     );
@@ -70,14 +70,14 @@ const Lobby = () => {
 
     return (
         <div>
-            <button onClick={() => setShowModal(true)}><Video /></button>
+            <button onClick={() => setShowModal(true)}><Phone /></button>
 
             {/* Modal */}
             {showModal && (
                 <div className="fixed top-0 left-0 w-full h-full flex items-center justify-center bg-gray-800 bg-opacity-75">
                      
                     <div className="bg-white lg:w-5/12 md:6/12 w-10/12 shadow-3xl">
-                    <h1 className="text-center p-2 text-xl font-bold">VIDEO CALL</h1>
+                    <h1 className="text-center p-2 text-xl font-bold">AUDIO CALL</h1>
                         <form className="p-12 md:p-24" onSubmit={handleSubmitForm}>
                             
                             <div className="flex items-center text-lg mb-6 md:mb-8">
@@ -107,4 +107,4 @@ const Lobby = () => {
     );
 };
 
-export default Lobby;
+export default AudioLobby;

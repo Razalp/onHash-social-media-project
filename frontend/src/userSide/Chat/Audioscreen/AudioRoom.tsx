@@ -3,29 +3,14 @@ import React, { useCallback, useEffect, useState } from 'react'
 import ReactPlayer from "react-player";
 import peer from '../../../Service/Peer'
 import { Button } from '@/components/ui/button';
-import { PhoneForwarded, PhoneCall, PhoneOff, Mic, MicOff, Camera, CameraOff } from 'lucide-react';
-import { useNavigate } from 'react-router-dom';
+import { PhoneForwarded, PhoneCall, PhoneOff, Mic, MicOff } from 'lucide-react';
 
-const Room = () => {
+const AudioRoom = () => {
     const socket = useSocket();
     const [remoteSocketId, setRemoteSocketId] = useState(null);
     const [myStream, setMyStream] = useState();
     const [remoteStream, setRemoteStream] = useState();
     const [isMuted, setIsMuted] = useState(false);
-    const [isCameraOff, setIsCameraOff] = useState(false);
-    
-
-
-    const navigate = useNavigate()
-
-    const toggleCamera = () => {
-        if (myStream) {
-            myStream.getVideoTracks().forEach(track => {
-                track.enabled = !track.enabled;
-            });
-            setIsCameraOff(prevState => !prevState);
-        }
-    };
 
     const toggleMute = () => {
         setIsMuted(prevState => !prevState);
@@ -39,7 +24,6 @@ const Room = () => {
         setRemoteSocketId(null);
         setMyStream(null);
         setRemoteStream(null);
-        navigate('/chat')
     };
 
 
@@ -56,26 +40,23 @@ const Room = () => {
     const handleCallUser = useCallback(async () => {
         const stream = await navigator.mediaDevices.getUserMedia({
             audio: true,
-            video: true,
+            video: false,
         });
         const offer = await peer.getOffer();
-        socket.emit("user:call", { to: remoteSocketId, offer, isCameraOff });
-        
+        socket.emit("user:call", { to: remoteSocketId, offer });
         setMyStream(stream);
-    }, [remoteSocketId, socket, isCameraOff]);
-    
+    }, [remoteSocketId, socket]);
 
     const handleIncommingCall = useCallback(
         async ({ from, offer }) => {
             setRemoteSocketId(from);
             const stream = await navigator.mediaDevices.getUserMedia({
                 audio: true,
-                video: true,
+                video: false,
             });
             setMyStream(stream);
             console.log(`Incoming Call`, from, offer);
             const ans = await peer.getAnswer(offer);
-            setIsRemoteCameraOff(isCameraOff);    
             socket.emit("call:accepted", { to: from, ans });
         },
         [socket]
@@ -157,7 +138,6 @@ const Room = () => {
             <h4 className="mb-4">{remoteSocketId ? "Connected" : "No one in room"}</h4>
 
             <div className="flex justify-center w-full mb-4 space-x-2">
-           
                 {myStream &&
                     <Button variant='secondary' onClick={sendStreams} className="">
                         <PhoneCall /> Accept
@@ -175,13 +155,13 @@ const Room = () => {
             <div className="flex items-center justify-center mb-4">
                 {remoteStream && (
                     <div className="mr-4">
-                        <h1 className="text-sm  mb-2">Remote Stream</h1>
+       
                         <div className="">
                             <div className=''>
                             <ReactPlayer
                                 playing
                                 muted={isMuted}
-                                height="400px"
+                                height="150"
                                 width="auto"
                 
                         
@@ -197,11 +177,6 @@ const Room = () => {
                                     <Button variant='secondary' onClick={handleEndCall} className="">
                                         <PhoneOff />
                                     </Button>
-                                    {myStream && (
-                    <Button variant='secondary' onClick={toggleCamera} className="">
-                        {isCameraOff ? <CameraOff /> : <Camera/>} 
-                    </Button>
-                )}
                                 </div>
                             </div>
                         </div>
@@ -212,7 +187,7 @@ const Room = () => {
                     <div className='flex flex-col mr-4 '>
                 
                         <div className="mt-48">
-                        <h1 className="text-sm mb-2">You</h1>
+        
                             <ReactPlayer
                                 playing
                                 muted={isMuted}
@@ -223,17 +198,8 @@ const Room = () => {
                         </div>
                     </div>
                 )}
-
-{isCameraOff && remoteStream && (
-        <div className='flex flex-col mr-4 '>
-           
-           
-                <CameraOff />
-        
-        </div>
-    )}
             </div>
         </div>
     );
 };
-export default Room
+export default AudioRoom

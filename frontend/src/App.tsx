@@ -17,8 +17,12 @@ import Chat from './userSide/Chat/Chat';
 import ForgetPasswod from './userSide/ForgetPasswod/ForgetPasswod';
 import RandomUserSug from './userSide/Home/RandomUserSug';
 import VideoCallInwebRtc from './userSide/Chat/chatpages/VideoCallInwebRtc';
-import Lobby from './userSide/Chat/Screens/Lobby';
+
 import Room from './userSide/Chat/Screens/Room';
+
+import AudioRoom from './userSide/Chat/Audioscreen/AudioRoom';
+import Lobby from './userSide/Chat/Screens/Lobby';
+import AudioLobby from './userSide/Chat/Audioscreen/AudioLobby';
 
 
 function App() {
@@ -45,9 +49,15 @@ function App() {
         <Route path='/chat' element={<Chat />} />
         <Route path='/forgetpasswod' element={<ForgetPasswod />} />
         <Route path='/random-user' element={<RandomUserSug />} />
-        <Route path='/lobby' element={<Lobby />} />
+
         <Route path='/room/:id' element={<Room />} />
         <Route path='/roomwebRtc/:id' element={<VideoCallInwebRtc/>} />
+        <Route path='/VideoLobby' element={<Lobby/>} />
+        <Route path='/AudioLobby' element={<AudioLobby/>} />
+
+        <Route path='/audio-room/:id' element={<AudioRoom  />} />
+
+
 
    
 

@@ -1,6 +1,19 @@
-import React from 'react';
+import React, { useState } from 'react';
 
-const MessageListComponent = ({ messages, senderId  }) => {
+const MessageListComponent = ({ messages, senderId }) => {
+    const [modalOpen, setModalOpen] = useState(false);
+    const [selectedImage, setSelectedImage] = useState('');
+
+    const openModal = (imageUrl) => {
+        setSelectedImage(imageUrl);
+        setModalOpen(true);
+    };
+
+    const closeModal = () => {
+        setSelectedImage('');
+        setModalOpen(false);
+    };
+
     return (
         <div className="flex flex-col-reverse flex-1 overflow-auto" style={{ backgroundColor: '#DAD3CC' }}>
             {messages.length > 0 ? (
@@ -8,8 +21,13 @@ const MessageListComponent = ({ messages, senderId  }) => {
                     <div key={index} className={`flex justify-between ${message.sender === senderId ? 'flex-row-reverse' : 'flex-row'}`}>
                         <div className={`bg-gray-300 rounded-lg p-2 ${message.sender === senderId ? 'ml-4' : 'mr-4'}`}>
                             {message.image ? (
-                                // If the message contains an image, render the image
-                                <img src={`http://localhost:3000/upload/${message.image}`} alt="message-image" className="w-60 h-80 mb-2 object-cover" />
+                                // If the message contains an image, render the image with onClick event
+                                <img 
+                                    src={`http://localhost:3000/upload/${message.image}`} 
+                                    alt="message-image" 
+                                    className="w-60 h-80 mb-2 object-cover" 
+                                    onClick={() => openModal(`http://localhost:3000/upload/${message.image}`)}
+                                />
                             ) : (
                                 // If the message is text, render the text content
                                 <p>{message.content}</p>
@@ -26,6 +44,19 @@ const MessageListComponent = ({ messages, senderId  }) => {
             ) : (
                 <p>No messages to display</p>
             )}
+
+<div onClick={closeModal}>
+            {modalOpen && (
+                <div className="fixed top-0 left-0 w-full h-full bg-black bg-opacity-50 flex justify-center items-center">
+               
+                        <img src={selectedImage} alt="modal-image" className="w-80 h-auto" />
+                        <button onClick={closeModal} className="absolute top-0 right-0 p-2 m-2 text-black hover:text-gray-600">
+                            Close
+                        </button>
+              
+                </div>
+            )}
+            </div>
         </div>
     );
 };

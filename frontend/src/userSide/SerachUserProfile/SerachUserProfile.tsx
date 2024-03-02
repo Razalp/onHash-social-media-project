@@ -12,6 +12,8 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faHeart, faComment, faFlag, faUserCircle ,faKeyboard } from '@fortawesome/free-solid-svg-icons'
 import Swal from "sweetalert2";
 import { current } from "@reduxjs/toolkit";
+import { Phone } from 'lucide-react';
+import AudioLobby from "../Chat/Audioscreen/AudioLobby";
 
 
 
@@ -381,10 +383,10 @@ const SearchUserProfile = () => {
 
     const getFollowers = async () => {
       try {
-          const currentUserId = getCurrentUserId(); // Call getCurrentUserId to get the current user ID
+          const currentUserId = getCurrentUserId(); 
   
           if (!currentUserId) {
-              return; // Handle the case where currentUserId is null or undefined
+              return; 
           }
   
           const response = await Axios.post(`/api/user/followers/${userId}`, {
@@ -499,7 +501,7 @@ const SearchUserProfile = () => {
                     ) : (
                         <li><Button variant="outline" onClick={handleFollow}>FOLLOW</Button></li>
                     )}
-                    <li><Button variant='secondary'>MESSAGE</Button></li>
+                    <li><Button variant='secondary'><AudioLobby/></Button></li>
                 </ul>
                     </div>
                 </div>
