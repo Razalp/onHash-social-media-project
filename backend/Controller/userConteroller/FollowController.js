@@ -1,5 +1,5 @@
 // Import your models
-import User from '../../Model/UserModel.js';
+import User from '../../Model/UserSchema.js';
 import Follow from '../../Model/FollowSchema.js';
 import Notification from '../../Model/NotificationsSchema.js';
 import { io } from '../../server.js'; 

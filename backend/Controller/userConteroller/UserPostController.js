@@ -1,7 +1,7 @@
 import Post from '../../Model/PostSchema.js'
-import User from '../../Model/UserModel.js'
+import User from '../../Model/UserSchema.js'
 import Follow from '../../Model/FollowSchema.js';
-import Story from '../../Model/storySchema.js'
+import Story from '../../Model/StorySchema.js'
 import Notification from '../../Model/NotificationsSchema.js'
 const myPost= async (req, res) => {
     try {

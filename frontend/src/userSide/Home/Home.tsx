@@ -29,7 +29,6 @@ const Home = () => {
   const [selectedReason, setSelectedReason] = useState('');
 
 
-
   const handleOpenLikes = (postId: any) => {
     setOpenLikes(true);
     fetchPostDetails(postId);
@@ -42,7 +41,7 @@ const Home = () => {
 
 
 
-        const token = localStorage.getItem('accessToken');
+       
 
         if (!token) {
           return;

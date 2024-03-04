@@ -14,8 +14,6 @@ const Room = () => {
     const [isMuted, setIsMuted] = useState(false);
     const [isCameraOff, setIsCameraOff] = useState(false);
     
-
-
     const navigate = useNavigate()
 
     const toggleCamera = () => {

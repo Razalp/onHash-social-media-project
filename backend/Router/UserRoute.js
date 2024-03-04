@@ -10,10 +10,10 @@ import {
 
 import {
   myPost ,searchUser ,LikePost,comments ,report,getPostDetails ,homePost,stories,getStories,deletePost,randomUser,userActivties
-} from '../Controller/userConteroller/UserPost.js'
+} from '../Controller/userConteroller/UserPostController.js'
 
-import { follow ,unFollow ,getFollowers ,UsergetFollowers ,mutualFriends } from '../Controller/userConteroller/Follow.js'
-import { chatSend, receiver , chatHistories ,notificationsOfUser,deleteNotification } from '../Controller/userConteroller/Chating.js'
+import { follow ,unFollow ,getFollowers ,UsergetFollowers ,mutualFriends } from '../Controller/userConteroller/FollowController.js'
+import { chatSend, receiver , chatHistories ,notificationsOfUser,deleteNotification } from '../Controller/userConteroller/ChatingController.js'
 import { deleteProfile } from '../Controller/userConteroller/UserAuth.js';
 
 

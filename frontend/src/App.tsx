@@ -40,7 +40,7 @@ function App() {
           </>
         )}
 
-        {/* Routes available to both authenticated and non-authenticated users */}
+
         <Route path='/' element={<Home />} />
         <Route path='/search' element={<Search />} />
         <Route path='/SerachUserProfile/:userId' element={<SerachUserProfile />} />
@@ -49,24 +49,21 @@ function App() {
         <Route path='/chat' element={<Chat />} />
         <Route path='/forgetpasswod' element={<ForgetPasswod />} />
         <Route path='/random-user' element={<RandomUserSug />} />
-
         <Route path='/room/:id' element={<Room />} />
         <Route path='/roomwebRtc/:id' element={<VideoCallInwebRtc/>} />
         <Route path='/VideoLobby' element={<Lobby/>} />
         <Route path='/AudioLobby' element={<AudioLobby/>} />
-
         <Route path='/audio-room/:id' element={<AudioRoom  />} />
 
 
 
    
 
-        {/* Authenticated routes */}
         {token && (
           <>
             <Route path='/profile' element={<UserProfile />} />
             <Route path='/create' element={<Createpost />} />
-            <Route path='/dashboard' element={<ProtectedRoute allowedRole={true}><DashBoard /></ProtectedRoute>} />
+            <Route path='/dashboard' element={<ProtectedRoute allowedRole={true}><DashBoard/></ProtectedRoute>} />
             <Route path="/userManagement" element={<ProtectedRoute allowedRole={true}><UserManagement /></ProtectedRoute>}/>
             <Route path="/Report" element={<ProtectedRoute allowedRole={true}><ReportPage /></ProtectedRoute>}/>
    

@@ -4,16 +4,10 @@ import Axios from '@/axious/instance';
 import SideBar from '../SideBar/SideBar';
 import { jwtDecode } from 'jwt-decode';
 import Online from './Online world-pana (1).png'
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faVideo, faPhone } from '@fortawesome/free-solid-svg-icons';
 import EmojiPicker from 'emoji-picker-react';
-
 import SearchComponent from './chatpages/SearchComponent';
 import MessageListComponent from './chatpages/MessageListComponent';
-
-import { Link, useNavigate, useParams } from 'react-router-dom';
 import Lobby from './Screens/Lobby';
-import AudioLobby from './Audioscreen/AudioLobby';
 const Chat = () => {
     const [searchQuery, setSearchQuery] = useState('');
     const [searchResults, setSearchResults] = useState([]);
@@ -26,25 +20,20 @@ const Chat = () => {
     const [selectedImage, setSelectedImage] = useState(null);
     const [showModal, setShowModal] = useState(false);
     const [showEmojiPicker, setShowEmojiPicker] = useState(false);
-    const navigate = useNavigate();
     const fileInputRef = useRef(null);
-
-
-
-
 
     const toggleEmojiPicker = () => {
         setShowEmojiPicker(!showEmojiPicker);
     };
 
-    const handleEmojiClick = (emojiObject) => {
+    const handleEmojiClick = (emojiObject:any) => {
         const emoji = emojiObject.emoji;
         setInputMessage(prevMessage => prevMessage + emoji);
     };
 
 
 
-    const handleFileInputChange = (e) => {
+    const handleFileInputChange = (e:any) => {
         const image = e.target.files[0];
         setSelectedImage(image);
         setShowModal(true);

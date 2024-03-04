@@ -1,4 +1,4 @@
-import User from '../Model/UserModel.js'
+import User from '../Model/UserSchema.js'
 async function findByEmail(email) {
     try {
         const user = await User.findOne({ email });

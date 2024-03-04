@@ -1,5 +1,4 @@
 import Post from "../../Model/PostSchema.js";
-import User from '../../Model/UserModel.js'
 
 const getReported=async (req, res) => {
     try {

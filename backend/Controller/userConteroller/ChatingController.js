@@ -1,13 +1,11 @@
-  import Chat from '../../Model/Chat.js'; 
-  import User from '../../Model/UserModel.js'
+  import Chat from '../../Model/ChatSchema.js'; 
+  import User from '../../Model/UserSchema.js'
   import { io } from '../../server.js'; 
   import Notification from '../../Model/NotificationsSchema.js'
 
   const chatSend = async function chatSend(req, res) {
     try {
         const { sender, receiver, content } = req.body;
-
-
         const image = req.file ? req.file.filename : null;
 
 

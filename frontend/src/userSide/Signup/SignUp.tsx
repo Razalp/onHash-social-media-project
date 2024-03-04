@@ -47,8 +47,9 @@ const SignUp = () => {
   };
 
   const handleSignUp = async () => {
-    if (password.length < 6) {
-      toast.error('Password should be at least 6 characters');
+    const passwordRegex = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[!@#$%^&*]).{8,}$/;
+    if (!passwordRegex.test(password)) {
+      toast.error('Password should be at least 8 characters long and include at least one uppercase letter, one lowercase letter, one number, and one special character');
       return;
     }
 

@@ -1,16 +1,11 @@
-import User from "../../Model/UserModel.js";
+import User from "../../Model/UserSchema.js";
 import bcryptjs from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 import nodemailer from 'nodemailer';
 import randomstring from 'randomstring';
-import UserOtp from "../../Model/UserOtpModel.js";
-import multer from 'multer';
+import UserOtp from "../../Model/UserOtpSchema.js";
 import path from 'path';
 import Post from '../../Model/PostSchema.js'
-import internal from "stream";
-
-
-// import repository from '../../repository/repository.js   
 
 
 const transporter = nodemailer.createTransport({
