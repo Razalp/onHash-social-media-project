@@ -1,18 +1,16 @@
 import React, { useEffect, useState } from "react";
 import SideBar from "../SideBar/SideBar";
 import { Link, useNavigate } from "react-router-dom";
-import Footer from "../Footer/Footer";
-import photo from './photoreal-model.webp';
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faHeart, faComment, faFlag, faUserCircle } from '@fortawesome/free-solid-svg-icons';
 import Axios from "@/axious/instance";
 import { jwtDecode } from "jwt-decode";
-import Story from "./Story";
+import Story from "./HomeComponets/Story";
 import LazyLoad from 'react-lazyload';
-import LoadingSpinner from './LoadingSpinner'; 
 import { Button, Spinner } from "react-bootstrap";
 import Swal from 'sweetalert2'
-import RandomUserSug from "./RandomUserSug";
+import RandomUserSug from "./HomeComponets/RandomUserSug";
+import LoadingSpinner from "./LoadingSpinner";
 
 const Home = () => {
   const navigate = useNavigate();

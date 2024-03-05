@@ -1,7 +1,7 @@
 import { useSocket } from '@/Context/SocketProvider'
 import React, { useCallback, useEffect, useState } from 'react'
 import ReactPlayer from "react-player";
-import peer from '../../../Service/Peer'
+import peer from '../../../service/Peer'
 import { Button } from '@/components/ui/button';
 import { PhoneForwarded, PhoneCall, PhoneOff, Mic, MicOff } from 'lucide-react';
 

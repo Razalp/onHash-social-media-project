@@ -1,4 +1,4 @@
-import { Route, Routes, Navigate, useNavigate } from 'react-router-dom';
+import { Route, Routes, Navigate, } from 'react-router-dom';
 import './App.css';
 import SignUp from './userSide/Signup/SignUp';
 import Login from './userSide/LoginIn/Login';
@@ -11,11 +11,11 @@ import Createpost from './userSide/CreatePost/Createpost';
 import Search from './userSide/Search/Search';
 import SerachUserProfile from './userSide/SerachUserProfile/SerachUserProfile';
 import ReportPage from './adminSide/ReportPage/ReportPage';
-import Story from './userSide/Home/Story';
+import Story from './userSide/Home/HomeComponets/Story';
 import Notifications from './userSide/Notifications/Notifications';
 import Chat from './userSide/Chat/Chat';
 import ForgetPasswod from './userSide/ForgetPasswod/ForgetPasswod';
-import RandomUserSug from './userSide/Home/RandomUserSug';
+import RandomUserSug from './userSide/Home/HomeComponets/RandomUserSug';
 import VideoCallInwebRtc from './userSide/Chat/chatpages/VideoCallInwebRtc';
 
 import Room from './userSide/Chat/Screens/Room';
@@ -27,7 +27,6 @@ import AudioLobby from './userSide/Chat/Audioscreen/AudioLobby';
 
 function App() {
   const token = localStorage.getItem('accessToken');
-  const navigate = useNavigate();
 
   return (
     <>

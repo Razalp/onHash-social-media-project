@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import AdminSideBar from '../AdminSideBar/AdminSideBar';
 import './UserManagement.css';
 import Axios from '../../axious/instance';
@@ -12,7 +12,7 @@ const UserManagement = () => {
   const [searchQuery, setSearchQuery] = useState('');
   const [showButtons, setShowButtons] = useState(null);
   
-  const handleSelectButtonClick = (index) => {
+  const handleSelectButtonClick = (index:Number|any) => {
     setShowButtons(index);
   };
 
@@ -29,11 +29,11 @@ const UserManagement = () => {
     fetchUsers();
   }, []);
 
-  const deleteUser = async (userId) => {
+  const deleteUser = async (userId:string) => {
     try {
       const response = await Axios.delete(`/api/admin/userManagement/${userId}`);
       if (response.data.message === 'User deleted successfully') {
-        setUsers((prevUsers) => prevUsers.filter((user) => user._id !== userId));
+        setUsers((prevUsers) => prevUsers.filter((user:any) => user._id !== userId));
 
         // Show success alert
         Swal.fire({
@@ -48,7 +48,7 @@ const UserManagement = () => {
     }
   };
 
-  const confirmDelete = (userId) => {
+  const confirmDelete = (userId:string) => {
     Swal.fire({
       title: 'Are you sure?',
       text: "You won't be able to revert this!",
@@ -63,11 +63,11 @@ const UserManagement = () => {
     });
   };
 
-  const blockUser = async (userId) => {
+  const blockUser = async (userId:string) => {
     try {
       await Axios.put(`/api/admin/block/${userId}`);
-      setUsers((prevUsers) =>
-        prevUsers.map((user) =>
+      setUsers((prevUsers:any) =>
+        prevUsers.map((user:any) =>
           user._id === userId ? { ...user, isBlocked: !user.isBlocked } : user
         )
       );
@@ -76,7 +76,7 @@ const UserManagement = () => {
     }
   };
 
-  const confirmBlock = (userId) => {
+  const confirmBlock = (userId:string) => {
     Swal.fire({
       title: 'Are you sure?',
       text: 'You are about to block/unblock this user!',
@@ -91,9 +91,9 @@ const UserManagement = () => {
     });
   };
 
-  // Filter users based on the search query
+
   const filteredUsers = users.filter(
-    (user) =>
+    (user:any) =>
       user.username.toLowerCase().includes(searchQuery.toLowerCase()) ||
       user.email.toLowerCase().includes(searchQuery.toLowerCase())
   );
@@ -126,7 +126,7 @@ const UserManagement = () => {
               </tr>
             </thead>
             <tbody className="bg-gray-700 divide-y divide-gray-600">
-            {filteredUsers.map((item, index) => (
+            {filteredUsers.map((item:any, index) => (
           <tr key={item?._id} className={index % 2 === 0 ? 'table-row bg-gray-800' : 'table-row bg-gray-700'} onMouseEnter={() => handleSelectButtonClick(index)} onMouseLeave={() => setShowButtons(null)}>
             <td className="py-2 text-sm"></td>
             <td className="px-4 py-2 text-sm">{item?.username?.toString()}</td>

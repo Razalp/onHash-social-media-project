@@ -1,6 +1,6 @@
 // Story.jsx
 
-import Axios from "../../axious/instance";
+import Axios from "../../../axious/instance";
 import { jwtDecode } from "jwt-decode";
 import React, { useState, useEffect } from "react";
 import { Button, Toast } from "react-bootstrap";

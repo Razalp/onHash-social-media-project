@@ -13,7 +13,7 @@ const Chat = () => {
     const [searchResults, setSearchResults] = useState([]);
     const [selectedUser, setSelectedUser] = useState<any>([]);
     const [inputMessage, setInputMessage] = useState('');
-    const [messages, setMessages] = useState([]);
+    const [messages, setMessages] = useState<string|any>([]);
     const [senderId, setSenderId] = useState('');
     const [socket, setSocket] = useState<any>(null);
     const [chatHistory, setChatHistory] = useState<any>([]);
@@ -21,18 +21,13 @@ const Chat = () => {
     const [showModal, setShowModal] = useState(false);
     const [showEmojiPicker, setShowEmojiPicker] = useState(false);
     const fileInputRef = useRef(null);
-
     const toggleEmojiPicker = () => {
         setShowEmojiPicker(!showEmojiPicker);
     };
-
     const handleEmojiClick = (emojiObject:any) => {
         const emoji = emojiObject.emoji;
         setInputMessage(prevMessage => prevMessage + emoji);
     };
-
-
-
     const handleFileInputChange = (e:any) => {
         const image = e.target.files[0];
         setSelectedImage(image);
@@ -49,21 +44,23 @@ const Chat = () => {
         if (!token) {
             return;
         }
-        const decodedToken: any = jwtDecode(token);
-        const currentUserId = decodedToken.userId;
-
-        const newSocket = io('http://localhost:3000');
+        const newSocket = io(import.meta.env.VITE_REACT_APP_BASE_URL);
         setSocket(newSocket);
-
-        return () => newSocket.disconnect();
+    
+        return () => {
+            if (newSocket) {
+                newSocket.disconnect();
+            }
+        };
     }, []);
+    
 
     useEffect(() => {
         if (socket && selectedUser && selectedUser.userId) {
             socket.emit('joinRoom', `message-${selectedUser.userId}`);
 
             socket.on('chat message', (msg: any) => {
-                setMessages((prevMessages: any) => [msg, ...prevMessages]);
+                setMessages((prevMessages:string) => [msg, ...prevMessages]);
                 if (selectedUser && selectedUser.userId) {
                     setTimeout(fetchMessages, 1000);
                 }
@@ -81,6 +78,10 @@ const Chat = () => {
         try {
             if (!socket || !selectedUser || !selectedUser.userId) {
                 console.error('Error: Socket not connected or no recipient selected');
+                return;
+            }
+            if (inputMessage.trim() === '') {
+                console.error('Error: Message cannot be empty');
                 return;
             }
 
@@ -126,7 +127,7 @@ const Chat = () => {
             const response = await Axios.get(`/api/user/${currentUserId}/${receiverId}`);
             const messages = response.data;
             setMessages(messages);
-            fetchChatHistory();
+   
         } catch (error) {
             console.error('Error fetching messages:', error);
         }
@@ -149,7 +150,7 @@ const Chat = () => {
             const response = await Axios.post(`/api/user/chatHistories/${userId}`)
             setChatHistory(response.data);
 
-            socket.on('newChatHistory', (newChatHistory) => {
+            socket.on('newChatHistory', (newChatHistory:string) => {
                 setChatHistory(newChatHistory);
             });
 

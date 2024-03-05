@@ -1,7 +1,6 @@
 import { useEffect, useState } from "react";
 import Axios from "../../axious/instance";
 import SideBar from "../SideBar/SideBar";
-import profile from './profile.jpg';
 import './UserProfile.css';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
@@ -11,9 +10,9 @@ import { Button } from "@/components/ui/button"
 import { Modal } from 'react-bootstrap';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faHeart, faComment, faFlag, faUserCircle, faKeyboard, faTrash, } from '@fortawesome/free-solid-svg-icons'
+import { faHeart, faComment, faFlag } from '@fortawesome/free-solid-svg-icons'
 import Swal from 'sweetalert2'
-import Takefree from "./Takefree";
+import Takefree from "./ProfileComponets/EditModal";
 import { UserX } from 'lucide-react';
 
 
@@ -42,26 +41,20 @@ const UserProfile = () => {
       profilePicture: '',
     },
   });
-
-  const [isLiked, setIsLiked] = useState(false);
   const [commentText, setCommentText] = useState('');
   const [showCommentBox, setShowCommentBox] = useState(false);
-  const [selectedReason, setSelectedReason] = useState("");
-  const [error, setError] = useState('')
+
   const [isLoading, setIsLoading] = useState(false);
   const [likeData, SetLikeData] = useState<any[]>([]);
   const [commentData, SetCommentData] = useState<any>([])
-  const [likeCount, SetLikeCount] = useState<any>('')
-  const [commentCount, SetCommentCount] = useState<any>('')
   const [openLikes, setOpenLikes] = useState(false);
   const [postLikes, setPostLikes] = useState<any>({});
-  const [alreadyLike, setAlreadyLike] = useState<boolean>()
-  const [mutualFriends, setMutualFriends] = useState([]);
+
+
 
 
   const handleDeletePost = async () => {
     try {
-      // Display confirmation dialog using SweetAlert
       const confirmResult = await Swal.fire({
         title: 'Are you sure?',
         text: "You won't be able to revert this!",
@@ -154,7 +147,6 @@ const UserProfile = () => {
 
           SetLikeData(response.data.likes);
           SetCommentData(response.data.comments);
-          setIsLiked(response.data.hasLiked)
           const token = localStorage.getItem('accessToken');
 
           if (!token) {
@@ -166,7 +158,7 @@ const UserProfile = () => {
         }
       } catch (error) {
         console.error(error);
-        setError('');
+      
       }
     };
     if (selectedPost) {
@@ -214,7 +206,7 @@ const UserProfile = () => {
         reverseButtons: true,
         preConfirm: () => {
           const select = document.getElementById('swal-select1') as HTMLSelectElement;
-          const selectedReason = select?.value;
+          const selectedReason  = select?.value;
           if (!selectedReason) {
             Swal.showValidationMessage('Please select a reason');
             return false;
@@ -224,6 +216,7 @@ const UserProfile = () => {
       });
 
       if (result.isConfirmed) {
+        const selectedReason = result.value;
         const response = await Axios.post(`/api/user/report/${postId}`, { userId: userId, reason: selectedReason });
 
         if (response.status === 200) {
@@ -354,6 +347,8 @@ const UserProfile = () => {
     setShowModal(false);
   };
 
+
+
   const handleModalSave = async () => {
     try {
       const formData = new FormData();
@@ -372,13 +367,14 @@ const UserProfile = () => {
 
       await Axios.post('api/user/update-profile', formData);
 
-      toast.success('Profile updated successfully');
     } catch (error) {
       console.error('Error updating profile:', error);
     }
 
     setShowModal(false);
   };
+  
+
 
 
 

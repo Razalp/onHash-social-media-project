@@ -4,7 +4,7 @@ const MessageListComponent = ({ messages, senderId }) => {
     const [modalOpen, setModalOpen] = useState(false);
     const [selectedImage, setSelectedImage] = useState('');
 
-    const openModal = (imageUrl) => {
+    const openModal = (imageUrl:string) => {
         setSelectedImage(imageUrl);
         setModalOpen(true);
     };
@@ -23,10 +23,11 @@ const MessageListComponent = ({ messages, senderId }) => {
                             {message.image ? (
                                 // If the message contains an image, render the image with onClick event
                                 <img 
-                                    src={`http://localhost:3000/upload/${message.image}`} 
+                                src={`${import.meta.env.VITE_UPLOAD_URL}${message.image}`}
+
                                     alt="message-image" 
                                     className="w-60 h-80 mb-2 object-cover" 
-                                    onClick={() => openModal(`http://localhost:3000/upload/${message.image}`)}
+                                    onClick={() => openModal(`${import.meta.env.VITE_UPLOAD_URL}${message.image}`)}
                                 />
                             ) : (
                                 // If the message is text, render the text content

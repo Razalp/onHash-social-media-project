@@ -15,18 +15,18 @@ const SignUp = () => {
   const [confirmPassword, setConfirmPassword] = useState('');
   const [showOtpModal, setShowOtpModal] = useState(false);
   const [otp, setOtp] = useState('');
-  const [modalAnimation, setModalAnimation] = useState(false);
+
   const [resendDisabled, setResendDisabled] = useState(false);
   const [timer, setTimer] = useState(60);
 
   const openOtpModal = () => {
     setShowOtpModal(true);
-    setModalAnimation(true);
+
     startTimer();
   };
 
   const closeOtpModal = () => {
-    setModalAnimation(false);
+
     setResendDisabled(false);
     setTimer(60);
     setTimeout(() => setShowOtpModal(false), 500);
@@ -47,9 +47,11 @@ const SignUp = () => {
   };
 
   const handleSignUp = async () => {
-    const passwordRegex = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[!@#$%^&*]).{8,}$/;
+    // const passwordRegex = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[!@#$%^&*]).{8,}$/;
+    const passwordRegex = /.{6,}$/
     if (!passwordRegex.test(password)) {
-      toast.error('Password should be at least 8 characters long and include at least one uppercase letter, one lowercase letter, one number, and one special character');
+      // toast.error('Password should be at least 8 characters long and include at least one uppercase letter, one lowercase letter, one number, and one special character');
+      toast.error('Password should be at least 6 characters long');
       return;
     }
 

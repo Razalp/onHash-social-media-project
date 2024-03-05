@@ -1,6 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
 import SideBar from '../SideBar/SideBar';
-import axios from 'axios';
 import { jwtDecode } from 'jwt-decode';
 import './Createpost.css';
 import Axios from '../../axious/instance';
@@ -10,8 +9,6 @@ import { Button } from '@/components/ui/button';
 import { useNavigate } from 'react-router-dom';
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCamera } from '@fortawesome/free-solid-svg-icons';
-import upload from './Image post.gif'
-import ReactCrop from 'react-image-crop';
 import 'react-image-crop/dist/ReactCrop.css';
 
 const Createpost = () => {

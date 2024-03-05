@@ -10,7 +10,7 @@ interface ProtectedRouteProps {
 
 const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ children, allowedRole }) => {
   const navigate = useNavigate();
-  const [loading, setLoading] = useState(true);
+
   const [isAdmin, setIsAdmin] = useState<string | undefined|any>(undefined);
   
 
@@ -33,9 +33,7 @@ const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ children, allowedRole }
     } catch (error) {
       console.error('Error decoding token:', error);
     
-    } finally {
-      setLoading(false);
-    }
+    } 
   }, [token, navigate, allowedRole]);
 
   if (isAdmin === allowedRole ) {
