@@ -9,10 +9,8 @@ import { jwtDecode } from "jwt-decode";
 import { Modal } from 'react-bootstrap';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faHeart, faComment, faFlag, faUserCircle ,faKeyboard } from '@fortawesome/free-solid-svg-icons'
+import { faHeart, faComment, faFlag} from '@fortawesome/free-solid-svg-icons'
 import Swal from "sweetalert2";
-import { current } from "@reduxjs/toolkit";
-import { Phone } from 'lucide-react';
 import AudioLobby from "../Chat/Audioscreen/AudioLobby";
 
 
@@ -23,7 +21,7 @@ const SearchUserProfile = () => {
     const [userData, setUserData] = useState<any[]>([]);
     const [userPosts, setUserPosts] = useState([]);
     const [isFollowing, setIsFollowing] = useState<boolean>();
-    const [followers, setFollowers] = useState();
+    const [followers, setFollowers] = useState<number | undefined|any>();
     const [following, setFollowing] = useState();
     const [followingData,setFollowingData] = useState<any[]>();
     const [followersData,setFollowersData] = useState<any[]>([])
@@ -41,11 +39,8 @@ const SearchUserProfile = () => {
       const [commentText, setCommentText] = useState('');
       const [showCommentBox, setShowCommentBox] = useState(false);
       const [selectedReason, setSelectedReason] = useState("");
-      const [post, setPost] = useState<any[]>()
-      const [Serachuser,setSearchUser] =useState<any[]>([])
+      const [Serachuser,setSearchUser] =useState<any>([])
       const [showEmojiPopup, setShowEmojiPopup] = useState(false);
-      const emojiList = ['❤️', '😊', '👍', '🎉', '🔥', '😂', '🌟', '👏'];
-      const [isFollowed,setIsFollowed] =useState<Boolean>()
       const [error,setError] =useState('')
       const [likeData, SetLikeData] = useState<any[]>([]);
       const [commentData,SetCommentData] =useState<any>([])
@@ -315,7 +310,7 @@ const SearchUserProfile = () => {
               localStorage.setItem(`isFollowing_${userId}`, 'true');
               toast.success('You are now following this user');
 
-              setFollowers(prevCount => prevCount + 1);
+              setFollowers((prevCount:any) => prevCount + 1);
           } else {
               toast.error('Error following user');
           }
@@ -335,8 +330,7 @@ const SearchUserProfile = () => {
               setIsFollowing(false);
               localStorage.setItem(`isFollowing_${userId}`, 'false');
               toast.success('You have unfollowed this user');
-              // Update follower count
-              setFollowers(prevCount => prevCount - 1);
+              setFollowers((prevCount:any) => prevCount - 1);
           } else {
               toast.error('Error unfollowing user');
           }
@@ -450,7 +444,6 @@ const SearchUserProfile = () => {
   
       fetchPostDetails();
     }, [selectedPost]);
-    
 
 
 
@@ -619,7 +612,7 @@ const SearchUserProfile = () => {
       <h3 className="text-white mt-4">Comments:</h3>
       <br />
       <ul className="list-none p-0">
-        {commentData.map((comment, index) => (
+        {commentData.map((comment:any, index:any) => (
           <li key={index} className="text-white space-y-4">
             <div className="flex justify-between ">
               <div className="flex">

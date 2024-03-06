@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import Axios from '@/axious/instance';
 import SideBar from '../SideBar/SideBar';
 import { faSearch } from '@fortawesome/free-solid-svg-icons';
@@ -6,7 +6,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Link, useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { jwtDecode } from 'jwt-decode';
-// import defalt from ''
+
 const Search = () => {
   const [searchQuery, setSearchQuery] = useState('');
   const [searchResults, setSearchResults] = useState([]);

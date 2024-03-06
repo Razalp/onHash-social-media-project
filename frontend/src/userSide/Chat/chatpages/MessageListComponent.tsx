@@ -1,6 +1,19 @@
 import React, { useState } from 'react';
 
-const MessageListComponent = ({ messages, senderId }) => {
+
+interface Message {
+    sender: string;
+    image?: string;
+    content: string;
+    createdAt: Date;
+}
+
+interface Props {
+    messages: Message[];
+    senderId: string;
+}
+
+const MessageListComponent : React.FC<Props> = ({ messages, senderId }) => {
     const [modalOpen, setModalOpen] = useState(false);
     const [selectedImage, setSelectedImage] = useState('');
 
@@ -17,7 +30,7 @@ const MessageListComponent = ({ messages, senderId }) => {
     return (
         <div className="flex flex-col-reverse flex-1 overflow-auto" style={{ backgroundColor: '#DAD3CC' }}>
             {messages.length > 0 ? (
-                messages.map((message, index) => (
+                messages.map((message:Message, index) => (
                     <div key={index} className={`flex justify-between ${message.sender === senderId ? 'flex-row-reverse' : 'flex-row'}`}>
                         <div className={`bg-gray-300 rounded-lg p-2 ${message.sender === senderId ? 'ml-4' : 'mr-4'}`}>
                             {message.image ? (

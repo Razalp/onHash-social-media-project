@@ -1,8 +1,7 @@
-import React, { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { useSocket } from '../../../Context/SocketProvider';
 import { useNavigate } from 'react-router-dom';
 import { jwtDecode } from 'jwt-decode';
-import { Button } from '@/components/ui/button';
 import Axios from '@/axious/instance';
 import { Phone } from 'lucide-react';
 
@@ -24,7 +23,7 @@ const AudioLobby = () => {
 
         try {
             if (token) {
-                const decodedToken = jwtDecode(token);
+                const decodedToken:any = jwtDecode(token);
                 const userId = decodedToken.userId;
 
                 const fetchUserData = async () => {
@@ -44,17 +43,17 @@ const AudioLobby = () => {
     }, []);
 
     const handleSubmitForm = useCallback(
-        (e) => {
+        (e:any) => {
             e.preventDefault();
             setEmail(userData.email)
             setShowModal(false); // Close modal after form submission
-            socket.emit("room:join", { email, room });
+            socket?.emit("room:join", { email, room });
         },
         [email, room, socket, userData.email]
     );
 
     const handleJoinRoom = useCallback(
-        (data) => {
+        (data:any) => {
             const { email, room } = data;
             navigate(`/audio-room/${room}`);
         },
@@ -62,9 +61,9 @@ const AudioLobby = () => {
     );
 
     useEffect(() => {
-        socket.on("room:join", handleJoinRoom);
+        socket?.on("room:join", handleJoinRoom);
         return () => {
-            socket.off("room:join", handleJoinRoom);
+            socket?.off("room:join", handleJoinRoom);
         };
     }, [socket, handleJoinRoom]);
 

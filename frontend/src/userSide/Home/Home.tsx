@@ -36,18 +36,9 @@ const Home = () => {
   };
     const handleReportWithConfirmation = async (postId:any) => {
       try {
-
-
-
-       
-
-        if (!token) {
-          return;
-        }
-
+        const token:string|null|any = localStorage.getItem('accessToken');
         const decodedToken: any = jwtDecode(token);
         const userId = decodedToken.userId;
-
         const result = await Swal.fire({
           title: 'Report Post',
           html: `
@@ -184,13 +175,13 @@ const Home = () => {
         const decodedToken: any = jwtDecode(token);
         const userId = decodedToken.userId;
   
-        // Perform the like action
+
         const response = await Axios.post(`/api/user/likes/${postId}`, { currentUserId: userId });
         const updatedPost = response.data;
   
-        // Update local storage with the like status
+
         const likedPosts = JSON.parse(localStorage.getItem('likedPosts') || '{}');
-        likedPosts[postId] = !likedPosts[postId]; // Toggle the like status
+        likedPosts[postId] = !likedPosts[postId]; 
         localStorage.setItem('likedPosts', JSON.stringify(likedPosts));
   
         setPostLikes((prevPostLikes: any) => ({

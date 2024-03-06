@@ -16,7 +16,7 @@ import Notifications from './userSide/Notifications/Notifications';
 import Chat from './userSide/Chat/Chat';
 import ForgetPasswod from './userSide/ForgetPasswod/ForgetPasswod';
 import RandomUserSug from './userSide/Home/HomeComponets/RandomUserSug';
-import VideoCallInwebRtc from './userSide/Chat/chatpages/VideoCallInwebRtc';
+
 
 import Room from './userSide/Chat/Screens/Room';
 
@@ -49,7 +49,6 @@ function App() {
         <Route path='/forgetpasswod' element={<ForgetPasswod />} />
         <Route path='/random-user' element={<RandomUserSug />} />
         <Route path='/room/:id' element={<Room />} />
-        <Route path='/roomwebRtc/:id' element={<VideoCallInwebRtc/>} />
         <Route path='/VideoLobby' element={<Lobby/>} />
         <Route path='/AudioLobby' element={<AudioLobby/>} />
         <Route path='/audio-room/:id' element={<AudioRoom  />} />

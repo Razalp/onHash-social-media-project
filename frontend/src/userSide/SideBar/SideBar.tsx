@@ -5,7 +5,7 @@ import Swal from 'sweetalert2';
 import HashOnImage from '../../assets/HashOn.png';
 import './SideBar.css';
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faHome, faSearch, faCompass, faVideo, faEnvelope, faBell, faPlusCircle, faUser, faEllipsisV, faSignOutAlt, faArrowLeft, faArrowRight } from "@fortawesome/free-solid-svg-icons";
+import { faHome, faSearch, faEnvelope, faBell, faPlusCircle, faUser, faEllipsisV, faSignOutAlt, faArrowLeft, faArrowRight } from "@fortawesome/free-solid-svg-icons";
 import Notifications from '../Notifications/Notifications';
 
 const SideBar = () => {

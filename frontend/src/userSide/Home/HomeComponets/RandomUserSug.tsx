@@ -23,7 +23,7 @@ const RandomUserSug = () => {
     fetchRandomUsers();
   }, []);
 
-  const handleFollow = async (userId) => {
+  const handleFollow = async (userId:string) => {
     try {
       const response = await Axios.post(`/api/user/follow/${userId}`, {
         user: getCurrentUserId()

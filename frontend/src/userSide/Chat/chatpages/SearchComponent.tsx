@@ -1,6 +1,21 @@
 import React from 'react';
 
-const SearchComponent = ({ searchQuery, handleInputChange, handleSearch, searchResults, handleUserClick }) => {
+
+interface User {
+    _id: string;
+    username: string;
+    profilePicture: string;
+}
+
+interface Props {
+    searchQuery: string;
+    handleInputChange:any;
+    handleSearch: () => void;
+    searchResults: User[];
+    handleUserClick: (user: User) => void;
+}
+
+const SearchComponent : React.FC<Props> = ({ searchQuery, handleInputChange, handleSearch, searchResults, handleUserClick }) => {
     return (
         <div className="px-6 py-4 bg-gray-200">
             <div>
@@ -21,13 +36,13 @@ const SearchComponent = ({ searchQuery, handleInputChange, handleSearch, searchR
                 {searchResults.length > 0 && (
                     <div className="mt-4 relative w-3/6">
                         <ul className="justify-start w-full">
-                            {searchResults.map((user) => (
+                            {searchResults.map((user:User) => (
                                 <li key={user._id} className="flex items-center space-x-4 mb-4" onClick={() => handleUserClick(user)}>
                                     <img
-                                        src={`http://localhost:3000/upload/${user?.profilePicture}`}
+                                        src={`${import.meta.env.VITE_UPLOAD_URL}${user?.profilePicture}`}
                                         alt={`${user.username}'s profile`}
                                         className="w-10 h-10 rounded-full object-cover"
-                                        onError={(e) => {
+                                        onError={(e:any) => {
                                             e.target.onerror = null;
                                             e.target.src = '';
                                         }}

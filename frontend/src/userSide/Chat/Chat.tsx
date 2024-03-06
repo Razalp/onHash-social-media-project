@@ -17,10 +17,11 @@ const Chat = () => {
     const [senderId, setSenderId] = useState('');
     const [socket, setSocket] = useState<any>(null);
     const [chatHistory, setChatHistory] = useState<any>([]);
-    const [selectedImage, setSelectedImage] = useState(null);
+    const [selectedImage, setSelectedImage] = useState<File | null>(null);
     const [showModal, setShowModal] = useState(false);
     const [showEmojiPicker, setShowEmojiPicker] = useState(false);
-    const fileInputRef = useRef(null);
+    const fileInputRef = useRef<HTMLInputElement>(null);
+
     const toggleEmojiPicker = () => {
         setShowEmojiPicker(!showEmojiPicker);
     };
@@ -217,20 +218,21 @@ const Chat = () => {
                                 />
 
                                 <div className="bg-gray-100 flex-1 overflow-auto">
-                                    {chatHistory.map(chat => (
-                                        <div className='flex items-center mt-2 ml-2' key={chat._id}>
-                                            <img
-                                                src={`http://localhost:3000/upload/${chat.receiver.profilePicture}`}
-                                                className='w-10 h-10 rounded-full cursor-pointer'
-                                                alt=""
-                                                onClick={() => handleUserClick(chat.receiver)}
-                                            />
-                                            <div className='ml-3'>
-                                                <h1 className='text-sm font-semibold'>{chat.receiver.username}</h1>
-                                                <p className='text-sm text-gray-600'>{chat.message}</p>
-                                            </div>
-                                        </div>
-                                    ))}
+                                {chatHistory.map((chat: { _id: string, receiver: { profilePicture: string, username: string }, message: string }) => (
+    <div className='flex items-center mt-2 ml-2' key={chat._id}>
+        <img
+            src={`http://localhost:3000/upload/${chat.receiver.profilePicture}`}
+            className='w-10 h-10 rounded-full cursor-pointer'
+            alt=""
+            onClick={() => handleUserClick(chat.receiver)}
+        />
+        <div className='ml-3'>
+            <h1 className='text-sm font-semibold'>{chat.receiver.username}</h1>
+            <p className='text-sm text-gray-600'>{chat.message}</p>
+        </div>
+    </div>
+))}
+
                                 </div>
                             </div>
 
@@ -298,7 +300,7 @@ const Chat = () => {
                                             />
                                             <button
                                                 className="ml-2 px-4 py-2 bg-black hover:bg-gray-700 text-white rounded-lg w-32"
-                                                onClick={() => fileInputRef.current.click()}
+                                                onClick={() => fileInputRef.current?.click()}
                                             >
                                                 🗃️
                                             </button>

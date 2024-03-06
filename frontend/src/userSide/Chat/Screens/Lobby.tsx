@@ -24,7 +24,7 @@ const Lobby = () => {
 
         try {
             if (token) {
-                const decodedToken = jwtDecode(token);
+                const decodedToken:any = jwtDecode(token);
                 const userId = decodedToken.userId;
 
                 const fetchUserData = async () => {
@@ -44,17 +44,17 @@ const Lobby = () => {
     }, []);
 
     const handleSubmitForm = useCallback(
-        (e) => {
+        (e:any) => {
             e.preventDefault();
             setEmail(userData.email)
             setShowModal(false); // Close modal after form submission
-            socket.emit("room:join", { email, room });
+            socket?.emit("room:join", { email, room });
         },
         [email, room, socket, userData.email]
     );
 
     const handleJoinRoom = useCallback(
-        (data) => {
+        (data:any) => {
             const { email, room } = data;
             navigate(`/room/${room}`);
         },
@@ -62,9 +62,9 @@ const Lobby = () => {
     );
 
     useEffect(() => {
-        socket.on("room:join", handleJoinRoom);
+        socket?.on("room:join", handleJoinRoom);
         return () => {
-            socket.off("room:join", handleJoinRoom);
+            socket?.off("room:join", handleJoinRoom);
         };
     }, [socket, handleJoinRoom]);
 

@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect } from 'react';
 import SideBar from '../SideBar/SideBar';
 import { jwtDecode } from 'jwt-decode';
 import './Createpost.css';
@@ -20,69 +20,57 @@ const Createpost = () => {
   const [brightness, setBrightness] = useState<number>(100);
   const [contrast, setContrast] = useState<number>(100);
   const [saturate, setSaturate] = useState<number>(100);
-  const [crop, setCrop] = useState<ReactCrop.Crop>({ aspect: 16 / 9 });
-  const [croppedImageUrl, setCroppedImageUrl] = useState<string | null>(null);
-  const [imageRef, setImageRef] = useState<HTMLImageElement | null>(null);
 
-  const handleImageCrop = () => {
-    if (imageRef && crop.width && crop.height) {
-      const canvas = document.createElement('canvas');
-      const scaleX = imageRef.naturalWidth / imageRef.width;
-      const scaleY = imageRef.naturalHeight / imageRef.height;
-      canvas.width = crop.width;
-      canvas.height = crop.height;
-      const ctx = canvas.getContext('2d');
-      if (ctx) {
-        ctx.drawImage(
-          imageRef,
-          crop.x * scaleX,
-          crop.y * scaleY,
-          crop.width * scaleX,
-          crop.height * scaleY,
-          0,
-          0,
-          crop.width,
-          crop.height
-        );
-        const croppedImageUrl = canvas.toDataURL('image/jpeg');
-        setCroppedImageUrl(croppedImageUrl);
-      }
-    }
-  };
-  const handleImageLoad = (image: HTMLImageElement) => {
-    setImageRef(image);
-  };
+
+
+
 
   const token = localStorage.getItem('accessToken');
   const navigate = useNavigate();
   const [isDragOver, setIsDragOver] = useState(false);
-  const presetFilters = {
+  interface PresetFilters {
+    [key: string]: {
+      brightness?: number;
+      contrast?: number;
+      saturate?: number;
+      grayscale?: number;
+      invert?: number;
+      sepia?: number;
+      blur?: number;
+      sharpness?: number;
+      neon?: number;
+      desaturate?: number;
+      brightnessOnly?: number;
+    };
+  }
+  
+  const presetFilters: PresetFilters = {
     original: { brightness: 100, contrast: 100, saturate: 100 },
     sepia: { brightness: 90, contrast: 80, saturate: 20 },
     vintage: { brightness: 120, contrast: 90, saturate: 80 },
-    grayscale: { grayscale: 100 }, 
+    grayscale: { grayscale: 100 },
     highContrast: { brightness: 150, contrast: 150, saturate: 100 },
     invertColors: { invert: 100 },
     warmColors: { sepia: 50, saturate: 150 },
     coolColors: { saturate: 50, brightness: 150 },
-    blur: { blur: 5 }, 
+    blur: { blur: 5 },
     sharpness: { contrast: 150, brightness: 150 },
     neon: { brightness: 150, saturate: 150 },
-    desaturate: { saturate: 0 }, 
+    desaturate: { saturate: 0 },
     brightnessOnly: { brightness: 150, contrast: 100, saturate: 100 },
   };
   
-  const applyPresetFilter = (preset: any) => {
+  const applyPresetFilter = (preset: string) => {
     const filterValues = presetFilters[preset];
-    setBrightness(filterValues.brightness);
-    setContrast(filterValues.contrast);
-    setSaturate(filterValues.saturate);
-    
+    if (filterValues) {
+      setBrightness(filterValues.brightness || 100);
+      setContrast(filterValues.contrast || 100);
+      setSaturate(filterValues.saturate || 100);
+    }
   };
-
   
 
-  const handleDragOver = (e) => {
+  const handleDragOver = (e:any) => {
     e.preventDefault();
     setIsDragOver(true);
   };
@@ -91,7 +79,7 @@ const Createpost = () => {
     setIsDragOver(false);
   };
 
-  const handleDrop = (e) => {
+  const handleDrop = (e:any) => {
     e.preventDefault();
     setIsDragOver(false);
 
@@ -101,18 +89,11 @@ const Createpost = () => {
       const droppedImage = files[0];
 
       if (droppedImage.type.startsWith('image/')) {
-        onFileChange([droppedImage]);
+      
       } else {
         toast.error('Please drop a valid image file.');
       }
     }
-  };
-  
-  
-
-  const handleFileInputChange = (e:any) => {
-    const files = e.target.files;
-    onFileChange(files);
   };
 
   useEffect(() => {

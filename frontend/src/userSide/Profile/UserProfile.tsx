@@ -375,9 +375,6 @@ const UserProfile = () => {
   };
   
 
-
-
-
   useEffect(() => {
     const token = localStorage.getItem('accessToken');
 
