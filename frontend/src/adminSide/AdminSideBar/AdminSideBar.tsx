@@ -42,8 +42,6 @@ const AdminSideBar = () => {
  <li className="hover:text-blue-200 text-sm"><Link to="/dashboard"><FontAwesomeIcon icon={faTachometerAlt} /> &nbsp; Dashboard</Link></li>
  <li className="hover:text-blue-200 text-sm"><Link to="/userManagement"><FontAwesomeIcon icon={faUsers} /> &nbsp; Users </Link></li>
  <li className="hover:text-blue-200 text-sm"><Link to="/Report"><FontAwesomeIcon icon={faChartLine} /> &nbsp; Reports</Link></li>
- <li className="hover:text-blue-200 text-sm"><FontAwesomeIcon icon={faRunning} /> &nbsp; Activites</li>
- <li className="hover:text-blue-200 text-sm"><FontAwesomeIcon icon={faTag} /> &nbsp; Add promo</li>
  <li className="hover:text-blue-200 text-sm"><Link to='/profile'><FontAwesomeIcon icon={faUser} /> &nbsp; Profile</Link></li>
  <li className="hover:text-blue-200 text-sm" onClick={handleSignOut}><FontAwesomeIcon icon={faSignOutAlt} /> &nbsp; Signout </li>
 </ul>

@@ -86,7 +86,7 @@ const RandomUserSug = () => {
               
           <div key={user._id} className="card bg-gray-950 rounded-lg p-4 shadow-md ">
             <img
-              src={`http://localhost:3000/upload/${user.profilePicture}`}
+              src={`${import.meta.env.VITE_UPLOAD_URL}${user.profilePicture}`}
               alt={user.username}
               className="w-16 h-16 rounded-full mx-auto object-cover"
             />

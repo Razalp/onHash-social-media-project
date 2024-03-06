@@ -6,7 +6,7 @@ import Axios from '@/axious/instance';
 const ReportPage = () => {
     const [reports, setReports] = useState([]);
 
-    const handleDelete = async (postId) => {
+    const handleDelete = async (postId:string) => {
         try {
             await Axios.delete(`/api/admin/postDelete/${postId}`);
   
@@ -17,10 +17,10 @@ const ReportPage = () => {
     };
 
 
-    const handleDeleteImage = async (postId, imageId) => {
+    const handleDeleteImage = async (postId:string, imageId:string) => {
         try {
             await Axios.delete(`/api/admin/posts/image/${postId}/${imageId}`);
-            // Reload reports after image deletion
+
             fetchReportData();
         } catch (error) {
             console.error('Error deleting image:', error);
@@ -64,7 +64,7 @@ const ReportPage = () => {
                     </thead>
                     <tbody className="bg-gray-700 divide-y divide-gray-600">
                         {Array.isArray(reports) && reports.length > 0 ? (
-                            reports.map((report, index) => (
+                            reports.map((report:any, index) => (
                                 <tr key={index} className='table-row bg-gray-800'>
                                     <td className="py-2"></td>
                                     <td className="px-4 py-2 text-sm">{report?.user?.username}</td>
@@ -72,12 +72,12 @@ const ReportPage = () => {
                                     <td className="px-4 py-2 text-center">
                                         {report.image && report.image.length > 0 && (
                                             <div className="image-container">
-                                                <img className="w-20 h-20 object-cover rounded-full"  src={`http://localhost:3000/upload/${report.image[0]}`} alt="" />
+                                                <img className="w-20 h-20 object-cover rounded-full"  src={`${import.meta.env.VITE_UPLOAD_URL}${report.image[0]}`} alt="" />
                                             </div>
                                         )}
                                     </td>
                                     <td className='px-4 py-2 text-center text-sm'>
-                                        {report.reports.map((reportItem, index) => (
+                                        {report.reports.map((reportItem:any, index:any) => (
                                             <div key={index}>{reportItem.reason}</div>
                                         ))}
                                     </td>
@@ -94,7 +94,8 @@ const ReportPage = () => {
                             ))
                         ) : (
                             <tr>
-                                <td colSpan="8" className="text-center py-4 text-sm">No reports found.</td>
+                          <td colSpan={8} className="text-center py-4 text-sm">No reports found.</td>
+
                             </tr>
                         )}
 

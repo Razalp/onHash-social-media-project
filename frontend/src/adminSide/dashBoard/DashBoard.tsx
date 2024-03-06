@@ -1,10 +1,9 @@
 import React, { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
-import { faUsers, faUserLock, faFile, faLock, faUserPlus, faThumbsUp, faComment, faFlag } from '@fortawesome/free-solid-svg-icons';
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+
 import Axios from "../../axious/instance";
 import AdminSideBar from "../AdminSideBar/AdminSideBar";
-import Chart from "./Chart"; // Import the PieChart component here
+import Chart from "./Chart"; 
 // import BarChart from "./BarChart";
 
 
@@ -62,7 +61,7 @@ const Dashboard = () => {
                         <Chart data={userCounts}   /> 
                     </div>
                     <div>
-                    {/* <BarChart userActivities={userActivities}/> */}
+                    <Chart data={userActivities}   /> 
                     </div>
                     
                  

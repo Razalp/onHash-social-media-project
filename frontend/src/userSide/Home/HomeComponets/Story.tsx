@@ -3,14 +3,14 @@
 import Axios from "../../../axious/instance";
 import { jwtDecode } from "jwt-decode";
 import React, { useState, useEffect } from "react";
-import { Button, Toast } from "react-bootstrap";
-import { Link, useNavigate } from "react-router-dom";
+import { Button } from "react-bootstrap";
+import { useNavigate } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faArrowLeft, faArrowRight } from "@fortawesome/free-solid-svg-icons";
 import CropeImage from "./CropeImage";
 
 const Story = () => {
-  const [stories, setStories] = useState([]); 
+  const [stories, setStories] = useState<any>([]); 
   const [userData, setUserData] = useState({
     username: '',
     email: '',
@@ -20,13 +20,13 @@ const Story = () => {
   const [content, setContent] = useState('');
   const [media, setMedia] = useState(null); 
   const [showModal, setShowModal] = useState(false); 
-  const [fileError, setFileError] = useState(''); 
+  const [fileError, setFileError] = useState<any|null>(''); 
   const [showImage, setShowImage] = useState(false);
   const [selectedStoryImage, setSelectedStoryImage] = useState("");
   const [currentStoryIndex, setCurrentStoryIndex] = useState(0);
   const [croppedImage, setCroppedImage] = useState(null); 
 
-  const handleCropSubmit = (croppedImageUrl) => {
+  const handleCropSubmit = (croppedImageUrl:any) => {
     setCroppedImage(croppedImageUrl);
   };
 
@@ -51,7 +51,7 @@ const Story = () => {
           return;
         }
 
-        const decodedToken = jwtDecode(token);
+        const decodedToken:any = jwtDecode(token);
         const userId = decodedToken.userId;
 
         const response = await Axios.get(`/api/user/getStories/${userId}`);
@@ -90,11 +90,11 @@ useEffect(()=>{
     setShowImage(false)
   }
 
-  const handleContentChange = (e) => {
+  const handleContentChange = (e:any) => {
     setContent(e.target.value);
   };
 
-  const handleMediaChange = (e) => {
+  const handleMediaChange = (e:any) => {
     setMedia(e.target.files[0]);
     setFileError(null);
   };
@@ -104,7 +104,7 @@ useEffect(()=>{
 
     try {
       if (token) {
-        const decodedToken = jwtDecode(token);
+        const decodedToken:any = jwtDecode(token);
         const userId = decodedToken.userId;
 
         const fetchUserData = async () => {
@@ -124,10 +124,10 @@ useEffect(()=>{
     }
   }, []);
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = async (e:any) => {
     e.preventDefault();
   
-    if (!media || !croppedImage) { // Ensure both media and croppedImage are available
+    if (!media || !croppedImage) { 
       setFileError('Please select a file and crop it.');
       setTimeout(() => {
         setFileError('');
@@ -142,7 +142,7 @@ useEffect(()=>{
         return;
       }
   
-      const decodedToken = jwtDecode(token);
+      const decodedToken:any = jwtDecode(token);
       const userId = decodedToken.userId;
   
       const formData = new FormData();
@@ -162,15 +162,14 @@ useEffect(()=>{
   };
   
 
-  const handleProfileImageClick = (imageUrl) => {
+  const handleProfileImageClick = (imageUrl:any) => {
     setSelectedStoryImage(imageUrl);
   };
 
   return (
     <div className="max-w-screen-xl mx-auto p-8">
-    {/* Story display buttons */}
     <div className="flex flex-wrap justify-center">
-      {stories.map((story, index) => (
+      {stories.map((story:any, index:any) => (
         <button
           key={index}
           className="relative w-20 h-20 bg-white rounded-full overflow-hidden m-2 transform transition hover:-rotate-6"
@@ -181,7 +180,7 @@ useEffect(()=>{
         >
           <img
             className="w-full h-full object-cover"
-            src={`http://localhost:3000/upload/${story?.user.profilePicture}`}
+            src={`${import.meta.env.VITE_UPLOAD_URL}${story?.user.profilePicture}`}
             alt={`Story ${index}`}
           />
         </button>
@@ -191,13 +190,13 @@ useEffect(()=>{
       </button>
     </div>
   
-    {/* Modal for displaying selected story */}
+
     <div onClick={setModalClose}>
       {showImage && (
         <div className="fixed inset-0 z-50 overflow-auto bg-black bg-opacity-75 flex justify-center items-center">
           <div className="relative">
             <img
-              src={`http://localhost:3000/upload/${stories[currentStoryIndex]?.media}`}
+              src={`${import.meta.env.VITE_UPLOAD_URL}${stories[currentStoryIndex]?.media}`}
               alt="Selected Story"
               className="w-96 h-5/6 object-cover"
             />
@@ -220,7 +219,7 @@ useEffect(()=>{
       )}
     </div>
   
-    {/* Modal for adding a new story */}
+
     {showModal && (   
       <div className="fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-slate-950 p-4 sm:p-8 rounded shadow-lg z-20 max-w-screen-md w-full sm:w-96">
         <div className="text-center">

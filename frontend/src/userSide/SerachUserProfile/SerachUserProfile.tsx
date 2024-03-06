@@ -456,7 +456,7 @@ const SearchUserProfile = () => {
                     <div className="flex flex-col items-center">
                         <img
                             className="rounded-full w-32 h-32 object-cover shadow-md"
-                            src={`http://localhost:3000/upload/${Serachuser?.profilePicture}`}
+                            src={`${import.meta.env.VITE_UPLOAD_URL}${Serachuser?.profilePicture}`}
                             alt="User Profile"
                         />
 
@@ -508,7 +508,7 @@ const SearchUserProfile = () => {
     
     <img
       key={friend?._id}
-      src={`http://localhost:3000/upload/${friend?.profilePicture}`}
+      src={`${import.meta.env.VITE_UPLOAD_URL}${friend?.profilePicture}`}
       alt={friend.username}
       className="w-5 h-5 rounded-full object-cover"
     />
@@ -531,7 +531,7 @@ const SearchUserProfile = () => {
               {post.image.length > 0 && (
                 <div onClick={() => openModals(post, Serachuser)}>
                   <img
-                    src={`http://localhost:3000/upload/${post?.image}`}
+                    src={`${import.meta.env.VITE_UPLOAD_URL}${post?.image}`}
                     alt="Post"
                     className="post-image shadow-md"
                     style={{ width: '200px', height: '200px', objectFit: 'cover' }}
@@ -554,7 +554,7 @@ const SearchUserProfile = () => {
            <Modal.Title>
              <div className="flex items-center space-x-4">
                <img
-                 src={`http://localhost:3000/upload/${selectedPost.user.profilePicture}`}
+                 src={`${import.meta.env.VITE_UPLOAD_URL}${selectedPost.user.profilePicture}`}
                  alt="Profile Picture"
                  className="w-12 h-12 rounded-full mr-2"
                />
@@ -564,7 +564,7 @@ const SearchUserProfile = () => {
          </Modal.Header>
         <Modal.Body>
           <img
-            src={`http://localhost:3000/upload/${selectedPost.post.image}`}
+            src={`${import.meta.env.VITE_UPLOAD_URL}${selectedPost.post.image}`}
             alt="Post"
             className="post-image w-full "
             style={{ objectFit: 'cover', height: '500px' }}
@@ -617,7 +617,7 @@ const SearchUserProfile = () => {
             <div className="flex justify-between ">
               <div className="flex">
                 <img
-                  src={`http://localhost:3000/upload/${comment?.user?.profilePicture}`}
+                  src={`${import.meta.env.VITE_UPLOAD_URL}${comment?.user?.profilePicture}`}
                   alt="User Profile"
                   className="w-8 h-8 rounded-full mr-2"
                 />
@@ -664,7 +664,7 @@ const SearchUserProfile = () => {
             <div key={follower._id} className="p-2 sm:p-4 flex w-full sm:w-auto">
               <div className="flex items-center">
                 <img
-                  src={ `http://localhost:3000/upload/${follower.profilePicture}`}
+                  src={ `${import.meta.env.VITE_UPLOAD_URL}${follower.profilePicture}`}
                   alt={`${follower.username}'s Profile`}
                   className="w-10 h-10 sm:w-12 sm:h-12 rounded-full mr-2"
                 />
@@ -700,7 +700,7 @@ const SearchUserProfile = () => {
             <div key={following._id} className="p-2 sm:p-4 flex w-full sm:w-auto">
               <div className="flex items-center">
                 <img
-                  src={ `http://localhost:3000/upload/${following.profilePicture}`}
+                  src={ `${import.meta.env.VITE_UPLOAD_URL}${following.profilePicture}`}
                   alt={`${following.username}'s Profile`}
                   className="w-10 h-10 sm:w-12 sm:h-12 rounded-full mr-2"
                 />
@@ -739,7 +739,7 @@ const SearchUserProfile = () => {
             <div key={friend._id} className="p-2 sm:p-4 flex w-full sm:w-auto">
               <div className="flex items-center">
                 <img
-                  src={ `http://localhost:3000/upload/${friend?.profilePicture}`}
+                  src={ `${import.meta.env.VITE_UPLOAD_URL}${friend?.profilePicture}`}
                   alt={`${friend.username}'s Profile`}
                   className="w-10 h-10 sm:w-12 sm:h-12 rounded-full mr-2"
                 />

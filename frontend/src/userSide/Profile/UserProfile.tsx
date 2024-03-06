@@ -497,7 +497,7 @@ const UserProfile = () => {
                     {post.image.length > 0 && (
                       <div onClick={() => openModals(post, userData)}>
                         <img
-                          src={`http://localhost:3000/upload/${post?.image}`}
+                          src={`${import.meta.env.VITE_UPLOAD_URL}${post?.image}`}
                           alt="Post"
                           className="post-image shadow-md "
                           style={{ width: '250px', height: '300px', objectFit: 'cover' }}
@@ -523,7 +523,7 @@ const UserProfile = () => {
                     <Modal.Title>
                       <div className="flex items-center space-x-4">
                         <img
-                          src={`http://localhost:3000/upload/${selectedPost.user.profilePicture}`}
+                          src={`${import.meta.env.VITE_UPLOAD_URL}${selectedPost.user.profilePicture}`}
                           alt="Profile Picture"
                           className="w-12 h-12 rounded-full mr-2"
                         />
@@ -533,7 +533,7 @@ const UserProfile = () => {
                   </Modal.Header>
                   <Modal.Body>
                     <img
-                      src={`http://localhost:3000/upload/${selectedPost.post.image}`}
+                      src={`${import.meta.env.VITE_UPLOAD_URL}${selectedPost.post.image}`}
                       alt="Post"
                       className="post-image w-full "
                       style={{ objectFit: 'cover', width: '656px', height: '500px' }}
@@ -600,7 +600,7 @@ const UserProfile = () => {
                               <div className="flex justify-between ">
                                 <div className="flex">
                                   <img
-                                    src={`http://localhost:3000/upload/${comment?.user?.profilePicture}`}
+                                    src={`${import.meta.env.VITE_UPLOAD_URL}${comment?.user?.profilePicture}`}
                                     alt="User Profile"
                                     className="w-8 h-8 rounded-full mr-2"
                                   />
@@ -713,7 +713,7 @@ const UserProfile = () => {
                   <div key={follower._id} className="p-2 sm:p-4 flex w-full sm:w-auto">
                     <div className="flex items-center">
                       <img
-                        src={`http://localhost:3000/upload/${follower.profilePicture}`}
+                        src={`${import.meta.env.VITE_UPLOAD_URL}${follower.profilePicture}`}
                         alt={`${follower.username}'s Profile`}
                         className="w-10 h-10 sm:w-12 sm:h-12 rounded-full mr-2"
                       />
@@ -748,7 +748,7 @@ const UserProfile = () => {
                   <div key={following._id} className="p-2 sm:p-4 flex w-full sm:w-auto">
                     <div className="flex items-center">
                       <img
-                        src={`http://localhost:3000/upload/${following.profilePicture}`}
+                        src={`${import.meta.env.VITE_UPLOAD_URL}${following.profilePicture}`}
                         alt={`${following.username}'s Profile`}
                         className="w-10 h-10 sm:w-12 sm:h-12 rounded-full mr-2"
                       />
@@ -780,7 +780,7 @@ const UserProfile = () => {
                   <div key={likes._id} className="p-2 sm:p-4 flex w-full sm:w-auto">
                     <div className="flex items-center">
                       <img
-                        src={`http://localhost:3000/upload/${likes.user.profilePicture}`}
+                        src={`${import.meta.env.VITE_UPLOAD_URL}${likes.user.profilePicture}`}
                         alt={`${likes.user.username}'s Profile`}
                         className="w-10 h-10 sm:w-12 sm:h-12 rounded-full mr-2"
                       />

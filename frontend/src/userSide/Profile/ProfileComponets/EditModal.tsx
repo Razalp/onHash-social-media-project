@@ -13,7 +13,7 @@ interface EditModalProps {
 
 const EditModal : React.FC<EditModalProps> = ({user,handleedit ,userpostlength ,followers, following ,openModal ,opens ,getInitials   }) => {
   const profilePictureUrl = user.profilePicture
-  ? `http://localhost:3000/upload/${user.profilePicture}`
+  ? `${import.meta.env.VITE_UPLOAD_URL}${user.profilePicture}`
   : `https://ui-avatars.com/api/?name=${getInitials(user.username)}&background=random&size=200`;
   return (
     <div className="max-w-2xl mx-4 sm:max-w-sm md:max-w-sm lg:max-w-sm xl:max-w-sm sm:mx-auto md:mx-auto lg:mx-auto xl:mx-auto mt-16 bg-gray-900 shadow-xl rounded-lg text-gray-900 w-full h-full ">

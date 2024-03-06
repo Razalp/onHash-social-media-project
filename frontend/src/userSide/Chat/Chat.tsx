@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
+import  { useEffect, useRef, useState } from 'react';
 import io from 'socket.io-client';
 import Axios from '@/axious/instance';
 import SideBar from '../SideBar/SideBar';
@@ -8,6 +8,7 @@ import EmojiPicker from 'emoji-picker-react';
 import SearchComponent from './chatpages/SearchComponent';
 import MessageListComponent from './chatpages/MessageListComponent';
 import Lobby from './Screens/Lobby';
+import { Send ,Upload} from 'lucide-react';
 const Chat = () => {
     const [searchQuery, setSearchQuery] = useState('');
     const [searchResults, setSearchResults] = useState([]);
@@ -221,7 +222,7 @@ const Chat = () => {
                                 {chatHistory.map((chat: { _id: string, receiver: { profilePicture: string, username: string }, message: string }) => (
     <div className='flex items-center mt-2 ml-2' key={chat._id}>
         <img
-            src={`http://localhost:3000/upload/${chat.receiver.profilePicture}`}
+            src={`${import.meta.env.VITE_UPLOAD_URL}${chat.receiver.profilePicture}`}
             className='w-10 h-10 rounded-full cursor-pointer'
             alt=""
             onClick={() => handleUserClick(chat.receiver)}
@@ -243,7 +244,7 @@ const Chat = () => {
                                             <div>
                                                 <img
                                                     className="w-10 h-10 rounded-full object-cover"
-                                                    src={selectedUser ? `http://localhost:3000/upload/${selectedUser.profilePicture}` : 'https://source.unsplash.com/random'}
+                                                    src={selectedUser ? `${import.meta.env.VITE_UPLOAD_URL}${selectedUser.profilePicture}` : 'https://source.unsplash.com/random'}
                                                     alt="Avatar"
                                                 />
                                             </div>
@@ -289,7 +290,7 @@ const Chat = () => {
                                                 className="ml-4 px-4 py-2 bg-black hover:bg-gray-700 text-white rounded-lg w-24"
                                                 onClick={sendMessage}
                                             >
-                                                Send
+                                                <Send />
                                             </button>
                                             <input
                                                 type="file"
@@ -299,10 +300,10 @@ const Chat = () => {
                                                 onChange={(e) => handleFileInputChange(e)}
                                             />
                                             <button
-                                                className="ml-2 px-4 py-2 bg-black hover:bg-gray-700 text-white rounded-lg w-32"
+                                                className="ml-2 px-4 py-2 bg-black hover:bg-gray-700 text-white rounded-lg "
                                                 onClick={() => fileInputRef.current?.click()}
                                             >
-                                                🗃️
+                                            <Upload />
                                             </button>
                                         </div>
                                     </div>
@@ -319,7 +320,7 @@ const Chat = () => {
                                                         Cancel
                                                     </button>
                                                     <button onClick={sendMessage} className="bg-black hover:bg-gray-700 text-white font-bold py-2 px-4 rounded">
-                                                        Send
+                                                    <Send />
                                                     </button>
                                                 </div>
                                             </div>

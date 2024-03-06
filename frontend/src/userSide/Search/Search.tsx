@@ -73,7 +73,7 @@ const Search = () => {
                     className=""
                   >
                     <img
-                      src={`http://localhost:3000/upload/${user?.profilePicture}`}
+                      src={`${import.meta.env.VITE_UPLOAD_URL}${user?.profilePicture}`}
                       alt={`${user.username}'s profile`}
                       className="w-10 h-10 rounded-full"
                       onError={(e: any) => {
@@ -112,7 +112,7 @@ const Search = () => {
     //             <>
     //               <Link to={`/SerachUserProfile/${user._id}`} className="">
     //                 <img
-    //                   src={`http://localhost:3000/upload/${user?.profilePicture}`}
+    //                   src={`${import.meta.env.VITE_UPLOAD_URL}${user?.profilePicture}`}
     //                   alt={`${user.username}'s profile`}
     //                   className="w-10 h-10 rounded-full"
     //                   onError={(e: any) => {

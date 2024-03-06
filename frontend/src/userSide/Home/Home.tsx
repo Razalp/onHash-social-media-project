@@ -266,7 +266,7 @@ const Home = () => {
                   <div className="flex items-center space-x-4">
                   <Link to={`/SerachUserProfile/${post.user._id}`}>
       <img
-        src={`http://localhost:3000/upload/${post.user.profilePicture}`}
+        src={`${import.meta.env.VITE_UPLOAD_URL}${post.user.profilePicture}`}
         alt={post.user.username}
         className="rounded-full w-12 h-12 mb-2 object-cover"
       />
@@ -276,7 +276,7 @@ const Home = () => {
                   <div className="flex justify-center mb-4">
                     <LazyLoad height={200} offset={100}>
                       <img
-                        src={`http://localhost:3000/upload/${post.image}`}
+                        src={`${import.meta.env.VITE_UPLOAD_URL}${post.image}`}
                         alt="Post"
                         className="post-image rounded-md object-cover"
                         style={{ width: "440px", height: "470px" }}
@@ -341,7 +341,7 @@ const Home = () => {
                               <div className="flex justify-between ">
                                 <div className="flex">
                                   <img
-                                    src={`http://localhost:3000/upload/${comment?.user?.profilePicture}`}
+                                    src={`${import.meta.env.VITE_UPLOAD_URL}${comment?.user?.profilePicture}`}
                                     alt="User Profile"
                                     className="w-8 h-8 rounded-full mr-2"
                                   />
@@ -385,7 +385,7 @@ const Home = () => {
             <div key={likes._id} className="p-2 sm:p-4 flex w-full sm:w-auto">
               <div className="flex items-center">
                 <img
-                  src={`http://localhost:3000/upload/${likes.user.profilePicture}`}
+                  src={`${import.meta.env.VITE_UPLOAD_URL}${likes.user.profilePicture}`}
                   alt={`${likes.user.username}'s Profile`}
                   className="w-10 h-10 sm:w-12 sm:h-12 rounded-full mr-2"
                 />

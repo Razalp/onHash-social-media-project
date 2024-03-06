@@ -59,7 +59,7 @@ const PostComponent: React.FC<PostComponentProps> = ({
           <Modal.Title>
             <div className="flex items-center space-x-4">
               <img
-                src={`http://localhost:3000/upload/${selectedPost.user.profilePicture}`}
+                src={`${import.meta.env.VITE_UPLOAD_URL}${selectedPost.user.profilePicture}`}
                 alt="Profile Picture"
                 className="w-12 h-12 rounded-full mr-2"
               />
@@ -69,7 +69,7 @@ const PostComponent: React.FC<PostComponentProps> = ({
         </Modal.Header>
         <Modal.Body>
           <img
-            src={`http://localhost:3000/upload/${selectedPost.image}`}
+            src={`${import.meta.env.VITE_UPLOAD_URL}${selectedPost.image}`}
             alt="Post"
             className="post-image w-full "
             style={{ objectFit: 'cover', width: '656px', height: '500px' }}
@@ -133,7 +133,7 @@ const PostComponent: React.FC<PostComponentProps> = ({
                     <div className="flex justify-between ">
                       <div className="flex">
                         <img
-                          src={`http://localhost:3000/upload/${comment?.user?.profilePicture}`}
+                          src={`${import.meta.env.VITE_UPLOAD_URL}${comment?.user?.profilePicture}`}
                           alt="User Profile"
                           className="w-8 h-8 rounded-full mr-2"
                         />

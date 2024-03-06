@@ -35,7 +35,7 @@ const UserManagement = () => {
       if (response.data.message === 'User deleted successfully') {
         setUsers((prevUsers) => prevUsers.filter((user:any) => user._id !== userId));
 
-        // Show success alert
+        
         Swal.fire({
           icon: 'success',
           title: 'User deleted successfully!',
@@ -132,7 +132,7 @@ const UserManagement = () => {
             <td className="px-4 py-2 text-sm">{item?.username?.toString()}</td>
             <td className="px-4 py-2 text-sm">{item?.email}</td>
             <td className="px-4 py-2 text-center">
-              <img src={`http://localhost:3000/upload/${item.profilePicture}`} alt="User Profile" className="w-20 h-20 object-cover rounded-full" />
+              <img src={`${import.meta.env.VITE_UPLOAD_URL}${item.profilePicture}`} alt="User Profile" className="w-20 h-20 object-cover rounded-full" />
             </td>
             <td className="px-4 py-2 text-center">{item?.isAdmin?.toString()}</td>
             <td className="px-4 py-2 text-center">{item?.isUpgrade.toString()}</td>

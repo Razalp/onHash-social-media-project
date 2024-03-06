@@ -5,7 +5,7 @@
   }
   .btn-container {
     display: none;
-    transition: all 0.3s ease; /* Add transition for smooth animation */
+    transition: all 0.3s ease;
   }
   
   .btn-container.show {
@@ -13,23 +13,23 @@
   }
   
   .btn-black {
-    transition: all 0.3s ease; /* Add transition for smooth animation */
+    transition: all 0.3s ease; 
   }
   
   .btn-black.open {
-    transform: translateX(-20px); /* Adjust the value for desired animation */
+    transform: translateX(-20px); 
   }
-  // UserManagement.css
+
 .table-row {
-  transition: background-color 0.3s ease; /* Adjust transition duration as needed */
+  transition: background-color 0.3s ease;
 }
 
 .table-row:hover {
-  background-color: #4a5568; /* Adjust hover background color as needed */
+  background-color: #4a5568; 
 }
 
 .button-container {
-  transition: opacity 0.3s ease; /* Adjust transition duration as needed */
+  transition: opacity 0.3s ease;
   opacity: 0;
 }
 
