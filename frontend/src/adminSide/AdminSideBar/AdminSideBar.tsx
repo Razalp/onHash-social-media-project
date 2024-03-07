@@ -5,7 +5,7 @@ import Swal from 'sweetalert2';
 import HashOnImage from '../../assets/HashOn.png';
 import './AdminSideBar.css'
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faTachometerAlt, faUsers, faChartLine, faRunning, faTag, faUser, faSignOutAlt ,faArrowLeft , faArrowRight } from '@fortawesome/free-solid-svg-icons';
+import { faTachometerAlt, faUsers, faChartLine, faUser, faSignOutAlt ,faArrowLeft , faArrowRight } from '@fortawesome/free-solid-svg-icons';
 const AdminSideBar = () => {
   const [isOpen, setIsOpen] = useState(true);
   const navigate = useNavigate();
@@ -28,6 +28,8 @@ const AdminSideBar = () => {
         navigate('/log-in');
       }
     });
+    localStorage.removeItem('accessToken');
+        navigate('/log-in');
   };
 
   return (

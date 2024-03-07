@@ -444,6 +444,12 @@ const SearchUserProfile = () => {
   
       fetchPostDetails();
     }, [selectedPost]);
+    useEffect(() => {
+      const token = localStorage.getItem('accessToken');
+      if (!token) {
+        navigate('/log-in')   
+      }
+    }, []);
 
 
 

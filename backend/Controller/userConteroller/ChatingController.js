@@ -54,49 +54,47 @@
 
     const chatHistories = async (req, res) => {
       try {
-        const { userId } = req.params;
-    
-        const chats = await Chat.find({ sender: userId })
-                                 .populate('receiver', 'username profilePicture')
-                                 .sort({ createdAt: -1 }) 
-                                 .exec();
-    
-        if (!chats || chats.length === 0) {
-          return res.status(404).json({ message: 'Chat history not found' });
-        }
-    
-        // Remove duplicates based on receiver userId
-        const uniqueChats = [];
-        const userIds = new Set();
-        chats.forEach(chat => {
-          if (!userIds.has(chat.receiver._id.toString())) {
-            userIds.add(chat.receiver._id.toString());
-            uniqueChats.push(chat);
-          }
-        });
-    
-        const formattedChats = uniqueChats.map(chat => ({
-          _id: chat._id,
-          sender: chat.sender,
-          receiver: {
-            _id: chat.receiver._id,
-            username: chat.receiver.username,
-            profilePicture: chat.receiver.profilePicture
-          },
-          message: chat.content,
-          createdAt: chat.createdAt
-        }));
+         const { userId } = req.params;
+     
+         const chats = await Chat.find({ sender: userId })
+                                  .populate('receiver', 'username profilePicture')
+                                  .sort({ createdAt: -1 }) 
+                                  .exec();
+     
+         // Check if chats is null
+ 
+     
+         const uniqueChats = [];
+         const userIds = new Set();
 
-        // console.log(formattedChats)
-
-        io.emit('newChatHistory', formattedChats);
+         chats.forEach(chat => {
+           if (!userIds.has(chat.receiver._id.toString())) {
+             userIds.add(chat.receiver._id.toString());
+             uniqueChats.push(chat);
+           }
+         });
     
-        res.json(formattedChats);
+     
+         const formattedChats = uniqueChats.map(chat => ({
+           _id: chat._id,
+           sender: chat.sender,
+           receiver: {
+             _id: chat.receiver._id,
+             username: chat.receiver.username,
+             profilePicture: chat.receiver.profilePicture
+           },
+           message: chat.content,
+           createdAt: chat.createdAt
+         }));
+     
+         io.emit('newChatHistory', formattedChats);
+     
+         res.json(formattedChats);
       } catch (error) {
-        console.error(error);
-        res.status(500).json({ message: 'Internal server error' });
+         console.error(error);
+         res.status(500).json({ message: 'Internal server error' });
       }
-    }
+     }
     
 
 

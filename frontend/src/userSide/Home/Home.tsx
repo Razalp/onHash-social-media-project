@@ -92,14 +92,10 @@ const Home = () => {
 
   useEffect(() => {
     const token = localStorage.getItem('accessToken');
-    if (token) {
-      navigate('/')
-     
-    }else{
+    if (!token) {     
       navigate('/log-in');
     }
   }, []);
-
 
 
 
@@ -116,14 +112,8 @@ const Home = () => {
           const response = await Axios.get(`/api/user/getPostDetailes/${postId}/${userId}`);
           SetLikeData(response.data.likes);
           SetCommentData(response.data.comments);
-
-
           setIsLiked(response.data.hasLiked)
           const token = localStorage.getItem('accessToken');
-          if (!token) {
-            return;
-          }
-  
         } else {
           return null
         }
@@ -132,9 +122,7 @@ const Home = () => {
         setError('');
       }
     };
-
-
-
+  
 
   useEffect(() => {
     const fetchPosts = async () => {
@@ -230,30 +218,25 @@ const Home = () => {
       console.error('Error adding comment:', error);
     }
   };
-  const handleComments = (postId: string) => {
+  const handleComments = async (postId: string) => {
     setShowCommentBox((prevShowCommentBox) => ({
       ...prevShowCommentBox,
       [postId]: !prevShowCommentBox[postId],
     }));
+    if (!commentData[postId]) {
+      await fetchPostDetails(postId);
+    }
   };
-  useEffect(() => {
-    const fetchDetailsForPosts = async () => {
-      posts.forEach((post:any) => {
-        fetchPostDetails(post._id);
-      });
-    };
-  
-    fetchDetailsForPosts();
-  }, [posts]);
+
 
 
   return (
-    <div className="bg-black"> 
+    <div className={`bg-black ${posts && posts.length > 0 ? '' : 'min-h-screen'}`}> 
       <SideBar />
       <Story />
       <RandomUserSug/>
       
-      <div className="flex justify-center items-center" >
+      <div className="flex justify-center items-center " >
         
         <div className="grid gap-4 p-4 ">
        

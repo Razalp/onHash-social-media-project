@@ -4,24 +4,27 @@ import {jwtDecode} from 'jwt-decode';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css'; 
 import { Button } from "@/components/ui/button";
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 
 const RandomUserSug = () => {
   const [randomUsers, setRandomUsers] = useState([]);
   const [isFollowing, setIsFollowing] = useState<{ [key: string]: boolean }>({});
+  const navigate=useNavigate()
 
-  useEffect(() => {
+
     const fetchRandomUsers = async () => {
-      try {
+      try {   
         const response = await Axios.get('/api/user/random-users');
         setRandomUsers(response.data);
+        
       } catch (error) {
         console.error('Error fetching random users:', error);
       }
     };
 
-    fetchRandomUsers();
-  }, []);
+
+  
+
 
   const handleFollow = async (userId:string) => {
     try {
@@ -30,10 +33,10 @@ const RandomUserSug = () => {
       });
 
       if (response.data) {
-        setIsFollowing({ ...isFollowing, [userId]: true }); // set isFollowing for specific user
+        setIsFollowing({ ...isFollowing, [userId]: true }); 
         localStorage.setItem(`isFollowing_${userId}`, 'true');
         toast.success('You are now following this user');
-        // Update follower count
+
       } else {
         toast.error('Error following user');
       }
@@ -50,10 +53,10 @@ const RandomUserSug = () => {
       });
 
       if (response.data) {
-        setIsFollowing({ ...isFollowing, [userId]: false }); // set isFollowing for specific user
+        setIsFollowing({ ...isFollowing, [userId]: false }); 
         localStorage.setItem(`isFollowing_${userId}`, 'false');
         toast.success('You have unfollowed this user');
-        // Update follower count
+
       } else {
         toast.error('Error unfollowing user');
       }
@@ -74,6 +77,13 @@ const RandomUserSug = () => {
     return decodedToken.userId;
   };
 
+  useEffect(() => {
+    const token = localStorage.getItem('accessToken');
+    if (!token) {
+      navigate('/log-in')   
+    }
+    
+  }, []);
   return (
     <div className="flex justify-center ml-16 mr-20">
       <ToastContainer position="top-center" autoClose={5000} hideProgressBar={false} newestOnTop={false} closeOnClick pauseOnFocusLoss draggable pauseOnHover />

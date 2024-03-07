@@ -1,4 +1,4 @@
-import { Route, Routes, Navigate, } from 'react-router-dom';
+import { Route, Routes, } from 'react-router-dom';
 import './App.css';
 import SignUp from './userSide/Signup/SignUp';
 import Login from './userSide/LoginIn/Login';
@@ -23,21 +23,28 @@ import Room from './userSide/Chat/Screens/Room';
 import AudioRoom from './userSide/Chat/Audioscreen/AudioRoom';
 import Lobby from './userSide/Chat/Screens/Lobby';
 import AudioLobby from './userSide/Chat/Audioscreen/AudioLobby';
+// import { useEffect } from 'react';
+import ErrorPage from './userSide/404/ErrorPage';
 
 
 function App() {
-  const token = localStorage.getItem('accessToken');
+
+
+    // const token = localStorage.getItem('accessToken');
+ 
+
+  
 
   return (
     <>
       <Routes>
-        {!token && (
+        (
           <>
          
             <Route path='/sign-up' element={<SignUp />} />
             <Route path='/log-in' element={<Login />} />
           </>
-        )}
+        )
 
 
         <Route path='/' element={<Home />} />
@@ -57,7 +64,7 @@ function App() {
 
    
 
-        {token && (
+        
           <>
             <Route path='/profile' element={<UserProfile />} />
             <Route path='/create' element={<Createpost />} />
@@ -66,9 +73,9 @@ function App() {
             <Route path="/Report" element={<ProtectedRoute allowedRole={true}><ReportPage /></ProtectedRoute>}/>
    
           </>
-        )}
+        
 
-        <Route path='*' element={<Navigate to='/' />} />
+        <Route path='*' element={<ErrorPage />} />
       </Routes>
     </>
   );

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useNavigate } from 'react-router-dom';
 import Swal from 'sweetalert2';
@@ -27,7 +27,7 @@ const SideBar = () => {
     }).then((result) => {
       if (result.isConfirmed) {
         localStorage.removeItem('accessToken');
-        navigate('/log-in');
+        navigate('/log-in')
       }
     });
   };

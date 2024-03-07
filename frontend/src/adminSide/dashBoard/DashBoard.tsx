@@ -1,14 +1,13 @@
-import React, { useEffect, useState } from "react";
-import { useSelector } from "react-redux";
+import { useEffect, useState } from "react";
 
 import Axios from "../../axious/instance";
 import AdminSideBar from "../AdminSideBar/AdminSideBar";
-import Chart from "./Chart"; 
-// import BarChart from "./BarChart";
+import Chart from "./dashboardComponet/Chart"; 
+import { BarChart } from "lucide-react";
+
 
 
 const Dashboard = () => {
-    const { userDetails } = useSelector((state: any) => state.userDetails) ?? {};
 
     const [userCounts, setUserCounts] = useState({
         totalUsers: 0,
@@ -62,6 +61,9 @@ const Dashboard = () => {
                     </div>
                     <div>
                     <Chart data={userActivities}   /> 
+                    </div>
+                    <div>
+                        <BarChart></BarChart>
                     </div>
                     
                  

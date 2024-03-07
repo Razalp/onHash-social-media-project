@@ -44,11 +44,11 @@ const PieChart = ({ data }: { data: any }) => {
     <div>
       <div className='flex h-80'>
         <AgChartsReact options={chartOptions} />
-        <AgChartsReact options={chartOptions} />
+
       </div>
       <div className='flex h-80'>
         <AgChartsReact options={chartOptions} />
-        <AgChartsReact options={chartOptions} />
+
       </div>
     </div>
   );

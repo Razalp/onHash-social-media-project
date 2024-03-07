@@ -11,6 +11,8 @@ import Post from '../../Model/PostSchema.js'
 const transporter = nodemailer.createTransport({
     service: 'gmail',
     auth: {
+        // user: process.env.GMAIL_USER,
+        // pass: process.env.GMAIL_PASS,
         user:'razalp0012300@gmail.com',
         pass:'wlmdruvemoajrkbi',
     },

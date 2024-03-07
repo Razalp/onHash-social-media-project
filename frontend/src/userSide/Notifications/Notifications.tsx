@@ -2,10 +2,12 @@ import React, { useEffect, useState } from 'react';
 import Axios from '@/axious/instance';
 import { jwtDecode } from 'jwt-decode';
 import io from 'socket.io-client';
+import { useNavigate } from 'react-router-dom';
 
 const Notifications = () => {
   const [notifications, setNotifications] = useState([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const navigate=useNavigate()
 
   useEffect(() => {
     fetchNotifications();
@@ -53,6 +55,12 @@ const Notifications = () => {
   const closeModal = () => {
     setIsModalOpen(false);
   };
+  useEffect(() => {
+    const token = localStorage.getItem('accessToken');
+    if (!token) {
+      navigate('/log-in')   
+    }
+  }, []);
 
   return (
     <div className="relative">

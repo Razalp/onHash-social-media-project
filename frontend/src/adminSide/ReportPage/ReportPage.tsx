@@ -17,15 +17,15 @@ const ReportPage = () => {
     };
 
 
-    const handleDeleteImage = async (postId:string, imageId:string) => {
-        try {
-            await Axios.delete(`/api/admin/posts/image/${postId}/${imageId}`);
+    // const handleDeleteImage = async (postId:string, imageId:string) => {
+    //     try {
+    //         await Axios.delete(`/api/admin/posts/image/${postId}/${imageId}`);
 
-            fetchReportData();
-        } catch (error) {
-            console.error('Error deleting image:', error);
-        }
-    };
+    //         fetchReportData();
+    //     } catch (error) {
+    //         console.error('Error deleting image:', error);
+    //     }
+    // };
 
 
     const fetchReportData = async () => {

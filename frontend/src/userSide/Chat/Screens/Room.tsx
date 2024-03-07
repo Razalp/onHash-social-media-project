@@ -13,7 +13,6 @@ const Room = () => {
     const [remoteStream, setRemoteStream] = useState<any>();
     const [isMuted, setIsMuted] = useState<boolean>(false);
     const [isCameraOff, setIsCameraOff] = useState(false);
-    
     const navigate = useNavigate()
 
     const toggleCamera = () => {
@@ -149,6 +148,13 @@ const Room = () => {
         handleNegoNeedIncomming,
         handleNegoNeedFinal,
     ]);
+
+    useEffect(() => {
+        const token = localStorage.getItem('accessToken');
+        if (!token) {
+          navigate('/log-in')   
+        }
+      }, []);
 
     return (
         <div className="flex flex-col items-center h-screen bg-black text-white text-sm ">

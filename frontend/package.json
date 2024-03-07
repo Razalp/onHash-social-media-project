@@ -29,6 +29,7 @@
     "@zegocloud/zego-uikit-prebuilt-live-streaming-rn": "^2.1.2",
     "ag-charts-community": "^9.1.0",
     "ag-charts-react": "^9.1.1",
+    "apexcharts": "^3.46.0",
     "axios": "^1.6.5",
     "bootstrap": "^5.3.2",
     "chart.js": "^4.4.1",

@@ -41,6 +41,15 @@ const Search = () => {
       setSearchResults([]);
     }
   };
+  useEffect(() => {
+    const token = localStorage.getItem('accessToken');
+    if (token) {
+      navigate('/search')
+     
+    }else{
+      navigate('/log-in');
+    }
+  }, []);
 
   return (
     <div className="bg-black text-white h-screen">

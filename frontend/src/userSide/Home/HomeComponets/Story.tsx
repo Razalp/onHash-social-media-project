@@ -71,12 +71,6 @@ useEffect(()=>{
 
   const navigate = useNavigate();
 
-  useEffect(() => {
-    const token = localStorage.getItem('accessToken');
-    if (!token) {
-      navigate('/log-in');
-    }
-  }, [navigate]);
 
   const setShowmodalClose = () => {
     setShowModal(false)
@@ -165,6 +159,13 @@ useEffect(()=>{
   const handleProfileImageClick = (imageUrl:any) => {
     setSelectedStoryImage(imageUrl);
   };
+
+  useEffect(() => {
+    const token = localStorage.getItem('accessToken');
+    if (!token) {
+      navigate('/log-in')   
+    }
+  }, []);
 
   return (
     <div className="max-w-screen-xl mx-auto p-8">

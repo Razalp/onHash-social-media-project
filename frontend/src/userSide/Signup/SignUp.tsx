@@ -47,11 +47,11 @@ const SignUp = () => {
   };
 
   const handleSignUp = async () => {
-    // const passwordRegex = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[!@#$%^&*]).{8,}$/;
-    const passwordRegex = /.{6,}$/
+    const passwordRegex = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[!@#$%^&*]).{8,}$/;
+    // const passwordRegex = /.{6,}$/
     if (!passwordRegex.test(password)) {
-      // toast.error('Password should be at least 8 characters long and include at least one uppercase letter, one lowercase letter, one number, and one special character');
-      toast.error('Password should be at least 6 characters long');
+      toast.error('Password should be at least 8 characters long and include at least one uppercase letter, one lowercase letter, one number, and one special character');
+      // toast.error('Password should be at least 6 characters long');
       return;
     }
 

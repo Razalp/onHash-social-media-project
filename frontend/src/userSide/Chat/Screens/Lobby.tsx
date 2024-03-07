@@ -67,6 +67,13 @@ const Lobby = () => {
             socket?.off("room:join", handleJoinRoom);
         };
     }, [socket, handleJoinRoom]);
+    
+    useEffect(() => {
+        const token = localStorage.getItem('accessToken');
+        if (!token) {
+          navigate('/log-in')   
+        }
+      }, []);
 
     return (
         <div>

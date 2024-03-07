@@ -4,6 +4,7 @@ import ReactPlayer from "react-player";
 import peer from '../../../service/Peer'
 import { Button } from '@/components/ui/button';
 import { PhoneForwarded, PhoneCall, PhoneOff, Mic, MicOff } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
 
 const AudioRoom = () => {
     const socket = useSocket();
@@ -11,6 +12,7 @@ const AudioRoom = () => {
     const [myStream, setMyStream] = useState<any>();
     const [remoteStream, setRemoteStream] = useState<any>();
     const [isMuted, setIsMuted] = useState<boolean>(false);
+    const navigate=useNavigate()
 
     const toggleMute = () => {
         setIsMuted((prevState:boolean) => !prevState);
@@ -131,6 +133,13 @@ const AudioRoom = () => {
         handleNegoNeedIncomming,
         handleNegoNeedFinal,
     ]);
+
+    useEffect(() => {
+        const token = localStorage.getItem('accessToken');
+        if (!token) {
+          navigate('/log-in')   
+        }
+      }, []);
 
     return (
         <div className="flex flex-col items-center h-screen bg-black text-white text-sm ">

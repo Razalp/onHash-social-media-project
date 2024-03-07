@@ -9,6 +9,7 @@ import SearchComponent from './chatpages/SearchComponent';
 import MessageListComponent from './chatpages/MessageListComponent';
 import Lobby from './Screens/Lobby';
 import { Send ,Upload} from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
 const Chat = () => {
     const [searchQuery, setSearchQuery] = useState('');
     const [searchResults, setSearchResults] = useState([]);
@@ -22,6 +23,7 @@ const Chat = () => {
     const [showModal, setShowModal] = useState(false);
     const [showEmojiPicker, setShowEmojiPicker] = useState(false);
     const fileInputRef = useRef<HTMLInputElement>(null);
+    const navigate=useNavigate()
 
     const toggleEmojiPicker = () => {
         setShowEmojiPicker(!showEmojiPicker);
@@ -82,10 +84,7 @@ const Chat = () => {
                 console.error('Error: Socket not connected or no recipient selected');
                 return;
             }
-            if (inputMessage.trim() === '') {
-                console.error('Error: Message cannot be empty');
-                return;
-            }
+    
 
             const formData = new FormData();
             formData.append('sender', senderId);
@@ -193,12 +192,15 @@ const Chat = () => {
             profilePicture: user.profilePicture,
             name: user.username
         });
-
-
-
-
         setSearchResults([]);
     };
+
+    useEffect(() => {
+        const token = localStorage.getItem('accessToken');
+        if (!token) {
+          navigate('/log-in')   
+        }
+      }, []);
 
     return (
         <div>
