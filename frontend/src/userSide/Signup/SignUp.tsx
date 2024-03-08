@@ -48,7 +48,7 @@ const SignUp = () => {
 
   const handleSignUp = async () => {
     const passwordRegex = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[!@#$%^&*]).{8,}$/;
-    // const passwordRegex = /.{6,}$/
+
     if (!passwordRegex.test(password)) {
       toast.error('Password should be at least 8 characters long and include at least one uppercase letter, one lowercase letter, one number, and one special character');
       // toast.error('Password should be at least 6 characters long');
@@ -59,7 +59,6 @@ const SignUp = () => {
       toast.error('Passwords do not match');
       return;
     }
-
     try {
       const response = await axios.post('http://localhost:3000/api/user/signIn', {
         username: name,
@@ -69,6 +68,7 @@ const SignUp = () => {
 
       console.log('User signed up successfully:', response.data);
       openOtpModal();
+     
     } catch (error:any) {
       console.error('Sign-up failed:', error);
 
@@ -88,14 +88,13 @@ const SignUp = () => {
   const handleResendOtp = async () => {
     try {
       setResendDisabled(true);
-
-
+      startTimer();
       await axios.post('http://localhost:3000/api/user/resendotp', {
         email,
       });
 
       toast.success('OTP resent successfully');
-      startTimer();
+   
     } catch (error) {
       console.error('Resend OTP failed:', error);
       toast.error('Failed to resend OTP. Please try again.');

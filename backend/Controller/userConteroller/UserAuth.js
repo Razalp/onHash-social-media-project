@@ -6,13 +6,12 @@ import randomstring from 'randomstring';
 import UserOtp from "../../Model/UserOtpSchema.js";
 import path from 'path';
 import Post from '../../Model/PostSchema.js'
+import TempUserSchema from "../../Model/TempUserSchema.js";
 
 
 const transporter = nodemailer.createTransport({
     service: 'gmail',
     auth: {
-        // user: process.env.GMAIL_USER,
-        // pass: process.env.GMAIL_PASS,
         user:'razalp0012300@gmail.com',
         pass:'wlmdruvemoajrkbi',
     },
@@ -43,24 +42,24 @@ const signIn = async (req, res) => {
         const { username, email, password } = req.body;
         const SALT_ROUNDS = 10;
 
-
         const existingUser = await User.findOne({ email });
         if (existingUser) {
             return res.status(400).json({ error: 'User already exists with this email' });
         }
+
         const otp = generateOTP();
         await sendOTPEmail(email, otp);
-
-
+        
+        // Save user in temporary collection
         const hashedPassword = await bcryptjs.hash(password, SALT_ROUNDS);
-        const newUser = new User({
+        const tempUser = new TempUserSchema({
             username,
             email,
             password: hashedPassword,
+            otp, // include otp field
+            otpExpiresAt: new Date(Date.now() + 5 * 60 * 1000), 
         });
-
-        const saveUser = await newUser.save();
-
+        await tempUser.save();
 
         const otpDocument = new UserOtp({
             email,
@@ -71,7 +70,7 @@ const signIn = async (req, res) => {
 
         await otpDocument.save();
 
-        res.status(201).json(saveUser);
+        res.status(201).json({ message: 'User signed up successfully. Please verify OTP.' });
     } catch (error) {
         console.error(error);
         res.status(500).json({ error: 'Internal Server Error' });
@@ -87,7 +86,20 @@ const otpVerify = async (req, res) => {
         if (!otpDocument || otpDocument.expireAt < new Date()) {
             return res.status(401).json({ error: 'Invalid OTP or expired' });
         }
-        res.status(200).json({ message: 'OTP verification successful' });
+
+
+        const tempUser = await TempUserSchema.findOne({ email });
+        const newUser = new User({
+            username: tempUser.username,
+            email: tempUser.email,
+            password: tempUser.password,
+        });
+        await newUser.save();
+
+  
+        await TempUserSchema.deleteOne({ email });
+
+        res.status(200).json({ message: 'OTP verification successful. User account created.' });
     } catch (error) {
         console.error(error);
         res.status(500).json({ error: 'Internal Server Error' });

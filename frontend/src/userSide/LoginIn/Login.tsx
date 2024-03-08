@@ -2,7 +2,7 @@ import {  Link, useNavigate } from 'react-router-dom';
 import HashOnImage from '../../assets/HashOn.png';
 import sideView from '../../assets/signupside.png';
 import './Login.css'; 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import axios from '../../axious/instance';
 import { useDispatch } from 'react-redux';
 import { login } from '../../redux/userSlice';
@@ -76,6 +76,13 @@ const Login = () => {
         toast.error('An unexpected error occurred.');
       }
     };
+    useEffect(() => {
+      const token = localStorage.getItem('accessToken');
+      if (token) {
+        navigate('/');
+      }
+    }, [navigate]);
+  
 
   return (
     <>

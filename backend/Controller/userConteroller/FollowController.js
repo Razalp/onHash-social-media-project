@@ -4,7 +4,7 @@ import Follow from '../../Model/FollowSchema.js';
 import Notification from '../../Model/NotificationsSchema.js';
 import { io } from '../../server.js'; 
 
-// Follow user
+
 const follow = async (req, res) => {
     try {
         const { userId } = req.params;

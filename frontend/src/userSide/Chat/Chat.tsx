@@ -76,6 +76,7 @@ const Chat = () => {
                 socket.emit('leaveRoom', `message-${selectedUser.userId}`);
             }
         }
+
     }, [socket, selectedUser]);
 
     const sendMessage = async () => {
@@ -104,6 +105,7 @@ const Chat = () => {
             await Axios.post('/api/user/send', formData);
 
             fetchMessages();
+            
 
             setInputMessage('');
             setSelectedImage(null);
@@ -128,7 +130,7 @@ const Chat = () => {
             const response = await Axios.get(`/api/user/${currentUserId}/${receiverId}`);
             const messages = response.data;
             setMessages(messages);
-   
+  
         } catch (error) {
             console.error('Error fetching messages:', error);
         }
@@ -160,9 +162,7 @@ const Chat = () => {
         }
     };
 
-    useEffect(() => {
-        fetchChatHistory();
-    }, []);
+
 
 
 

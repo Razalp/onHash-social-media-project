@@ -69,12 +69,12 @@ const ForgetPassword = () => {
           />
         </form>
         <p className="text-white text-center mt-4">
-          <Link to="/signup" className="text-yellow-300 hover:text-red-500">
+          <Link to="/sign-up" className="text-yellow-300 hover:text-red-500">
             Sign Up
           </Link>
         </p>
         <p className="text-white text-center">
-          <Link to="/login" className="text-yellow-300 hover:text-green-500">
+          <Link to="/log-in" className="text-yellow-300 hover:text-green-500">
             Login
           </Link>
         </p>

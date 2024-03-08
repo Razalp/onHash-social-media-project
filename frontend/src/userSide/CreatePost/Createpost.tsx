@@ -109,12 +109,18 @@ const Createpost = () => {
 
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const selectedImage = e.target.files?.[0];
-
+  
     if (selectedImage) {
       const reader = new FileReader();
       reader.onloadend = () => {
         if (typeof reader.result === 'string') {
-          setPreviewImage(reader.result);
+          const fileType = selectedImage.type;
+          if (fileType === 'image/jpeg' || fileType === 'image/png' || fileType === 'image/gif') {
+            setPreviewImage(reader.result);
+          } else {
+            toast.error('Please select a JPG, PNG, or GIF image file.');
+            setPreviewImage(null);
+          }
         }
       };
       reader.readAsDataURL(selectedImage);
@@ -194,7 +200,6 @@ const Createpost = () => {
       return;
     }
 
-
     const filteredImage = await applyFiltersToImage(previewImage);
 
     const formData = new FormData();
@@ -204,7 +209,6 @@ const Createpost = () => {
     formData.append('brightness', brightness.toString());
     formData.append('contrast', contrast.toString());
     formData.append('saturate', saturate.toString());
-
     console.log('formData:', formData);
 
     try {

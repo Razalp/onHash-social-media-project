@@ -13,11 +13,11 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faHeart, faComment, faFlag } from '@fortawesome/free-solid-svg-icons'
 import Swal from 'sweetalert2'
 import Takefree from "./ProfileComponets/EditModal";
-import { UserX } from 'lucide-react';
+import { UserX,Send,Trash2 } from 'lucide-react';
 
 
 const UserProfile = () => {
-  const [newProfilePicture, setNewProfilePicture] = useState(null);
+  const [newProfilePicture, setNewProfilePicture] = useState<File | null>(null);
   const [newUsername, setNewUsername] = useState('');
   const [newBio, setNewBio] = useState('');
   const [showModal, setShowModal] = useState(false);
@@ -124,7 +124,7 @@ const UserProfile = () => {
 
 
 
-  useEffect(() => {
+
 
     const fetchPostDetails = async () => {
       try {
@@ -161,11 +161,12 @@ const UserProfile = () => {
       
       }
     };
+    useEffect(() => {
     if (selectedPost) {
       fetchPostDetails();
 
     }
-  }, [selectedPost]);
+  }, [selectedPost,commentText]);
 
 
   const handleComments = () => {
@@ -354,7 +355,13 @@ const UserProfile = () => {
       const formData = new FormData();
 
       if (newProfilePicture) {
-        formData.append('profilePicture', newProfilePicture);
+        const fileType = newProfilePicture.type;
+        if (fileType === 'image/jpeg' || fileType === 'image/png' || fileType === 'image/gif') {
+          formData.append('profilePicture', newProfilePicture);
+        } else {
+          toast.error('Please select a JPG, PNG, or GIF image file for the profile picture.');
+          return;
+        }
       }
 
       if (newUsername.trim() !== '') {
@@ -561,15 +568,16 @@ const UserProfile = () => {
                         style={{ fontSize: '26px' }}
                       />
                     </div>
-                    <div className="flex items-center space-x-3 relative right-6">
+                    <div className="flex items-center space-x-3">
                       <FontAwesomeIcon
                         onClick={handleReportWithConfirmation}
                         icon={faFlag}
                         className="icon text-white"
                         style={{ fontSize: '26px' }}
                       />
+                       <button onClick={handleDeletePost} className="text-white"><Trash2 /></button>
                     </div>
-                    <button onClick={handleDeletePost} className="text-red-600">Delete</button>
+                   
                   </div>
                   <br />
                   <div className="flex justify-between">
@@ -580,40 +588,45 @@ const UserProfile = () => {
                   </div>
                   {showCommentBox && (
                     <div>
-                      <form onClick={handleComment}>
-                        <input
-                          placeholder="Add a comment..."
-                          value={commentText}
-                          onChange={(e) => setCommentText(e.target.value)}
-                          className="w-1/2 p-2 mt-2 rounded-md border border-gray-300"
-                        />
-                        <button type="submit" className="ml-1 w-1">
-                          ↩️
-                        </button>
-                      </form>
+                      <br />
+                      <form onSubmit={handleComment} className="flex items-center">
+  <input
+    placeholder="Add a comment..."
+    value={commentText}
+    onChange={(e) => setCommentText(e.target.value)}
+    className="w-full p-2 rounded-md bg-slate-900 focus:border-blue-500"
+  />
+  <Button variant={"outline"} type="submit" className="px-3 ml-1">
+    <Send />
+  </Button>
+</form>
+
+
                       <div className="comments-container">
                         <h3 className="text-white mt-4">Comments:</h3>
                         <br />
-                        <ul className="list-none p-0">
-                          {commentData.map((comment:any, index:any) => (
-                            <li key={index} className="text-white space-y-4">
-                              <div className="flex justify-between ">
-                                <div className="flex">
-                                  <img
-                                    src={`${import.meta.env.VITE_UPLOAD_URL}${comment?.user?.profilePicture}`}
-                                    alt="User Profile"
-                                    className="w-8 h-8 rounded-full mr-2"
-                                  />
-                                  <span>{comment?.user?.username}</span>
-                                </div>
-                                <p>{comment?.text}</p>
-                                <p className="text-gray-500">
-                                  {comment?.createdAt ? new Date(comment.createdAt).toLocaleString() : ""}
-                                </p>
-                              </div>
-                            </li>
-                          ))}
-                        </ul>
+                        <ul className="space-y-1">
+  {commentData.map((comment:any, index:any) => (
+    <li key={index} className=" p-2 rounded-lg">
+      <div className="flex items-start justify-between">
+        <div className="flex items-center">
+          <img
+            src={`${import.meta.env.VITE_UPLOAD_URL}${comment?.user?.profilePicture}`}
+            alt="User Profile"
+            className="w-10 h-10 rounded-full mr-4 object-cover"
+          />
+          <div>
+            <span className="font-semibold text-white">{comment?.user?.username}</span>
+            <p className="text-gray-300">{comment?.text}</p>
+          </div>
+        </div>
+        <p className="text-gray-500 text-sm">{comment?.createdAt ? new Date(comment.createdAt).toLocaleString() : ""}</p>
+      </div>
+    </li>
+  ))}
+</ul>
+
+
                       </div>
                     </div>
                   )}

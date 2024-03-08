@@ -105,7 +105,7 @@ const comments = async (req, res) => {
         post.comments.push(newComment);
         await post.save();
 
-        // Create a notification for the post author when someone comments on the post
+
         await createNotification(post.user, ` commented on your post.`, postId);
 
         res.json(post);
@@ -176,11 +176,13 @@ const getPostDetails = async (req, res) => {
     }
 
     const likes = post.likes.map(user => ({ user }));
-    const comments = post.comments.map(comment => ({
-      user: comment.user,
-      text: comment.text,
-      createdAt: comment.createdAt,
-    }));
+    const comments = post.comments
+  .sort((a, b) => b.createdAt - a.createdAt)
+  .map(comment => ({
+    user: comment.user,
+    text: comment.text,
+    createdAt: comment.createdAt,
+  }));
     const hasLiked = post.likes.some(like => like._id.toString() === userId);
 
     res.json({ likes, comments, hasLiked });
