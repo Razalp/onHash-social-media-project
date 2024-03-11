@@ -130,6 +130,7 @@ const Chat = () => {
             const response = await Axios.get(`/api/user/${currentUserId}/${receiverId}`);
             const messages = response.data;
             setMessages(messages);
+            fetchChatHistory()
   
         } catch (error) {
             console.error('Error fetching messages:', error);
